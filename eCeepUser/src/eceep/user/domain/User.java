@@ -20,10 +20,8 @@ public class User {
 	private String www;
 	private String note;
 	
-	/* Company */
-	private UserCompany company;
-	/* Policy */
-	private ApplicationPolicy policy;
+	private UserCompany company;			// Company
+	private ApplicationPolicy policy;		// Policy
 	
 	private int defaultCurrencyID;
 	private int defaultUnitID;
