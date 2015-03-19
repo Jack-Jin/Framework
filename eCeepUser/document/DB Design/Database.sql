@@ -155,8 +155,8 @@ CREATE TABLE PolicyDetail (
  ******************************/
 DROP TABLE Menu;
 CREATE TABLE Menu (
-	ID                  INT             NOT NULL                 	AUTO_INCREMENT,	
-	ParentID            INT             NOT NULL,	
+	ID                  INT             NOT NULL,
+	ParentID            INT             NOT NULL,
 	MenuText            VARCHAR(255)    NOT NULL,
 	IsLeaf	            BIT             NOT NULL DEFAULT TRUE,
 	MenuNo	            VARCHAR(255)    NOT NULL,
@@ -164,28 +164,56 @@ CREATE TABLE Menu (
 	
 	PRIMARY KEY(ID)
 )
-INSERT INTO
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(10, 0 , 'Quotations'		, FALSE, '010' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11, 10, 'New Quote'			, TRUE, '011' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(12, 10, 'Quote List'		, TRUE, '012' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(13, 10, 'Save'				, TRUE	, '013' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14, 10, 'Save as New Quote'	, TRUE, '014' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(15, 10, 'Save as New Rev'	, TRUE, '015' ,NULL)
 
-PKID	ParentID	Description	IsLeaf	PageUrl
-1	0         	 	0	NULL
-19	1         	Quotations	0	NULL
-27	19        	New Quote	1	Main/NewQuote
-20	19        	Quote List	1	Main/QuotationList
-21	19        	Save	1	javascript: saveQuote();
-22	19        	Save as New Quote	1	SaveAsNewQuote
-23	19        	Save as New Rev	1	SaveAsRev
-7	1         	User Admin	0	NULL
-34	7         	Company Admin	1	UserAdmin/CompanyAdmin.aspx
-10	1         	Data Control	0	NULL
-11	10        	Data Update	1	Main/DataUpdate
-12	10        	Post News	1	News/NewsDetail.aspx?id=0
-24	1         	User Support	0	NULL
-15	24        	Info Center	1	Main/InfoCenter
-16	24        	My Profile	1	UserAdmin/MyProfile.aspx
-25	1         	CRM	0	NULL
-26	25        	Customer	1	Customer/SearchCustomerNew.aspx
-29	1         	Management Report	0	NULL
-30	29        	Deleted Quotes	1	~/Quotation/QuotationListDeleted.aspx
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(20, 0 , 'User Admin'		, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(21, 20, 'Company Admin'		, FALSE, '' ,NULL)
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(30, 0 , 'Data Control'		, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31, 30, 'Data Update'		, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(32, 30, 'Post News'			, FALSE, '' ,NULL)
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(40, 0 , 'User Support'		, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(41, 40, 'Info Center'		, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(42, 40, 'My Profile'		, FALSE, '' ,NULL)
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(50, 0 , 'CRM'				, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51, 50, 'Customer'			, FALSE, '' ,NULL)
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(60, 0 , 'Management Report'	, FALSE, '' ,NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61, 60, 'Deleted Quotes'	, FALSE, '' ,NULL)
+
+PKID		ParentID	Description			IsLeaf	PageUrl
+1			0         	 					0		NULL
+
+19			1         	Quotations			0		NULL
+27			19        	New Quote			1		Main/NewQuote
+20			19        	Quote List			1		Main/QuotationList
+21			19        	Save				1		javascript: saveQuote();
+22			19        	Save as New Quote	1		SaveAsNewQuote
+23			19        	Save as New Rev		1		SaveAsRev
+
+7			1         	User Admin			0		NULL
+34			7         	Company Admin		1		UserAdmin/CompanyAdmin.aspx
+
+10			1         	Data Control		0		NULL
+11			10        	Data Update			1		Main/DataUpdate
+12			10        	Post News			1		News/NewsDetail.aspx?id=0
+
+24			1         	User Support		0		NULL
+15			24        	Info Center			1		Main/InfoCenter
+16			24        	My Profile			1		UserAdmin/MyProfile.aspx
+
+25			1         	CRM					0		NULL
+26			25        	Customer			1		Customer/SearchCustomerNew.aspx
+
+29			1         	Management Report	0		NULL
+30			29        	Deleted Quotes		1		~/Quotation/QuotationListDeleted.aspx
 
 
 
