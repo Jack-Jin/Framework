@@ -7,6 +7,113 @@ CREATE DATABASE eCeepFramework;
 
 USE eCeepFramework;
 
+/******************************
+ *  Table - Menu
+ ******************************/
+DROP TABLE Menu;
+CREATE TABLE Menu (
+	ID                  INT             NOT NULL,
+	ParentID            INT             NOT NULL,
+	MenuText            VARCHAR(255)    NOT NULL,
+	IsLeaf	            BIT             NOT NULL DEFAULT TRUE,
+	MenuNo	            VARCHAR(255)    NOT NULL,
+	URL	                VARCHAR(255)    NULL,
+	
+	PRIMARY KEY(ID)
+)
+-- 10,11,12,13,14,15,  20,21,  30,31,32,  40,41,42,  50,51,  60,61
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(10,0, 'Quotations',     	FALSE,'010',NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11,10,'New Quote', 			TRUE, '011','Main/NewQuote')
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(12,10,'Quote List', 		TRUE, '012','Main/QuotationList')
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(13,10,'Save', 				TRUE, '013','javascript: saveQuote();')
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14,10,'Save as New Quote', 	TRUE, '014','SaveAsNewQuote')
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(15,10,'Save as New Rev', 	TRUE, '015','SaveAsRev')
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(20,0, 'User Admin', 		FALSE,'020',NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(21,20,'Company Admin', 		FALSE,'021','UserAdmin/CompanyAdmin.aspx')
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(30,0, 'Data Control', 		FALSE,'030',NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31,30,'Data Update',		FALSE,'031','Main/DataUpdate')
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(32,30,'Post News', 			FALSE,'032','News/NewsDetail.aspx?id=0')
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(40,0, 'User Support', 		FALSE,'040',NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(41,40,'Info Center', 		FALSE,'041','Main/InfoCenter')
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(42,40,'My Profile', 		FALSE,'042','UserAdmin/MyProfile.aspx')
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(50,0, 'CRM', 				FALSE,'050',NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51,50,'Customer', 			FALSE,'051','Customer/SearchCustomerNew.aspx')
+
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(60,0, 'Management Report', 	FALSE,'060',NULL)
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61,60,'Deleted Quotes', 	FALSE,'061','~/Quotation/QuotationListDeleted.aspx')
+
+/******************************
+ *  Table - PolicyRule
+ ******************************/
+DROP TABLE PolicyRule;
+CREATE TABLE PolicyRule (
+	ID                 	INT             NOT NULL,
+	RuleName	        VARCHAR(255)    NOT NULL,
+	ValueType	        VARCHAR(255)    NOT NULL,
+	RuleValue	        VARCHAR(255)    NOT NULL,
+	IsSystemRule        BIT             NOT NULL 		DEFAULT True,
+	DisplayOrder	    INT    			NOT NULL        DEFAULT 0,
+)
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(10,'Factor','value','0.43',FALSE,10)
+
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(20,'Access All Customer','Option','True',FALSE,20)
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(21,'Show All Quotes','Option','True',FALSE,21)
+
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(101,'ModelList','Option','1',FALSE,101)
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(102,'ModelList','Option','2',FALSE,102)
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(103,'ModelList','Option','3',FALSE,103)
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(104,'ModelList','Option','4',FALSE,104)
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(105,'ModelList','Option','5',FALSE,105)
+
+/******************************
+ *  Table - Policy
+ ******************************/
+DROP TABLE Policy;
+CREATE TABLE Policy (
+	ID                  INT             NOT NULL    	AUTO_INCREMENT, 
+	PolicyName          VARCHAR(255)    NOT NULL,
+	Description   		VARCHAR(255)    NULL,
+	Menus               VARCHAR(255)    NOT NULL,
+	CompanyID           INT             NULL,
+	
+	PRIMARY KEY(ID)
+);
+INSERT INTO Policy(PolicyName,Description,Menus) VALUES('System Super Policy','This policy for super admin users.','10,11,12,13,14,15,20,21,30,31,32,40,41,42,50,51,60,61')
+INSERT INTO Policy(PolicyName,Description,Menus) VALUES('System Default Policy','This is the system default policy','10,11,12,13,14,15,20,21,30,31,32,40,41,42,50,51,60,61')
+
+ApplicationPolicyID	PolicyName	PolicyDescription	Menus	Functions	CompanyID
+1	System Default Policy	This is the system default policy	30,27,12,15,16,20,21,22,23,26	NULL	36
+
+/******************************
+ *  Table - PolicyDetail
+ ******************************/
+DROP TABLE PolicyDetail;
+CREATE TABLE PolicyDetail (
+	ID                  INT             NOT NULL                 	AUTO_INCREMENT, 	
+	PolicyID            INT             NOT NULL,
+	PolicyName          VARCHAR(255)    NOT NULL,
+	PolicyRuleID 	    INT    			NOT NULL,
+	PolicyRuleName      VARCHAR(255)    NOT NULL,
+	
+	PRIMARY KEY(ID)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**********************
  *  Table - Users
  **********************/
@@ -109,111 +216,7 @@ CREATE TABLE UserCompany (
 INSERT INTO UserCompany(CompanyName,ParentID,IsSystem) VALUES('__System Super',-1,TRUE)
 INSERT INTO UserCompany(CompanyName,ParentID,IsSystem) VALUES('__System Default',-1,TRUE)
 
-/******************************
- *  Table - PolicyRule
- ******************************/
-DROP TABLE PolicyRule;
-CREATE TABLE PolicyRule (
-	ID                 	INT             NOT NULL                 	AUTO_INCREMENT,
-	RuleName	        VARCHAR(255)    NOT NULL,
-	RuleValue	        VARCHAR(255)    NOT NULL,
-	ValueType	        VARCHAR(255)    NOT NULL,
-	DisplayOrder	    INT    			NOT NULL        DEFAULT 0,
-	IsSystemRule        BIT             NOT NULL 		DEFAULT True,
-)
 
-/******************************
- *  Table - Policy
- ******************************/
-DROP TABLE Policy;
-CREATE TABLE Policy (
-	ID                  INT             NOT NULL                 	AUTO_INCREMENT, 	
-	PolicyName          VARCHAR(255)    NOT NULL,
-	Description   		VARCHAR(255)    NULL,	
-	Menus               VARCHAR(255)    NOT NULL,
-	CompanyID           INT             NULL,
-	
-	PRIMARY KEY(ID)
-);
-
-/******************************
- *  Table - PolicyDetail
- ******************************/
-DROP TABLE PolicyDetail;
-CREATE TABLE PolicyDetail (
-	ID                  INT             NOT NULL                 	AUTO_INCREMENT, 	
-	PolicyID            INT             NOT NULL,
-	PolicyName          VARCHAR(255)    NOT NULL,
-	PolicyRuleID 	    INT    			NOT NULL,
-	PolicyRuleName      VARCHAR(255)    NOT NULL,
-	
-	PRIMARY KEY(ID)
-);
-
-/******************************
- *  Table - Menu
- ******************************/
-DROP TABLE Menu;
-CREATE TABLE Menu (
-	ID                  INT             NOT NULL,
-	ParentID            INT             NOT NULL,
-	MenuText            VARCHAR(255)    NOT NULL,
-	IsLeaf	            BIT             NOT NULL DEFAULT TRUE,
-	MenuNo	            VARCHAR(255)    NOT NULL,
-	URL	                VARCHAR(255)    NULL,
-	
-	PRIMARY KEY(ID)
-)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(10, 0 , 'Quotations'		, FALSE, '010' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11, 10, 'New Quote'			, TRUE, '011' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(12, 10, 'Quote List'		, TRUE, '012' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(13, 10, 'Save'				, TRUE	, '013' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14, 10, 'Save as New Quote'	, TRUE, '014' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(15, 10, 'Save as New Rev'	, TRUE, '015' ,NULL)
-
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(20, 0 , 'User Admin'		, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(21, 20, 'Company Admin'		, FALSE, '' ,NULL)
-
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(30, 0 , 'Data Control'		, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31, 30, 'Data Update'		, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(32, 30, 'Post News'			, FALSE, '' ,NULL)
-
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(40, 0 , 'User Support'		, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(41, 40, 'Info Center'		, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(42, 40, 'My Profile'		, FALSE, '' ,NULL)
-
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(50, 0 , 'CRM'				, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51, 50, 'Customer'			, FALSE, '' ,NULL)
-
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(60, 0 , 'Management Report'	, FALSE, '' ,NULL)
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61, 60, 'Deleted Quotes'	, FALSE, '' ,NULL)
-
-PKID		ParentID	Description			IsLeaf	PageUrl
-1			0         	 					0		NULL
-
-19			1         	Quotations			0		NULL
-27			19        	New Quote			1		Main/NewQuote
-20			19        	Quote List			1		Main/QuotationList
-21			19        	Save				1		javascript: saveQuote();
-22			19        	Save as New Quote	1		SaveAsNewQuote
-23			19        	Save as New Rev		1		SaveAsRev
-
-7			1         	User Admin			0		NULL
-34			7         	Company Admin		1		UserAdmin/CompanyAdmin.aspx
-
-10			1         	Data Control		0		NULL
-11			10        	Data Update			1		Main/DataUpdate
-12			10        	Post News			1		News/NewsDetail.aspx?id=0
-
-24			1         	User Support		0		NULL
-15			24        	Info Center			1		Main/InfoCenter
-16			24        	My Profile			1		UserAdmin/MyProfile.aspx
-
-25			1         	CRM					0		NULL
-26			25        	Customer			1		Customer/SearchCustomerNew.aspx
-
-29			1         	Management Report	0		NULL
-30			29        	Deleted Quotes		1		~/Quotation/QuotationListDeleted.aspx
 
 
 
