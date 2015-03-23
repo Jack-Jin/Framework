@@ -1,0 +1,12 @@
+-- CALL UserLogon('','')
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS UserLogon $$
+CREATE PROCEDURE UserLogon(IN userName VARCHAR(255), IN password VARCHAR(255))
+IS
+BEGIN
+	SELECT * FROM Users;
+END $$
+
+DELIMITER ;
