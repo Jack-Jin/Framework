@@ -13,5 +13,8 @@ public class UserCompany {
     private String telephone;
     private String fax;
     private String email;
-    private String www;
+    private String www;    
+    private int contactID;
+    private String contactName;
+    private boolean isSystem;    
 }

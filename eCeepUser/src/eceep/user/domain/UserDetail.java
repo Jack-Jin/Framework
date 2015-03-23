@@ -20,12 +20,12 @@ public class UserDetail {
 	private String www;
 	private String note;
 
-	private int defaultCurrencyID;
-	private int defaultUnitID;
-	private int defaultLanguageID;
+	private int currencyID;
+	private int unitID;
+	private int languageID;
 
-	private boolean isAdministrator;
-	private int createBy;
+	private boolean IsAdmin;
+	private int createByID;
 	private Date createDate;
 
 	private Date loginTime;
@@ -159,44 +159,44 @@ public class UserDetail {
 		this.note = note;
 	}
 
-	public int getDefaultCurrencyID() {
-		return defaultCurrencyID;
+	public int getCurrencyID() {
+		return currencyID;
 	}
 
-	public void setDefaultCurrencyID(int defaultCurrencyID) {
-		this.defaultCurrencyID = defaultCurrencyID;
+	public void setCurrencyID(int currencyID) {
+		this.currencyID = currencyID;
 	}
 
-	public int getDefaultUnitID() {
-		return defaultUnitID;
+	public int getUnitID() {
+		return unitID;
 	}
 
-	public void setDefaultUnitID(int defaultUnitID) {
-		this.defaultUnitID = defaultUnitID;
+	public void setUnitID(int unitID) {
+		this.unitID = unitID;
 	}
 
-	public int getDefaultLanguageID() {
-		return defaultLanguageID;
+	public int getLanguageID() {
+		return languageID;
 	}
 
-	public void setDefaultLanguageID(int defaultLanguageID) {
-		this.defaultLanguageID = defaultLanguageID;
+	public void setLanguageID(int languageID) {
+		this.languageID = languageID;
 	}
 
-	public boolean isAdministrator() {
-		return isAdministrator;
+	public boolean isIsAdmin() {
+		return IsAdmin;
 	}
 
-	public void setAdministrator(boolean isAdministrator) {
-		this.isAdministrator = isAdministrator;
+	public void setIsAdmin(boolean isAdmin) {
+		IsAdmin = isAdmin;
 	}
 
-	public int getCreateBy() {
-		return createBy;
+	public int getCreateByID() {
+		return createByID;
 	}
 
-	public void setCreateBy(int createBy) {
-		this.createBy = createBy;
+	public void setCreateByID(int createByID) {
+		this.createByID = createByID;
 	}
 
 	public Date getCreateDate() {
@@ -222,5 +222,4 @@ public class UserDetail {
 	public void setLogoutTime(Date logoutTime) {
 		this.logoutTime = logoutTime;
 	}
-
 }

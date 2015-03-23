@@ -11,17 +11,24 @@ SELECT * FROM UserLoginhistory;
 /*******************************
  *  Database - eCeepFramework
  *******************************/
-CREATE DATABASE eCeepFramework;
+/* 
+CREATE DATABASE eCeepFramework; 
+*/
 
-USE eCeepFramework;
+/* 
+USE eCeepFramework; 
+*/
 
-#DROP TABLE Menu;
-#DROP TABLE PolicyRule;
-#DROP TABLE Policy;
-#DROP TABLE PolicyDetail;
-#DROP TABLE UserCompany;
-#DROP TABLE Users;
-#DROP TABLE UserLoginHistory;
+/*******************************
+ *  DROP TABLEs
+ *******************************/
+DROP TABLE IF EXISTS Menu;
+DROP TABLE IF EXISTS PolicyRule;
+DROP TABLE IF EXISTS Policy;
+DROP TABLE IF EXISTS PolicyDetail;
+DROP TABLE IF EXISTS UserCompany;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS UserLoginHistory;
 
 /******************************
  *  Table - Menu
@@ -166,7 +173,7 @@ INSERT INTO UserCompany(ID,CompanyName,ParentID,IsSystem) VALUES(2,'__System Def
 CREATE TABLE Users (
     ID	                INT             NOT NULL 		AUTO_INCREMENT,
 	UserName            VARCHAR(255)    NOT NULL,
-	Password            VARCHAR(255)    NOT NULL,
+	Password            VARCHAR(255)    NOT NULL		COLLATE latin1_bin,
 
 	FirstName           VARCHAR(255)    NULL,
 	LastName            VARCHAR(255)    NULL,
@@ -195,7 +202,7 @@ CREATE TABLE Users (
 	LanguageID          INTEGER         NULL,
 	Language            VARCHAR(255)    NULL,
 
-	IsSuperAdmin        BIT             NOT NULL 		DEFAULT FALSE,
+	IsAdmin        		BIT             NOT NULL 		DEFAULT FALSE,
 	IsNeverExpire       BIT             NOT NULL 		DEFAULT FALSE,
 	ExpiryDate          DATETIME        NOT NULL 		DEFAULT NOW(),
 	CreateByID          INTEGER         NULL,
@@ -214,7 +221,7 @@ CREATE TABLE Users (
     PRIMARY KEY(ID)
 );
 INSERT INTO Users(ID,UserName,Password,FirstName,LastName,Country,CompanyID,Company,PolicyID,Policy,CurrencyID,Currency,UnitID,Unit
-                 ,LanguageID,Language,IsSuperAdmin,IsNeverExpire,CreateByID,CreateBy)
+                 ,LanguageID,Language,IsAdmin,IsNeverExpire,CreateByID,CreateBy)
 VALUES(1,'test user','peter__123','Test','User','Canada',1,'__System Super',NULL,NULL,1,'CAD',1,'SI'
       ,1,'en-CA',TRUE,TRUE,1,'test user');
 
