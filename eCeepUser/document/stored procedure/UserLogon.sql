@@ -11,6 +11,23 @@ CREATE PROCEDURE UserLogon(IN userName VARCHAR(255)
                           ,IN sessionTimeout INTEGER)
 IS
 BEGIN
+
+id,userName,firstName,lastName,title,address,address1,city,state,country,postalCode,telephone,fax,
+email,
+www,
+note,
+
+currencyID,
+unitID,
+languageID,
+
+IsAdmin,
+createByID,
+createDate,
+
+loginTime,
+logoutTime
+	
 	
 	
 	SELECT * FROM Users WHERE ;
