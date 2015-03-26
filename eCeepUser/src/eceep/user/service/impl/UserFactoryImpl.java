@@ -3,14 +3,14 @@ package eceep.user.service.impl;
 import eceep.user.service.User;
 import eceep.user.service.UserFactory;
 
-class UserFactoryImpl implements UserFactory {
+public class UserFactoryImpl implements UserFactory {
 	private static UserFactory userFactory;
 
-	public static UserFactory getInstance() {
+	public static User getInstance() {
 		if (userFactory == null)
 			userFactory = new UserFactoryImpl();
 
-		return userFactory;
+		return userFactory.getUser();
 	}
 
 	@Override

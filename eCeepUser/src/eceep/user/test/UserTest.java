@@ -7,15 +7,15 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import eceep.user.service.User;
-import eceep.user.service.impl.UserService;
+import eceep.user.service.impl.UserFactoryImpl;
 
 public class UserTest {
 	@Test
 	public void logon() throws SQLException {
-		User user = UserService.getInstance();
+		User user = UserFactoryImpl.getInstance();
 		
 		// Initial
-		boolean result =user.initial("jdbc:mysql://localhost:3306/eCeepFramework", "root", "123");
+		boolean result =user.initial("com.mysql.jdbc.Driver","jdbc:mysql://localhost:3306/eCeepFramework", "root", "123");
 		Assert.assertTrue(result);
 		
 		// Logon
@@ -23,11 +23,11 @@ public class UserTest {
 		Assert.assertTrue(result);
 
 		// Wrong username or password
-		result = user.logon("test user", "peter__12");
-		Assert.assertTrue(result);
+		result = user.logon("test user", "Peter__123");
+		Assert.assertFalse(result);
 		result = user.logon("test use", "peter__123");
-		Assert.assertTrue(result);
+		Assert.assertFalse(result);
 		result = user.logon("", "");
-		Assert.assertTrue(result);
+		Assert.assertFalse(result);
 	}
 }
