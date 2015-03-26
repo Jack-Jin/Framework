@@ -1,75 +1,50 @@
--- CALL UserLogon('','')
-
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS UserLogon $$
-CREATE PROCEDURE UserLogon(IN userName VARCHAR(255)
-                          ,IN password VARCHAR(255)
-                          ,IN sessionID INTEGER
-                          ,IN ip VARCHAR(255)
-                          ,IN osInfo VARCHAR(255)
-                          ,IN sessionTimeout INTEGER)
-IS
+CREATE PROCEDURE UserLogon(IN pUserName VARCHAR(255)
+                          ,IN pPassword VARCHAR(255)
+                          ,IN pSessionID INTEGER
+                          ,IN pIp VARCHAR(255)
+                          ,IN pOsInfo VARCHAR(255)
+                          ,IN pSessionTimeout INTEGER
+                          ,OUT pIsLogon BIT)
 BEGIN
+	DECLARE UserID INTEGER;
+	
+	SET pIsLogon=FALSE;
+	
+	SELECT ID INTO UserID
+	FROM Users 
+	WHERE IsDeleted=FALSE 
+	  AND IsAccountOnHold=FALSE 
+	  AND (IsNeverExpire=TRUE OR (IsNeverExpire=FALSE AND ExpiryDate>=NOW()))
+	  AND (UserName=pUserName AND BINARY Password=pPassword);
 
-id,userName,firstName,lastName,title,address,address1,city,state,country,postalCode,telephone,fax,
-email,
-www,
-note,
+	IF (NOT UserID IS NULL) AND UserID>0 THEN
+	    # Update login time
+	    UPDATE Users SET LoginTime=NOW() WHERE ID=UserID;
+		
+	    # Remember login time in history
+	    INSERT UserLoginHistory (UsersID,UsersName,LoginTime,ExpireTime,IP,OSInfo,SessionID) 
+	    VALUES(UserID,pUserName,NOW(),DATE_ADD(NOW(), INTERVAL pSessionTimeout minute),pIp,pOsInfo,pSessionID);	    
 
-currencyID,
-unitID,
-languageID,
+	    SET pIsLogon=TRUE;
+	END IF;
+    
+    # Return
+	SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode,Telephone,Fax,Email,WWW,Note
+	      ,CurrencyID,UnitID,LanguageID
+	      ,IsAdmin,CreateByID,CreateDate
+	      ,LoginTime,LogoutTime
+	FROM Users
+	WHERE ID=UserID;
 
-IsAdmin,
-createByID,
-createDate,
-
-loginTime,
-logoutTime
-	
-	
-	
-	SELECT * FROM Users WHERE ;
-	
-	
-	
 END $$
 
 DELIMITER ;
 
 
 /*
-    -- Check user account & password.
-    DECLARE @userid int
-    DECLARE @UserName nvarchar(50)
-
-    SELECT @userid=UserID, @UserName=LogonID
-    FROM Users
-    WHERE LogonID=@logonid AND (CAST(UserPWD AS varbinary)=CAST(@pwd AS varbinary)) AND (NeverExpire=1 OR (NeverExpire<>1 and DATEDIFF(day,getDate(),ExpiryDate)>=0))
-
-    IF isnull(@userid,0)=0  BEGIN
-        Raiserror('Invalid password',18,1)
-        RETURN -2
-    END ELSE BEGIN
-        -- Check if user account is hold on.
-        IF EXISTS(select * from Users where LogonID=@logonid and (CAST(UserPWD AS varbinary)=CAST(@pwd AS varbinary)) and IsAccountOnHold=1) BEGIN
-            Raiserror('User account is disabled',18,1)
-            RETURN -1
-        END
-    END
-
-    --* Record user logon information *
-    --**************************************************************************************
-    -- Update login time
-    UPDATE Users SET LoginTime=getdate() WHERE UserID=@userid
-
-    -- Remember login time in history
-    INSERT UserLoginHistory (UserID,LoginTime,ExpireTime,UserName,SessionID,IP,OSInfo) VALUES(@userid, getdate(), dateadd(minute,@sessionTimeout,getdate()),@UserName, @sessionID, @ip, @osInfo)
-    
-    --* Return *  
-    --**************************************************************************************  
-    -- 1. User basic information
-    SELECT * FROM vUsers WHERE UserID=@userid
- 
- */
+CALL UserLogon('test user','peter__123','1234','1.1.1.1','win7',120,@IsLogon);
+SELECT @IsLogon;
+*/

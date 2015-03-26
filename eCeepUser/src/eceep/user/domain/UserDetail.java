@@ -24,7 +24,7 @@ public class UserDetail {
 	private int unitID;
 	private int languageID;
 
-	private boolean IsAdmin;
+	private boolean isAdmin;
 	private int createByID;
 	private Date createDate;
 
@@ -183,12 +183,12 @@ public class UserDetail {
 		this.languageID = languageID;
 	}
 
-	public boolean isIsAdmin() {
-		return IsAdmin;
+	public boolean isAdmin() {
+		return isAdmin;
 	}
 
-	public void setIsAdmin(boolean isAdmin) {
-		IsAdmin = isAdmin;
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
 	public int getCreateByID() {
