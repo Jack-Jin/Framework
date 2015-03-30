@@ -1,6 +1,6 @@
 package eceep.user.domain;
 
-public class ApplicationRule<T> {
+public class UserPolicyRule<T> {
 	private int id;
 	private String key;
 	private T value;

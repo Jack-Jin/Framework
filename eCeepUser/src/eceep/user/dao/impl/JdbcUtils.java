@@ -1,5 +1,6 @@
 package eceep.user.dao.impl;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,6 +90,28 @@ public class JdbcUtils {
 				}
 			}
 		}
+	}
+
+	public static <T> T ResultSet2Object(ResultSet rs, Class<T> clazz) throws InstantiationException,
+			IllegalAccessException {
+		T object = clazz.newInstance();
+
+		Method[] methods = clazz.getDeclaredMethods();
+
+		for (Method md : methods) {
+			// if "set" method
+			if (md.getName().substring(0, 3).equalsIgnoreCase("set")) {
+				String colName = md.getName().substring(3);
+
+				// If column name not match, skip.
+				try {
+					md.invoke(object, rs.getObject(colName));
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		return object;
 	}
 
 	private String jdbcDriver = "com.mysql.jdbc.Driver";

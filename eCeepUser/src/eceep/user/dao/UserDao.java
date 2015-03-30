@@ -8,7 +8,7 @@ public interface UserDao {
 	boolean initial(String jdbcDriver, String url, String userName,
 			String password);
 
-	UserDetail logon(String userName, String password, String sessionID,
+	Object[] logon(String userName, String password, String sessionID,
 			String ip, String osInfo, int sessionTimeoutInMin)
 			throws SQLException;
 }
