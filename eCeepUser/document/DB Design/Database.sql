@@ -122,7 +122,7 @@ CREATE TABLE PolicyDetail (
 	PRIMARY KEY(ID)
 );
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',20,'Access All Customer','True');
-INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',21,'Show All Quotes','True');
+INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',21,'Show All Quotes','False');
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',101,'ModelList','1');
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',102,'ModelList','2');
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',103,'ModelList','3');
@@ -166,7 +166,7 @@ CREATE TABLE UserCompany (
 	PRIMARY KEY(ID)
 );
 INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(1,'__System Super',0,1,'System Super Policy',TRUE);
-#INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(2,'__System Default',0,2,'System Default Policy',TRUE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(2,'__System Default',0,2,'System Default Policy',TRUE);
 
 /**********************
  *  Table - Users

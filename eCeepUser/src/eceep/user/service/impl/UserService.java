@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import eceep.user.dao.UserDao;
 import eceep.user.dao.impl.UserDaoFactoryMySql;
+import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
@@ -15,6 +16,7 @@ public class UserService implements User {
 	private UserDetail userDetail;
 	private UserCompany userCompany;
 	private UserPolicy userPolicy;
+	private UserMenu userMenu;
 
 	public UserService() {
 		this.userDao = UserDaoFactoryMySql.getInstance();
@@ -33,6 +35,8 @@ public class UserService implements User {
 
 		this.userDetail = (UserDetail) result[0];
 		this.userCompany = (UserCompany) result[1];
+		this.userPolicy = (UserPolicy) result[2];
+		this.userMenu = (UserMenu) result[3];
 
 		return (this.userDetail != null) && (this.userCompany != null);
 	}

@@ -117,7 +117,7 @@ public class UserDaoService implements UserDao {
 						userMenu = resultSet2Menu(rs);
 					}
 
-					// 5.
+					// 5. Get Policy Detail.
 					hadResults = cStmt.getMoreResults();
 					if (userPolicy != null && hadResults) {
 						rs = cStmt.getResultSet();
@@ -131,7 +131,7 @@ public class UserDaoService implements UserDao {
 			JdbcUtils.free(rs, cStmt, conn);
 		}
 
-		Object[] result = new Object[5];
+		Object[] result = new Object[4];
 		result[0] = userDetail;
 		result[1] = userCompany;
 		result[2] = userPolicy;

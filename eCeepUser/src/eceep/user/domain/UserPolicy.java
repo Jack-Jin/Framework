@@ -2,6 +2,8 @@ package eceep.user.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class UserPolicy {
 	private int id;
@@ -12,10 +14,41 @@ public class UserPolicy {
 	private List<UserPolicyRule> rules;
 
 	public List<UserPolicyRule> getRules() {
-		if(rules==null)
+		if (rules == null)
 			rules = new ArrayList<UserPolicyRule>();
 
 		return rules;
+	}
+
+	/**
+	 * @param Clazz
+	 *            , "Check": Boolean; "Value": String; "Option": List<String>
+	 * @param ruleName
+	 * @return
+	 */
+	public <T> T getRuleValue(Class<T> Clazz, String ruleName) {
+		List<UserPolicyRule<T>> tmpRules = this.rules.stream().filter(u -> u.getKey().equals(ruleName))
+				.collect(Collectors.toList());
+		UserPolicyRule<T> tmpRule = tmpRules.get(0);
+
+		T value = tmpRule.getValue();
+
+		if (value.getClass() == Clazz)
+			return value;
+
+		return null;
+	}
+
+	public Boolean getRuleValueBoolean(String ruleName) {
+		return this.getRuleValue(Boolean.class, ruleName);
+	}
+
+	public String getRuleValueString(String ruleName) {
+		return this.getRuleValue(String.class, ruleName);
+	}
+
+	public List<String> getRuleValueList(String ruleName) {
+		return this.getRuleValue(List.class, ruleName);
 	}
 
 	public int getId() {
