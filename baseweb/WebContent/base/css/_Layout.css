@@ -1,0 +1,59 @@
+﻿.page_header,.page_body,.page_footer,.page_body_left,.page_body_right,.page_body_right_top,.page_body_right_content 
+{
+    border: 0px; 
+    margin: 0px; 
+    padding: 0px; 
+}
+
+/*****************************************
+******************************************
+    Page
+******************************************
+******************************************/
+.page { width: 1100px; margin-left: auto; margin-right: auto; background-color: #fdfdfd; }
+
+/*****************************************
+******************************************
+    Page Header
+******************************************
+******************************************/
+.page_header  
+{
+    width: 100%; 
+    height: 100px; 
+    
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #7C8D89), color-stop(1, #1D2424));
+	background: -moz-linear-gradient(top, #7C8D89 5%, #1D2424 100%);
+	background: -webkit-linear-gradient(top, #7C8D89 5%, #1D2424 100%);
+	background: -o-linear-gradient(top, #7C8D89 5%, #1D2424 100%);
+	background: -ms-linear-gradient(top, #7C8D89 5%, #1D2424 100%);
+	background: linear-gradient(to bottom, #7C8D89 5%, #1D2424 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7C8D89', endColorstr='#1D2424',GradientType=0);
+	background-color: #7C8D89;
+}
+
+/*****************************************
+******************************************
+    Page Body
+******************************************
+******************************************/
+.page_body { overflow: hidden; margin-top: 5px; padding-bottom: 600em; margin-bottom: -600em; }
+
+/* Page Body Left */
+.page_body_left { width: 200px; float: left; padding-bottom: 600em; margin-bottom: -600em; }       /*  */
+
+/* Page Body Right */
+.page_body_right { width: 900px; height: 100%; float: left; padding-bottom: 600em; margin-bottom: -600em; }                /*  */
+.page_body_right_top { width: 98%; background-color: #eee; }
+.page_body_right_content { width: 100%; margin-top: 20px; overflow-x: hidden; overflow-y: auto; }
+
+/*****************************************
+******************************************
+    Page Footer
+******************************************
+******************************************/
+.page_footer { height: 30px; line-height: 30px; background-color: #ffe; margin-top: 30px; }
+
+.page_footer_left {  float: left; width: 200px; }
+.page_footer_right {  float: left; width: 850px; color: #ddd; font-style: oblique; font-size: 0.65em; text-align: right; }
+

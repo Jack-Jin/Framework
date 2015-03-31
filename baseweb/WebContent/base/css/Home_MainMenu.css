@@ -1,0 +1,145 @@
+﻿/***************************************************
+ *                                                 *
+ *                ArrowGreen Menu                  *
+ *                                                 *
+ ***************************************************/
+.arrowGreenMenu
+{
+    width: 180px;                            /*width of menu*/
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #e1efFF;
+    
+    padding-bottom: 10px;
+    
+    border-radius: 0px 10px 3px 3px;
+    -webkit-border-radius: 0px 10px 3px 3px;
+    -moz-border-radius: 0px 10px 3px 3px;
+    
+    box-shadow: 0 0 1px 1px #dae1f1;
+    -webkit-box-shadow: 0 0 1px 1px #dae1f1;
+    -moz-box-shadow: 0 0 1px 1px #dae1f1;
+}
+/* Menu - Title */
+.arrowGreenMenu>div 
+{
+    /*font: bold 12px Verdana, Arial, Helvetica, sans-serif; */
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    font-style: Arial;
+    font-weight: bold;
+    font-size: 0.95em;
+    color: #eee;
+    text-shadow: 0px 0px 1px rgba(0,0,0,.3);
+    
+    border-radius: 0px 10px 0px 0px;
+    -webkit-border-radius: 0px 10px 0px 0px;
+    -moz-border-radius: 0px 10px 0px 0px;
+    
+	-moz-box-shadow: inset 0px 1px 3px 0px rgba(0,0,0,.1);
+	-webkit-box-shadow: inset 0px 1px 3px 0px rgba(0,0,0,.1);
+	box-shadow: inset 0px 1px 3px 0px rgba(0,0,0,.1);
+	
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #666), color-stop(1, #333));
+	background: -moz-linear-gradient(top, #666 5%, #333 100%);
+	background: -webkit-linear-gradient(top, #666 5%, #333 100%);
+	background: -o-linear-gradient(top, #666 5%, #333 100%);
+	background: -ms-linear-gradient(top, #666 5%, #333 100%);
+	background: linear-gradient(to bottom, #666 5%, #333 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666', endColorstr='#333',GradientType=0);
+	background-color: #666;
+    /* background-color: #363636; */
+
+    display: block;
+    height: 15px;
+    line-height: 15px;
+    padding: 2px 0 2px 10px;
+    margin-top: 5px;
+}
+/* Menu - Leaf */
+.arrowGreenMenu ul { list-style-type: none; margin: 0; padding: 0; }
+/* .arrowGreenMenu li { height: 18px; line-height: 18px; display: block; } */
+.arrowGreenMenu li a, .arrowGreenMenu li span
+{
+    margin: 3px 20px 3px 20px; 
+    padding: 2px 5px 2px 5px;
+    
+    display: block;
+    height: 15px;                       
+    line-height: 15px;
+    
+    text-decoration: none;
+    font-style: verdana;
+    font-weight: bold;
+    font-size: 0.92em;
+}
+.arrowGreenMenu li span { color: #aaa; }
+.arrowGreenMenu li a, .arrowGreenMenu li a:link, .arrowGreenMenu li a:visited { color: #444; }
+.arrowGreenMenu li a:hover, .arrowGreenMenu li a:active  
+{
+    color: #ff3;
+    
+    border-radius: 0px 10px 3px 0px;
+    -webkit-border-radius: 3px 10px 3px 3px;
+    -moz-border-radius: 3px 10px 3px 3px;
+
+	background: -ms-linear-gradient(top, #999 5%, #777 100%);
+	background: linear-gradient(to bottom, #bbb 5%, #999 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bbb), color-stop(1, #999));
+	background: -moz-linear-gradient(top, #bbb 5%, #999 100%);
+	background: -webkit-linear-gradient(top, #bbb 5%, #999 100%);
+	background: -o-linear-gradient(top, #bbb 5%, #999 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bbb', endColorstr='#999',GradientType=0);
+	background-color: #999;
+
+	-moz-box-shadow: inset 0px 1px 3px 0px #aaa;
+	-webkit-box-shadow: inset 0px 1px 3px 0px #aaa;
+	box-shadow: inset 0px 1px 3px 0px #aaa;
+} 
+
+/******************************************************************************/
+
+
+
+/*
+.arrowGreenMenu
+{
+    width: 180px;                            width of menu
+    border-style: solid solid none solid;
+    border-color: #94AA74;
+    border-width: 1px;
+}
+*/
+
+/* Menu - Title */
+/*
+.arrowGreenMenu div 
+{
+    font: bold 12px Verdana, Arial, Helvetica, sans-serif;
+    color: #5E7830;
+    display: block;
+    background: transparent url(Home_MainMenu/arrowgreen.png) 100% 0;
+    height: 18px;                            Set to height of bg image- padding within link (ie: 32px - 4px - 4px)
+    padding: 2px 0 2px 10px;
+    line-height: 18px;                       Set line-height of bg image- padding within link (ie: 32px - 4px - 4px)
+}
+*/
+
+/* Menu - Leaf */
+/*
+.arrowGreenMenu ul { list-style-type: none; margin: 0; padding: 0; }
+.arrowGreenMenu li a
+{
+    font: 12px Verdana, Arial, Helvetica, sans-serif;
+    display: block;
+    height: 18px;                       
+    padding: 2px 0 2px 20px;
+    line-height: 18px;                  
+    text-decoration: none;
+}
+.arrowGreenMenu li a:link, .arrowGreenMenu li a:visited { color: #5E7830; }
+.arrowGreenMenu li a:hover, .arrowGreenMenu li a:active { color: #26370A; }
+
+.arrowGreenMenuItem  { background: transparent url(Home_MainMenu/arrowgreen.png) 100% 0; }
+.arrowGreenMenuFocus { background-position: 100% -22px; }
+.arrowGreenMenuSelected { background-position: 100% -44px; }
+*/

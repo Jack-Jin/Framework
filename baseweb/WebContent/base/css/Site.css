@@ -1,0 +1,102 @@
+﻿/*****************************************
+******************************************
+    html
+******************************************
+******************************************/
+html
+{
+    margin: 0;
+    padding: 0;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.40, #fafafa), color-stop(1, #777));
+	background: -moz-linear-gradient(top, #fafafa 40%, #777 100%);
+	background: -webkit-linear-gradient(top, #fafafa 40%, #777 100%);
+	background: -o-linear-gradient(top, #fafafa 40%, #777 100%);
+	background: -ms-linear-gradient(top, #fafafa 40%, #777 100%);
+	background: linear-gradient(to bottom, #fafafa 40%, #777 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#777',GradientType=0);
+	background-color: #777;
+}
+
+/*****************************************
+******************************************
+    body
+******************************************
+******************************************/
+body
+{
+    font-family: Verdana, "Segoe UI" ,Helvetica,Sans-Serif;
+    font-size: .75em;
+    color: #222;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+/*****************************************
+******************************************
+    Page Header
+******************************************
+******************************************/
+.page_header>div:first-child  
+{
+    width: 100%; 
+    height: 40px; 
+    line-height: 40px;
+    padding-left: 40px; 
+    vertical-align: middle; 
+    
+    color: #fefefe; 
+    font-style: oblique;
+    font-size: 1.5em; 
+    font-weight: bold;
+    text-shadow: 1px 1px 1px 0px #FF4400;
+}
+
+.page_header>div+div
+{
+    width: 1050px;
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #DCF2E7;
+    
+    box-shadow: inset 0 0 1px 1px gray;
+    -webkit-box-shadow: 0 0 1px 1px #999 inset;
+    -moz-box-shadow: 0 0 1px 1px #999 inset;
+    
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-radius-topleft: 3px;
+    -webkit-border-radius-topright: 3px;
+}
+
+/*****************************************
+******************************************
+    Page Body
+******************************************
+******************************************/
+.page_body_right input[type="text"],            /* Font Size */
+.page_body_right input[type="submit"], 
+.page_body_right select, 
+.page_body_right table
+{
+    font-family: Verdana, "Segoe UI" ,Helvetica,Sans-Serif;
+    font-size: 0.95em;
+}
+
+.milestone-stylesheet { margin: 0px; padding: 4px 4px 4px 4px; }            /* Milestone */
+.milestone-stylesheet li { display: inline; font-size: 0.95em; }
+.milestone-stylesheet a, .milestone-stylesheet a:link, .milestone-stylesheet a:visited, .milestone-stylesheet a:hover, .milestone-stylesheet a:active { color: #22F; }
+.milestone-current-stylesheet, .milestone-current-stylesheet a { font-weight: bold; }
+
+.MenuLogout { width: 180px; margin-left: auto; margin-right: auto; height: 18px; }          /* Logout */
+.MenuLogout a, .MenuLogout a:link, .MenuLogout a:visited, .MenuLogout a:active { text-decoration: none; color: green; font-weight: bold; font-size: 0.97em; font-family: Arial; }
+.MenuLogout a:hover { color: red; }
+
+.page_body_right .PageMessage { font-family: Verdana, "Segoe UI" ,Helvetica,Sans-Serif; font-size: 0.95em; }        /* Page Message */
+.PageMessage { color: Red; }
+
+.page_body_right input[type="text"] { height: 12px; }       /* Text box */
