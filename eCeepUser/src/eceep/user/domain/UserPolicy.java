@@ -26,15 +26,13 @@ public class UserPolicy {
 	 * @param ruleName
 	 * @return
 	 */
-	public <T> T getRuleValue(Class<T> Clazz, String ruleName) {
+	private <T> T getRuleValue(Class<T> Clazz, String ruleName) {
 		List<UserPolicyRule<T>> tmpRules = this.rules.stream().filter(u -> u.getKey().equals(ruleName))
 				.collect(Collectors.toList());
 		UserPolicyRule<T> tmpRule = tmpRules.get(0);
 
-		T value = tmpRule.getValue();
-
-		if (value.getClass() == Clazz)
-			return value;
+		if (tmpRule.getType().equals(Clazz))
+			return tmpRule.getValue();
 
 		return null;
 	}
@@ -47,7 +45,8 @@ public class UserPolicy {
 		return this.getRuleValue(String.class, ruleName);
 	}
 
-	public List<String> getRuleValueList(String ruleName) {
+	@SuppressWarnings("unchecked")
+	public List<String> getRuleValueList(String ruleName) {		
 		return this.getRuleValue(List.class, ruleName);
 	}
 

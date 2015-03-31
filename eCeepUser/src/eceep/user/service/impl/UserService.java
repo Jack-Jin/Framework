@@ -55,4 +55,9 @@ public class UserService implements User {
 	public UserPolicy getUserPolicy() {
 		return this.userPolicy;
 	}
+
+	@Override
+	public UserMenu getUserMenu() {
+		return this.userMenu;
+	}
 }

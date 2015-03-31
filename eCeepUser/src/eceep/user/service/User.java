@@ -2,6 +2,7 @@ package eceep.user.service;
 
 import java.sql.SQLException;
 
+import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
@@ -16,4 +17,6 @@ public interface User {
 	UserCompany getUserCompany();
 
 	UserPolicy getUserPolicy();
+	
+	UserMenu getUserMenu();
 }

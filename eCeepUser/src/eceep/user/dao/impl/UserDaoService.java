@@ -154,7 +154,7 @@ public class UserDaoService implements UserDao {
 				// Rule Name
 				ruleName = rs.getString("PolicyRuleName");
 
-				UserPolicyRule<String> policyRule = new UserPolicyRule<String>();
+				UserPolicyRule<String> policyRule = new UserPolicyRule<String>(String.class);
 				rules.add(policyRule);
 				// ID, key
 				policyRule.setId(ruleID);
@@ -165,7 +165,7 @@ public class UserDaoService implements UserDao {
 				// Rule Name
 				ruleName = rs.getString("PolicyRuleName");
 
-				UserPolicyRule<Boolean> policyRule = new UserPolicyRule<Boolean>();
+				UserPolicyRule<Boolean> policyRule = new UserPolicyRule<Boolean>(Boolean.class);
 				rules.add(policyRule);
 				// ID, key
 				policyRule.setId(ruleID);
@@ -177,7 +177,7 @@ public class UserDaoService implements UserDao {
 					// Rule Name
 					ruleName = rs.getString("PolicyRuleName");
 
-					UserPolicyRule<List<String>> policyRule = new UserPolicyRule<List<String>>();
+					UserPolicyRule<List> policyRule = new UserPolicyRule<List>(List.class);
 					rules.add(policyRule);
 					// ID, Key
 					policyRule.setId(ruleID);
