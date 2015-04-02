@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class Main
+ * Servlet implementation class Default
  */
-@WebServlet("/Main")
-public class Main extends HttpServlet {
+@WebServlet("/Default")
+public class Default extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Main() {
+    public Default() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -26,8 +26,14 @@ public class Main extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Page header
 		request.getRequestDispatcher("/base/masterHeader.jsp").include(request, response);
 		
+		// Page body
+		request.getRequestDispatcher("/WEB-INF/main.jsp").include(request, response);
+		
+		//Page footer
+		request.getRequestDispatcher("/base/masterFooter.jsp").include(request, response);		
 	}
 
 	/**
@@ -36,5 +42,4 @@ public class Main extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		this.doGet(request, response);
 	}
-
 }
