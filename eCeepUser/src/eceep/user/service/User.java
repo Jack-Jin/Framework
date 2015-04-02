@@ -12,6 +12,8 @@ public interface User {
 
 	boolean logon(String userName, String password) throws SQLException;
 
+	boolean isLogin();
+	
 	UserDetail getUserDetail();
 
 	UserCompany getUserCompany();

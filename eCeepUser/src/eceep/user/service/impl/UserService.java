@@ -18,10 +18,14 @@ public class UserService implements User {
 	private UserPolicy userPolicy;
 	private UserMenu userMenu;
 
+	private boolean isLogin;
+
 	public UserService() {
+		this.isLogin = false;
+
 		this.userDao = UserDaoFactoryMySql.getInstance();
 	}
-
+	
 	@Override
 	public boolean initial(String jdbcDriver, String url, String userName, String password) {
 		boolean result = this.userDao.initial(jdbcDriver, url, userName, password);
@@ -31,6 +35,8 @@ public class UserService implements User {
 
 	@Override
 	public boolean logon(String userName, String password) throws SQLException {
+		this.isLogin = false;
+
 		Object[] result = userDao.logon(userName, password, "321321321", "2.2.2.2", "Win7 IE", 120);
 
 		this.userDetail = (UserDetail) result[0];
@@ -38,9 +44,16 @@ public class UserService implements User {
 		this.userPolicy = (UserPolicy) result[2];
 		this.userMenu = (UserMenu) result[3];
 
-		return (this.userDetail != null) && (this.userCompany != null);
+		this.isLogin = (this.userDetail != null && this.userCompany != null);
+
+		return this.isLogin;
 	}
 
+	@Override
+	public boolean isLogin() {
+		return isLogin;
+	}
+	
 	@Override
 	public UserDetail getUserDetail() {
 		return this.userDetail;

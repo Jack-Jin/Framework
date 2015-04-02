@@ -3,6 +3,7 @@
 	<name>baseweb</name>
 	<comment></comment>
 	<projects>
+		<project>eCeepUser</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

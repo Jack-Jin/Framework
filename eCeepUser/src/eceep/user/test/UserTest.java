@@ -59,7 +59,7 @@ public class UserTest {
 		sValue = userPolicy.getRuleValueString("Factor1");
 		Assert.assertEquals(sValue, "2.88");
 
-		List<String> ruleValueList = userPolicy.getRuleValueList("ModelList");
-		ruleValueList.forEach(System.out::println);
+		//List<String> ruleValueList = userPolicy.getRuleValueList("ModelList");
+		//ruleValueList.forEach(System.out::println);
 	}
 }

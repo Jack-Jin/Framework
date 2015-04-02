@@ -27,9 +27,16 @@ public class UserPolicy {
 	 * @return
 	 */
 	private <T> T getRuleValue(Class<T> Clazz, String ruleName) {
-		List<UserPolicyRule<T>> tmpRules = this.rules.stream().filter(u -> u.getKey().equals(ruleName))
-				.collect(Collectors.toList());
-		UserPolicyRule<T> tmpRule = tmpRules.get(0);
+		//List<UserPolicyRule<T>> tmpRules = this.rules.stream().filter(u -> u.getKey().equals(ruleName)).collect(Collectors.toList());
+		//UserPolicyRule<T> tmpRule = tmpRules.get(0);
+		
+		UserPolicyRule<T> tmpRule = null;
+		for(UserPolicyRule<T> item : this.rules)		{
+			if(item.getKey().equalsIgnoreCase(ruleName)) {
+				tmpRule = item;
+				break;
+			}
+		}		
 
 		if (tmpRule.getType().equals(Clazz))
 			return tmpRule.getValue();
