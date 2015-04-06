@@ -54,6 +54,8 @@
 
 .logon li span { width: 80px; display: inline-block; color: #111; padding: 10px 0; }
 
-.logon li>input { width: 120px; height: 12px; color: #222; font-size: 0.95em; }
+.logon li>input { width: 120px; color: #222; font-size: 0.95em; }
 
 .logon .CusButton { margin-top: 5px; }
+
+.LogonMessage { color: red; margin-top: 10px; }

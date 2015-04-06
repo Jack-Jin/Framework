@@ -2,11 +2,15 @@ package eceep.user.test;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eceep.user.domain.UserMenu;
+import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
 import eceep.user.service.User;
 import eceep.user.service.impl.UserFactoryImpl;
@@ -59,7 +63,18 @@ public class UserTest {
 		sValue = userPolicy.getRuleValueString("Factor1");
 		Assert.assertEquals(sValue, "2.88");
 
-		//List<String> ruleValueList = userPolicy.getRuleValueList("ModelList");
-		//ruleValueList.forEach(System.out::println);
+		List<String> ruleValueList = userPolicy.getRuleValueList("ModelList");
+		ruleValueList.forEach(System.out::println);
+	}
+	
+	@Test
+	public void TestMenu(){
+		Map<String, List<UserMenuLeaf>> menus = user.getUserMenu().getMenus();
+		
+		for(Entry<String, List<UserMenuLeaf>> entry : menus.entrySet()){
+			System.out.println(entry.getKey() + "---------------------------------");
+			List<UserMenuLeaf> value = entry.getValue();
+			value.forEach(A -> System.out.println(A.getMenuText() + ", [" + A.getPageUrl() + "]"));
+		}
 	}
 }

@@ -1,8 +1,10 @@
-package eceep.web.ui;
+package eceep.web.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,17 +38,29 @@ public class Default extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userName = request.getParameter("username");
 		String pwd = request.getParameter("password");
+		String language = request.getParameter("language");
 
 		// Get session
 		HttpSession session = request.getSession(true);
-		
-		// New local context(only at the first time.), get local web context object
+
+		// New local context(only at the first time.), get local web context
+		// object
 		WebContext webContext = WebContext.newContext(session);
-		
+
+		// Set Language
+		Locale local = request.getLocale();
+		for (Locale loc : Locale.getAvailableLocales()) {
+			if ((loc.getLanguage() + "_" + loc.getCountry()).equalsIgnoreCase(language)) {
+				local = loc;
+				break;
+			}
+		}
+		webContext.setLocale(local);
+
 		// Get user instance.
 		InputStream resourceAsStream = this.getServletContext().getResourceAsStream("/WEB-INF/jdbc.properties");
 		webContext.setConnWebBase(resourceAsStream);
-		
+
 		User user = webContext.getUser();
 		try {
 			user.logon(userName, pwd);
@@ -55,18 +69,17 @@ public class Default extends HttpServlet {
 		}
 
 		if (!user.isLogin()) {
-			response.sendRedirect("index.html");
+			request.setAttribute("logon_message", "Login failed.");
+			// request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request,
+			// response);
+
+			String logonMsg = URLEncoder.encode("Login failed.", java.nio.charset.StandardCharsets.UTF_8.toString());
+			response.sendRedirect("index.html?language=" + language + "&logonmessage=" + logonMsg);
 			return;
 		}
 
-		// Page header
-		request.getRequestDispatcher("/base/masterHeader.jsp").include(request, response);
-
 		// Page body
 		request.getRequestDispatcher("/WEB-INF/main.jsp").include(request, response);
-
-		// Page footer
-		request.getRequestDispatcher("/base/masterFooter.jsp").include(request, response);
 	}
 
 	/**

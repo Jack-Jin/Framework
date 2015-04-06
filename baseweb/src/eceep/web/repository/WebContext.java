@@ -2,6 +2,7 @@ package eceep.web.repository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.servlet.http.HttpSession;
@@ -26,10 +27,15 @@ public class WebContext {
 		return (WebContext) session.getAttribute("eCeepWebFramework_Context");
 	}
 
+	/* Fields */
+	/* --------------------------- */
 	private JdbcConnectionStr connWebBase;
+	private Locale locale;
 
 	private User user;
 
+	/* Methods */
+	/* --------------------------- */
 	public User getUser() {
 		if (user == null) {
 			// New instance of user.
@@ -72,5 +78,11 @@ public class WebContext {
 		}		
 	}
 	
+	public void setLocale(Locale locale){
+		this.locale = locale;
+	}
 	
+	public Locale getLocale() {
+		return this.locale;
+	}
 }
