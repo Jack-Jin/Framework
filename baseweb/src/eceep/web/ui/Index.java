@@ -31,7 +31,7 @@ public class Index extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Clear session.
 		request.getSession().invalidate();
-		
+
 		// Get login message.
 		String logonMsg = request.getParameter("logonmessage");
 
@@ -39,9 +39,12 @@ public class Index extends HttpServlet {
 		request.setAttribute("logon_message", logonMsg);
 
 		//
-		String ll = request.getParameter("language");
-		String language = (ll == null) ? Locale.CANADA.getLanguage() + "_" + Locale.CANADA.getCountry() : ll;
-		request.setAttribute("eCeepLanguage", language);
+		String changeLanguage = request.getParameter("language");
+		if (changeLanguage == null) {
+			changeLanguage = request.getLocale().getLanguage() + "_"+request.getLocale().getCountry();
+		}
+
+		request.setAttribute("eCeepLanguage", changeLanguage);
 
 		// Load the index page.
 		request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);

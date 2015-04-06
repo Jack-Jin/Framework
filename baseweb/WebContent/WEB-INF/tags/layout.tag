@@ -20,7 +20,7 @@
         <div class="page_body">
             <div class="page_body_left">
                 <div class="MenuLogout" >
-                    <a id="btnLogout">Log Out</a>
+                    <a id="btnLogout" href="${ pageContext.request.contextPath }/index.html">Log Out</a>
                 </div>
                 <div class="page_left_menu">
                 	<jsp:include page="/WEB-INF/menu/syswebmenu.jsp" />
