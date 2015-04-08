@@ -1,5 +1,6 @@
 #DELIMITER //
 
+/*
 SELECT * FROM Menu ORDER BY MenuNo;
 SELECT * FROM PolicyRule ORDER BY DisplayOrder;
 SELECT * FROM Policy;
@@ -7,6 +8,7 @@ SELECT * FROM PolicyDetail ORDER BY PolicyID,PolicyRuleID;
 SELECT * FROM UserCompany;
 SELECT * FROM Users;
 SELECT * FROM UserLoginhistory;
+*/
 
 /*******************************
  *  Database - eCeepFramework
@@ -52,7 +54,7 @@ INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14,10,'Save as N
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(15,10,'Save as New Rev', 	TRUE, '015','SaveAsRev');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(20,0, 'User Admin', 		FALSE,'020',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(21,20,'Company Admin', 		TRUE,'021','UserAdmin/CompanyAdmin.aspx');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(21,20,'Company Admin', 		TRUE,'021','UserCompanyManagement');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(30,0, 'Data Control', 		FALSE,'030',NULL);
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31,30,'Data Update',		TRUE,'031','Main/DataUpdate');
@@ -242,3 +244,40 @@ CREATE TABLE UserLoginHistory (
 	
 	PRIMARY KEY(ID)
 );
+
+/******************************
+ *  Table - UserLoginHistory
+ ******************************/
+/*
+  __System Super(1)
+  __System Default(2)
+  Test1(3) --------------------- Test1-1(4)
+                     +---------- Test1-2(5)
+                     +---------- Test1-3(6)
+  Test2(7) --------------------- Test2-1(8) ---------- Test2-1-1(9)
+                                                 +---- Test2-1-2(10)
+                     +-----------Test2-2(11)---------- Test2-2-1(12)
+                                                 +---- Test2-2-2(13)
+                                                 +---- Test2-2-3(14)
+  Test3(15)
+
+ 
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(3 ,'Test1'    ,0 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(4 ,'Test1-1'  ,3 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(5 ,'Test1-2'  ,3 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(6 ,'Test1-3'  ,3 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(7 ,'Test2'    ,0 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(8 ,'Test2-1'  ,7 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(9 ,'Test2-1-1',8 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(10,'Test2-1-2',8 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(11,'Test2-2'  ,7 ,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(12,'Test2-2-1',11,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(13,'Test2-2-2',11,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(14,'Test2-2-3',11,2,'System Default Policy',FALSE);
+INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES(15,'Test3'    ,0 ,2,'System Default Policy',FALSE);
+
+#DELETE FROM UserCompany WHERE ID IN (3,4,5,6,7,8,9,10,11,12,13,14,15);
+
+SELECT ID,CompanyName,ParentID,PolicyID,Policy,IsSystem FROM UserCompany;
+
+*/

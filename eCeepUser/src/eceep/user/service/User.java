@@ -2,6 +2,7 @@ package eceep.user.service;
 
 import java.sql.SQLException;
 
+import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
@@ -21,4 +22,8 @@ public interface User {
 	UserPolicy getUserPolicy();
 	
 	UserMenu getUserMenu();
+	
+	CompanyNode getAllOfCompanys() throws SQLException;
+	
+	UserCompany getUserCompany(int companyID) throws SQLException;
 }

@@ -92,8 +92,7 @@ public class JdbcUtils {
 		}
 	}
 
-	public static <T> T ResultSet2Object(ResultSet rs, Class<T> clazz) throws InstantiationException,
-			IllegalAccessException {
+	public static <T> T ResultSet2Object(ResultSet rs, Class<T> clazz) throws InstantiationException, IllegalAccessException {
 		T object = clazz.newInstance();
 
 		Method[] methods = clazz.getDeclaredMethods();

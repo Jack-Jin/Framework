@@ -3,25 +3,24 @@ package eceep.user.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CompanyNode {
-	private String id;
+	private int id;
 	private String name;
 
 	private List<CompanyNode> children;
 
-	public CompanyNode(String id, String name) {
+	public CompanyNode(int id, String name) {
 		this.id = id;
 		this.name = name;
-		
+
 		children = new ArrayList<CompanyNode>();
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -34,6 +33,9 @@ public class CompanyNode {
 	}
 
 	public List<CompanyNode> getChildren() {
+		if (children == null)
+			children = new ArrayList<CompanyNode>();
+
 		return children;
 	}
 

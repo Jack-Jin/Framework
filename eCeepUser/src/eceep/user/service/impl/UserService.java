@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import eceep.user.dao.UserDao;
 import eceep.user.dao.impl.UserDaoFactoryMySql;
+import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
@@ -72,5 +73,15 @@ public class UserService implements User {
 	@Override
 	public UserMenu getUserMenu() {
 		return this.userMenu;
+	}
+
+	@Override
+	public CompanyNode getAllOfCompanys() throws SQLException {
+		return userDao.getAllOfCompanys();
+	}
+	
+	@Override
+	public UserCompany getUserCompany(int companyID) throws SQLException{
+		return userDao.getUserCompany(companyID);
 	}
 }

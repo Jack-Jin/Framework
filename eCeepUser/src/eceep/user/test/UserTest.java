@@ -9,6 +9,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eceep.user.domain.CompanyNode;
+import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
@@ -66,15 +68,44 @@ public class UserTest {
 		List<String> ruleValueList = userPolicy.getRuleValueList("ModelList");
 		ruleValueList.forEach(System.out::println);
 	}
-	
+
 	@Test
-	public void TestMenu(){
+	public void TestMenu() {
 		Map<String, List<UserMenuLeaf>> menus = user.getUserMenu().getMenus();
-		
-		for(Entry<String, List<UserMenuLeaf>> entry : menus.entrySet()){
+
+		for (Entry<String, List<UserMenuLeaf>> entry : menus.entrySet()) {
 			System.out.println(entry.getKey() + "---------------------------------");
 			List<UserMenuLeaf> value = entry.getValue();
 			value.forEach(A -> System.out.println(A.getMenuText() + ", [" + A.getPageUrl() + "]"));
 		}
+	}
+
+	@Test
+	public void testCompanyTree() {
+		try {
+			CompanyNode allOfCompanys = user.getAllOfCompanys();
+
+			showCompanyTree("", allOfCompanys);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void showCompanyTree(String tab, CompanyNode node) {
+		for (int i = 0; i < node.getChildren().size(); i++) {
+			CompanyNode child = node.getChildren().get(i);
+
+			System.out.println(tab + child.getName() + "(" + child.getId() + ")");
+
+			showCompanyTree(tab + "\t", child);
+		}
+	}
+	
+	@Test
+	public void testGetUserCompany() throws SQLException {
+		UserCompany userCompany = user.getUserCompany(2);
+		
+		Assert.assertEquals("__System Default", userCompany.getCompanyName());		
 	}
 }

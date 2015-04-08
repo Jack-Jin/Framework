@@ -2,14 +2,18 @@ package eceep.user.dao.impl;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import eceep.user.dao.UserDao;
+import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
@@ -18,7 +22,8 @@ import eceep.user.domain.UserDetail;
 import eceep.user.domain.UserPolicyRule;
 
 public class UserDaoService implements UserDao {
-
+	/* Methods */
+	/* -------------------------------------------------- */
 	@Override
 	public boolean initial(String jdbcDriver, String url, String userName, String password) {
 		JdbcUtils config = new JdbcUtils();
@@ -140,6 +145,72 @@ public class UserDaoService implements UserDao {
 		return result;
 	}
 
+	@Override
+	public UserCompany getUserCompany(int companyID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		UserCompany company = null;
+
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "SELECT ID,CompanyName,Address,Address1,City,State,Country,PostalCode";
+			sql += ",Telephone,Fax,EMail,WWW,ContactID,ContactName,IsSystem,ParentID ";
+			sql += "FROM UserCompany WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, companyID);
+
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				company = JdbcUtils.ResultSet2Object(rs, UserCompany.class);
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return company;
+	}
+
+	@Override
+	public CompanyNode getAllOfCompanys() throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		CompanyNode node = new CompanyNode(0, "root");
+
+		List<UserCompany> companys = new ArrayList<UserCompany>();
+		try {
+			conn = JdbcUtils.getConnection();
+			String sql = "SELECT ID,CompanyName,Address,Address1,City,State,Country,PostalCode";
+			sql += ",Telephone,Fax,EMail,WWW,ContactID,ContactName,IsSystem,ParentID ";
+			sql += "FROM UserCompany";
+			ps = conn.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				UserCompany company = JdbcUtils.ResultSet2Object(rs, UserCompany.class);
+
+				companys.add(company);
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		if (companys.size() > 0) {
+			getCompanyTree(node, companys);
+		}
+
+		return node;
+	}
+
+	/* Functions */
+	/* -------------------------------------------------- */
 	private void result2PolicyDetail(ResultSet rs, List<UserPolicyRule> rules) throws SQLException {
 		// PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,ValueType,RuleValue
 		String ruleName = "";
@@ -223,4 +294,18 @@ public class UserDaoService implements UserDao {
 		return userMenu;
 	}
 
+	private void getCompanyTree(CompanyNode node, List<UserCompany> companys) {
+		if (companys.size() <= 0)
+			return;
+
+		List<UserCompany> children = companys.stream().filter(A -> A.getParentID() == node.getId())
+				.collect(Collectors.toList());
+
+		for (int i = 0; children != null && i < children.size(); i++) {
+			CompanyNode childNode = new CompanyNode(children.get(i).getId(), children.get(i).getCompanyName());
+			getCompanyTree(childNode, companys);
+
+			node.getChildren().add(childNode);
+		}
+	}
 }

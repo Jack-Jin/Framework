@@ -1,33 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
 <t:layout>
-
-  <div class="UserAdminContent">
-    <table width="100%">
+<div class="UserAdminContent">
+    <table style="width: 100%;">
     <tr>
+    	<%-- Left Tree. --%>
         <td width="200px" valign="top" style="border: solid 1px #cccccc;">
-
-
-
+			<jsp:include page="/WEB-INF/useradmin/Tree.jsp"/>
         </td>
+        <%-- Right Detail Info. --%>
         <td valign="top">
             <div align="right" style="padding: 2px;">
               <a href="#">Add Child Company</a>
               &nbsp;
               <a href="#">Add Company</a>
             </div>
-            <div style="padding: 4px 2px 4px 2px; background-color: SteelBlue; color: White;">
-                Top Company
-            </div>
-            <div  ID="uxMultiTabsCompany"></div>
-            <div class="tabBody">
-
-
-
-            </div>
+            
+		  	<jsp:include page="/WEB-INF/useradmin/Info.jsp"/>
         </td>
     </tr>
     </table>
-  </div>
-
+</div>
 </t:layout>
