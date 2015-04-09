@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import eceep.user.domain.CompanyNode;
+import eceep.user.domain.UserCompany;
 import eceep.user.service.User;
 import eceep.web.repository.WebContext;
 
@@ -33,6 +34,9 @@ public class UserCompanyManagement extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Request Parameters
+		String paraCompanyID = request.getParameter("companyID");
+		
 		// Get session
 		HttpSession session = request.getSession();
 
@@ -45,15 +49,22 @@ public class UserCompanyManagement extends HttpServlet {
 		// Get All of Company tree.
 		try {
 			CompanyNode allOfCompanys = user.getAllOfCompanys();
-			
 			request.setAttribute("node", allOfCompanys);
+			
+			// Current Company
+			if(paraCompanyID==null || paraCompanyID.isEmpty())
+				paraCompanyID = allOfCompanys.getChildren().get(0).getId() + "";
+			
+			UserCompany userCompany = user.getUserCompany(Integer.parseInt(paraCompanyID));
+			request.setAttribute("usercompany", userCompany);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			
 			return;
 		}
 		
-		request.getRequestDispatcher("/WEB-INF/useradmin/companyadmin.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/useradmin/admin.jsp").forward(request, response);
 	}
 
 	/**

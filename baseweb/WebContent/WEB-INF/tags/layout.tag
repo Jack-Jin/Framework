@@ -8,6 +8,9 @@
     <link href="${ pageContext.request.contextPath }/base/css/Site_Controls.css" rel="stylesheet" type="text/css" />
     <link href="${ pageContext.request.contextPath }/base/css/_Layout.css" rel="stylesheet" type="text/css" />
     <link href="${ pageContext.request.contextPath }/base/css/Home_MainMenu.css" rel="stylesheet" type="text/css" />
+<%-- 
+    <script src="${ pageContext.request.contextPath }/Scripts/jquery-1.6.2.min.js" type="text/javascript"/>   
+--%>    
 </head>
 <body>
     <div id="WebMainBodyDiv" class="page">
@@ -48,18 +51,5 @@
         </div>
     </div>
 </body>
+<script src="${ pageContext.request.contextPath }/base/script/global.js" type="text/javascript"></script>
 </html>
-<script>
-    function autoResizeDiv() {
-        var winHeight = 0;
-
-        if (window.innerHeight == undefined)
-            winHeight = $(window).height();
-        else
-            winHeight = window.innerHeight;
-
-        document.getElementById('WebMainBodyDiv').style.height = winHeight + 'px';
-    }
-    window.onresize = autoResizeDiv;
-    autoResizeDiv();
-</script>

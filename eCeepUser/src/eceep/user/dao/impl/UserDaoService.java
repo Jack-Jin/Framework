@@ -145,6 +145,27 @@ public class UserDaoService implements UserDao {
 		return result;
 	}
 
+	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		List<UserDetail> users = new ArrayList<UserDetail>();
+		
+		try{
+			conn = JdbcUtils.getConnection();
+			//String sql = "SELECT FROM Users"
+			//ps = conn.prepareStatement(sql)
+			
+		
+		}finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+		
+		
+		return users;
+	}
+	
 	@Override
 	public UserCompany getUserCompany(int companyID) throws SQLException {
 		Connection conn = null;
@@ -185,8 +206,7 @@ public class UserDaoService implements UserDao {
 		List<UserCompany> companys = new ArrayList<UserCompany>();
 		try {
 			conn = JdbcUtils.getConnection();
-			String sql = "SELECT ID,CompanyName,Address,Address1,City,State,Country,PostalCode";
-			sql += ",Telephone,Fax,EMail,WWW,ContactID,ContactName,IsSystem,ParentID ";
+			String sql = "SELECT ID,CompanyName,ParentID ";
 			sql += "FROM UserCompany";
 			ps = conn.prepareStatement(sql);
 

@@ -1,7 +1,4 @@
-﻿/// <reference path="../../Scripts/jquery-1.6.2.js" />
-/// <reference path="../../Scripts/jquery-ui-1.8.11.js" />
-
-/*******************************************************************
+﻿/*******************************************************************
 * Global Variables
 *******************************************************************/
 //Root Path
@@ -28,8 +25,35 @@ window.onresize = autoResizeDiv;
 autoResizeDiv();
 
 /*******************************************************************
-* Page Load
+ * post(path, params, method)
+ * for example: post('/contact/', {name: 'Johnny Bravo'});
  *******************************************************************/
+function post(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+/*******************************************************************
+* Page Load
 $(document).ready(function () {
     $.get(scriptBaseUrl + 'Main/GetText', { textCode: 'Log Out', textComment: 'Log Out' }, function (t) {
         $(".MenuLogout a").text(t);
@@ -41,7 +65,7 @@ $(document).ready(function () {
     //decorate menu
     ArrowGreenMenu("menuID");
 
-    //Milestone
+    // Milestone
     if (typeof PageName == "undefined") {
         $.ajaxSetup({ cache: false });
         $.ajax({
@@ -61,8 +85,8 @@ $(document).ready(function () {
         else {
         }
     }
-
-    //Application Version
+	
+    // Application Version
     $.get(scriptBaseUrl + "Main/GetBaseVersions", {}, function (data) {
         var version = "(" + data.baseWebVersion + " · " + data.dbVersion + ")";
         $(".page_footer_right").append(version);
@@ -74,10 +98,10 @@ $(document).ready(function () {
         });
     }
 });
+ *******************************************************************/
 
 /*******************************************************************
 * ArrowGreenMenu() - Menu
- *******************************************************************/
 function ArrowGreenMenu(menuID) {
     $("#" + menuID).addClass("arrowGreenMenu");
 
@@ -92,10 +116,11 @@ function ArrowGreenMenu(menuID) {
         $(this).toggleClass("arrowGreenMenuSelected");
     });
 }
+ *******************************************************************/
 
 /*******************************************************************
 * Menu - Save
-*******************************************************************/
 function SaveUpdateQuotationInfo() {
 
 }
+ *******************************************************************/
