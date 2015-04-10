@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
+import eceep.user.domain.UserDetail;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
@@ -107,5 +108,14 @@ public class UserTest {
 		UserCompany userCompany = user.getUserCompany(2);
 		
 		Assert.assertEquals("__System Default", userCompany.getCompanyName());		
+	}
+	
+	@Test
+	public void testGetUsersByCompanyID() throws SQLException {
+		List<UserDetail> users = user.getUsersByCompanyID(1);
+		
+		for(UserDetail user : users){
+			System.out.println("UserID: " + user.getId() + "; UserName: "+ user.getUserName());
+		}
 	}
 }

@@ -246,7 +246,7 @@ CREATE TABLE UserLoginHistory (
 );
 
 /******************************
- *  Table - UserLoginHistory
+ *  Test: UserCompany
  ******************************/
 /*
   __System Super(1)
@@ -281,3 +281,30 @@ INSERT INTO UserCompany(ID,CompanyName,ParentID,PolicyID,Policy,IsSystem) VALUES
 SELECT ID,CompanyName,ParentID,PolicyID,Policy,IsSystem FROM UserCompany;
 
 */
+/******************************
+ *  Test: Users
+ ******************************/
+/*
+INSERT INTO Users(ID,UserName,Password,FirstName,LastName,Country,CompanyID,Company,PolicyID,Policy,CurrencyID,Currency,UnitID,Unit
+                 ,LanguageID,Language,IsAdmin,IsNeverExpire,CreateByID,CreateBy)
+VALUES(2,'test1 user','123','Test1','User','Canada',3,'Test1',NULL,NULL,1,'CAD',1,'SI'
+      ,1,'en-CA',FALSE,TRUE,1,'test user');
+INSERT INTO Users(ID,UserName,Password,FirstName,LastName,Country,CompanyID,Company,PolicyID,Policy,CurrencyID,Currency,UnitID,Unit
+                 ,LanguageID,Language,IsAdmin,IsNeverExpire,CreateByID,CreateBy)
+VALUES(3,'test1 user1','123','Test1','User1','Canada',3,'Test1',NULL,NULL,1,'CAD',1,'SI'
+      ,1,'en-CA',FALSE,TRUE,1,'test user');
+
+INSERT INTO Users(ID,UserName,Password,FirstName,LastName,Country,CompanyID,Company,PolicyID,Policy,CurrencyID,Currency,UnitID,Unit
+           ,LanguageID,Language,IsAdmin,IsNeverExpire,CreateByID,CreateBy)
+VALUES(4,'Test1-1 user','123','Test1-1','User','Canada',4,'Test1-1',NULL,NULL,1,'CAD',1,'SI'
+      ,1,'en-CA',FALSE,TRUE,1,'test user');
+INSERT INTO Users(ID,UserName,Password,FirstName,LastName,Country,CompanyID,Company,PolicyID,Policy,CurrencyID,Currency,UnitID,Unit
+                 ,LanguageID,Language,IsAdmin,IsNeverExpire,CreateByID,CreateBy)
+VALUES(5,'Test1-1 user1','123','Test1-1','User1','Canada',4,'Test1-1',NULL,NULL,1,'CAD',1,'SI'
+      ,1,'en-CA',FALSE,TRUE,1,'test user');
+      
+#DELETE FROM Users WHERE ID IN (2,3,4,5);
+
+SELECT * FROM Users;
+ */
+ 

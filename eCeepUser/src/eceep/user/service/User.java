@@ -1,6 +1,7 @@
 package eceep.user.service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
@@ -26,4 +27,6 @@ public interface User {
 	CompanyNode getAllOfCompanys() throws SQLException;
 	
 	UserCompany getUserCompany(int companyID) throws SQLException;
+	
+	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
 }

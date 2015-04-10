@@ -9,7 +9,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import eceep.user.dao.UserDao;
@@ -145,6 +144,7 @@ public class UserDaoService implements UserDao {
 		return result;
 	}
 
+	@Override
 	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -154,14 +154,24 @@ public class UserDaoService implements UserDao {
 		
 		try{
 			conn = JdbcUtils.getConnection();
-			//String sql = "SELECT FROM Users"
-			//ps = conn.prepareStatement(sql)
 			
+			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode";
+			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime ";
+			sql += "FROM Users WHERE CompanyID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, companyID);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()){
+				UserDetail userDetail = JdbcUtils.ResultSet2Object(rs, UserDetail.class);
+				users.add(userDetail);
+			}
 		
+		} catch (InstantiationException | IllegalAccessException e) {
 		}finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
 		
 		return users;
 	}

@@ -1,6 +1,7 @@
 package eceep.user.dao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
@@ -17,4 +18,6 @@ public interface UserDao {
 	CompanyNode getAllOfCompanys() throws SQLException;
 	
 	UserCompany getUserCompany(int companyID) throws SQLException;
+	
+	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
 }

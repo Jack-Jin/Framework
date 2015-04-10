@@ -8,7 +8,9 @@
   .UserAdminContent>table>tbody>tr>td { height: 500px; border: solid 1px #cccccc; overflow-x: hidden; overflow-y: auto; }
   
   .UserAdminContent .Admin-Left-Top { width: 100%; height: 200px; overflow: scroll; }
-  .UserAdminContent .Admin-Left-Bottom { width: 100%; height: 300px; overflow: scroll; }
+  .UserAdminContent .Admin-Left-Middle { width: 100%; height: 16px; text-align: right; margin-top: 5px; margin-bottom: 1px; }
+  .UserAdminContent .Admin-Left-Middle1 { width: 100%; height: 16px; text-align: right; padding-top: 1px; border-top: 1px solid #ccc; }
+  .UserAdminContent .Admin-Left-Bottom { width: 100%; height: 260px; overflow: scroll; padding: 3px; }
 </style>
 
 <div class="UserAdminContent">
@@ -19,18 +21,19 @@
       <div class="Admin-Left-Top">
 		<jsp:include page="/WEB-INF/useradmin/admin-left-top.jsp"/>
       </div>
+      <div class="Admin-Left-Middle">
+          <span class="CusButton" style="font-size: 0.75em;">+ Company</span>
+          <span class="CusButton" style="font-size: 0.75em;">+ Child</span>
+      </div>
+      <div class="Admin-Left-Middle1">
+          <span class="CusButton" style="font-size: 0.75em;">+ User</span>
+      </div>
       <div class="Admin-Left-Bottom">
         <jsp:include page="/WEB-INF/useradmin/admin-left-bottom.jsp"/>
       </div>
     </td>
     <%-- Right Detail Info. --%>
     <td valign="top">
-        <div align="right" style="padding: 2px;">
-        <a href="#">Add Child Company</a>
-        &nbsp;
-        <a href="#">Add Company</a>
-        </div>
-            
 		<jsp:include page="/WEB-INF/useradmin/admin-right.jsp"/>
     </td>
   </tr>

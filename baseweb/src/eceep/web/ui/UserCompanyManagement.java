@@ -2,6 +2,7 @@ package eceep.web.ui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
+import eceep.user.domain.UserDetail;
 import eceep.user.service.User;
 import eceep.web.repository.WebContext;
 
@@ -57,6 +59,10 @@ public class UserCompanyManagement extends HttpServlet {
 			
 			UserCompany userCompany = user.getUserCompany(Integer.parseInt(paraCompanyID));
 			request.setAttribute("usercompany", userCompany);
+			
+			// Get user list under current company
+			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(paraCompanyID));
+			request.setAttribute("users", users);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

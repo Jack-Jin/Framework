@@ -1,6 +1,7 @@
 package eceep.user.service.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import eceep.user.dao.UserDao;
 import eceep.user.dao.impl.UserDaoFactoryMySql;
@@ -83,5 +84,10 @@ public class UserService implements User {
 	@Override
 	public UserCompany getUserCompany(int companyID) throws SQLException{
 		return userDao.getUserCompany(companyID);
+	}
+
+	@Override
+	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
+		return userDao.getUsersByCompanyID(companyID);
 	}
 }

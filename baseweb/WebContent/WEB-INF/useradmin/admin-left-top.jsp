@@ -1,7 +1,7 @@
 <%@ page language="java"%>
 <style>
     /* treeoftree */
-    ul.treeoftree { margin: 0; padding: 0; color: #369;	font-weight: bold; list-style-type: none; }
+    ul.treeoftree { margin: 0; padding: 0; color: #369;	#font-weight: bold; list-style-type: none; }
 	ul.treeoftree>li { margin: 0; line-height: 14px; padding: 0 0 0 16px; }
 	div.treeoftree-expand, div.treeoftree-collapse { margin-left: -16px; padding: 0 0 0 0px; }
     div.treeoftree-expand { background: url(${ pageContext.request.contextPath }/base/css/images/expand.png) no-repeat; }
