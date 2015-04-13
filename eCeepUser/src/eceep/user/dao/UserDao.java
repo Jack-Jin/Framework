@@ -24,4 +24,6 @@ public interface UserDao {
 	boolean updateCompanyInfo(UserCompany company) throws SQLException;
 	
 	UserDetail getUserDetail(int userID) throws SQLException;
+	
+	boolean updateUserInfo(UserDetail userDetail) throws SQLException;
 }

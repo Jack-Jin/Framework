@@ -308,6 +308,29 @@ public class UserDaoService implements UserDao {
 		return userDetail;
 	}
 
+	@Override
+	public boolean updateUserInfo(UserDetail userDetail) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		int updateCount = 0;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "UPDATE Users SET UserName=?,FirstName=?,LastName=?,Title=?,Address=?"; 
+			sql += ",Address1=?,City=?,State=?,Country=?,PostalCode=?"; 
+			sql += ",Telephone=?,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID		      ,IsAdmin,CreateByID,CreateDate		      ,LoginTime,LogoutTime WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+
+			updateCount = ps.executeUpdate();
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return (updateCount > 0) ? true : false;
+	}
+
 	/* Functions */
 	/* -------------------------------------------------- */
 	private void result2PolicyDetail(ResultSet rs, List<UserPolicyRule> rules) throws SQLException {
