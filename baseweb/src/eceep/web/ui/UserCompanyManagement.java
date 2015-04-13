@@ -16,6 +16,7 @@ import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
 import eceep.user.service.User;
 import eceep.web.repository.WebContext;
+import eceep.web.repository.WebUtils;
 
 /**
  * Servlet implementation class UserCompanyManagement
@@ -37,10 +38,8 @@ public class UserCompanyManagement extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Request Parameters
-		String paraCompanyID = request.getParameter("companyID");
-		boolean companySelected = (request.getParameter("companySelected") != null && request.getParameter(
-				"companySelected").equals("1")) ? true : false;
+		String action = request.getParameter("action");
+		action = (action == null) ? "" : action;
 
 		// Get session
 		HttpSession session = request.getSession();
@@ -51,23 +50,60 @@ public class UserCompanyManagement extends HttpServlet {
 		// Get User
 		User user = context.getUser();
 
-		// Get All of Company tree.
-		// Set attributes: node, usercompany, companyselected, users
 		try {
-			CompanyNode allOfCompanys = user.getAllOfCompanys();
-			request.setAttribute("node", allOfCompanys);
+			// Current Company ID
+			String paraCompanyID = "";
+			// Selected company view.
+			boolean companySelected = true;
+			// Selected User Detail
+			UserDetail userDetail = null;
+			// Result Message
+			String resultMessage = "";
 
-			// Current Company
+			// Action: "Selected Company", "Company Update"
+			if (action.equalsIgnoreCase("Selected Company")) {
+				paraCompanyID = request.getParameter("companyID");
+				companySelected = true;
+			} else if (action.equalsIgnoreCase("Company Update")) {
+				UserCompany company = WebUtils.request2Bean(request, UserCompany.class);
+				user.updateCompanyInfo(company);
+
+				paraCompanyID = company.getId() + "";
+				companySelected = true;
+				resultMessage = "Company information updated.";
+			} else if (action.equalsIgnoreCase("Selected User")) {
+				int paraUserID = Integer.parseInt(request.getParameter("userID"));
+				userDetail = user.getUserDetail(paraUserID);
+						
+				paraCompanyID = request.getParameter("companyID");
+				companySelected = false;
+			} else if(action.equalsIgnoreCase("User Update")) {
+				UserDetail userUpdate = WebUtils.request2Bean(request, UserDetail.class);
+				
+				System.out.println(userUpdate.getExpiryDate().toString());
+			}
+
+			// Get All of Company tree.
+			CompanyNode allOfCompanys = user.getAllOfCompanys();
+
+			// If no company ID, set current company ID is the first one of
+			// company tree.
 			if (paraCompanyID == null || paraCompanyID.isEmpty())
 				paraCompanyID = allOfCompanys.getChildren().get(0).getId() + "";
 
+			// Current Company Info.
 			UserCompany userCompany = user.getUserCompany(Integer.parseInt(paraCompanyID));
+
+			// User List of Current Company
+			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(paraCompanyID));
+
+			// Set attributes: node, usercompany, companyselected, users
+			request.setAttribute("node", allOfCompanys);
 			request.setAttribute("usercompany", userCompany);
 			request.setAttribute("companyselected", companySelected);
-
-			// Get user list under current company
-			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(paraCompanyID));
 			request.setAttribute("users", users);
+			request.setAttribute("userdetail", userDetail);
+			request.setAttribute("resultmessage", resultMessage);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

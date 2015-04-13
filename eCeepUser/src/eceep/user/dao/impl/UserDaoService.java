@@ -149,33 +149,33 @@ public class UserDaoService implements UserDao {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		List<UserDetail> users = new ArrayList<UserDetail>();
-		
-		try{
+
+		try {
 			conn = JdbcUtils.getConnection();
-			
+
 			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode";
 			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime ";
 			sql += "FROM Users WHERE CompanyID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, companyID);
-			
+
 			rs = ps.executeQuery();
-			
-			while(rs.next()){
+
+			while (rs.next()) {
 				UserDetail userDetail = JdbcUtils.ResultSet2Object(rs, UserDetail.class);
 				users.add(userDetail);
 			}
-		
+
 		} catch (InstantiationException | IllegalAccessException e) {
-		}finally {
+		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
+
 		return users;
 	}
-	
+
 	@Override
 	public UserCompany getUserCompany(int companyID) throws SQLException {
 		Connection conn = null;
@@ -237,6 +237,75 @@ public class UserDaoService implements UserDao {
 		}
 
 		return node;
+	}
+
+	@Override
+	public boolean updateCompanyInfo(UserCompany company) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		int updateCount = 0;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "UPDATE UserCompany SET ";
+			sql += "CompanyName=?,Address=?,Address1=?,City=?,State=?,";
+			sql += "Country=?,PostalCode=?,Telephone=?,Fax=?,EMail=?,";
+			sql += "WWW=?,ContactName=? ";
+			sql += "WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, company.getCompanyName());
+			ps.setString(2, company.getAddress());
+			ps.setString(3, company.getAddress1());
+			ps.setString(4, company.getCity());
+			ps.setString(5, company.getState());
+			ps.setString(6, company.getCountry());
+			ps.setString(7, company.getPostalCode());
+			ps.setString(8, company.getTelephone());
+			ps.setString(9, company.getFax());
+			ps.setString(10, company.getEmail());
+			ps.setString(11, company.getWww());
+			ps.setString(12, company.getContactName());
+			ps.setInt(13, company.getId());
+
+			updateCount = ps.executeUpdate();
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return (updateCount > 0) ? true : false;
+	}
+
+	@Override
+	public UserDetail getUserDetail(int userID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		UserDetail userDetail = null;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,";
+			sql += "State,Country,PostalCode,Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,";
+			sql += "LanguageID,IsAdmin,IsNeverExpire,ExpiryDate,CreateByID,CreateDate,LoginTime,LogoutTime ";
+			sql += "FROM Users WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, userID);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				userDetail = JdbcUtils.ResultSet2Object(rs, UserDetail.class);
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return userDetail;
 	}
 
 	/* Functions */

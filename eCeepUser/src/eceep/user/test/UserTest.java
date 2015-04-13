@@ -31,7 +31,7 @@ public class UserTest {
 		Assert.assertTrue(result);
 
 		// Logon
-		result = user.logon("test user", "peter__123");
+		result = user.logon("admin", "1");
 		Assert.assertTrue(result);
 	}
 
@@ -117,5 +117,27 @@ public class UserTest {
 		for(UserDetail user : users){
 			System.out.println("UserID: " + user.getId() + "; UserName: "+ user.getUserName());
 		}
+	}
+	
+	@Test
+	public void testUpdateCompanyInfo() throws SQLException {
+		UserCompany company = user.getUserCompany(3);
+		
+		company.setCountry("Canada Test");
+		
+		user.updateCompanyInfo(company);
+		
+		company = user.getUserCompany(3);
+		
+		Assert.assertEquals("Canada Test", company.getCountry());
+		
+	}
+	
+	@Test
+	public void testUserDetail() throws SQLException {
+		UserDetail userDetail = user.getUserDetail(1);
+		
+		Assert.assertEquals("admin", userDetail.getUserName());
+		Assert.assertEquals(true, userDetail.isIsAdmin());
 	}
 }

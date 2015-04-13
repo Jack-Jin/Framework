@@ -27,7 +27,7 @@ public class UserService implements User {
 
 		this.userDao = UserDaoFactoryMySql.getInstance();
 	}
-	
+
 	@Override
 	public boolean initial(String jdbcDriver, String url, String userName, String password) {
 		boolean result = this.userDao.initial(jdbcDriver, url, userName, password);
@@ -55,7 +55,7 @@ public class UserService implements User {
 	public boolean isLogin() {
 		return isLogin;
 	}
-	
+
 	@Override
 	public UserDetail getUserDetail() {
 		return this.userDetail;
@@ -80,14 +80,24 @@ public class UserService implements User {
 	public CompanyNode getAllOfCompanys() throws SQLException {
 		return userDao.getAllOfCompanys();
 	}
-	
+
 	@Override
-	public UserCompany getUserCompany(int companyID) throws SQLException{
+	public UserCompany getUserCompany(int companyID) throws SQLException {
 		return userDao.getUserCompany(companyID);
 	}
 
 	@Override
 	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
 		return userDao.getUsersByCompanyID(companyID);
+	}
+
+	@Override
+	public boolean updateCompanyInfo(UserCompany company) throws SQLException {
+		return userDao.updateCompanyInfo(company);
+	}
+
+	@Override
+	public UserDetail getUserDetail(int userID) throws SQLException {
+		return userDao.getUserDetail(userID);
 	}
 }

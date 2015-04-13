@@ -29,4 +29,8 @@ public interface User {
 	UserCompany getUserCompany(int companyID) throws SQLException;
 	
 	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
+	
+	boolean updateCompanyInfo(UserCompany company) throws SQLException;
+	
+	UserDetail getUserDetail(int userID) throws SQLException;
 }

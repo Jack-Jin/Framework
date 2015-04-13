@@ -20,11 +20,14 @@ public class UserDetail {
 	private String www;
 	private String note;
 
+	private boolean isAdmin;
+	private boolean isNeverExpire;
+	private Date expiryDate;
+
 	private int currencyID;
 	private int unitID;
 	private int languageID;
 
-	private boolean isAdmin;
 	private int createByID;
 	private Date createDate;
 
@@ -159,6 +162,30 @@ public class UserDetail {
 		this.note = note;
 	}
 
+	public boolean isIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	public boolean isIsNeverExpire() {
+		return isNeverExpire;
+	}
+
+	public void setIsNeverExpire(boolean isNeverExpire) {
+		this.isNeverExpire = isNeverExpire;
+	}
+
+	public Date getExpiryDate() {
+		return expiryDate;
+	}
+
+	public void setExpiryDate(Date expiryDate) {
+		this.expiryDate = expiryDate;
+	}
+
 	public int getCurrencyID() {
 		return currencyID;
 	}
@@ -181,14 +208,6 @@ public class UserDetail {
 
 	public void setLanguageID(int languageID) {
 		this.languageID = languageID;
-	}
-
-	public boolean isAdmin() {
-		return isAdmin;
-	}
-
-	public void setAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
 	}
 
 	public int getCreateByID() {
@@ -222,4 +241,5 @@ public class UserDetail {
 	public void setLogoutTime(Date logoutTime) {
 		this.logoutTime = logoutTime;
 	}
+
 }

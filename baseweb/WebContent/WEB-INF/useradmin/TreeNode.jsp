@@ -17,7 +17,7 @@
           <div class="treeoftree-expand">
             <span onclick="nodeclick(this.parentElement);"></span>
             <span style='${usercompany.id==node.id?"background-color: #ccc;":""}' 
-                  onclick='post("${pageContext.request.contextPath}/UserCompanyManagement", { companyID : ${node.id}, companySelected: 1 });'>${node.name}</span>
+                  onclick='post("${pageContext.request.contextPath}/UserCompanyManagement", { action : "Selected Company", companyID : ${node.id} });'>${node.name}</span>
           </div>
 	  	  <ul class="treeoftree">
         	<c:forEach var="node" items="${node.children}">
@@ -29,7 +29,7 @@
     </c:when>
     <c:otherwise>
 		<li><span style='${usercompany.id==node.id?"background-color: #ccc;":""}' 
-		          onclick='post("${pageContext.request.contextPath}/UserCompanyManagement", { companyID : ${node.id}, companySelected: 1 });'>${node.name}</span></li>
+		          onclick='post("${pageContext.request.contextPath}/UserCompanyManagement", { action : "Selected Company", companyID : ${node.id} });'>${node.name}</span></li>
     </c:otherwise>
     </c:choose>
 </c:otherwise>
