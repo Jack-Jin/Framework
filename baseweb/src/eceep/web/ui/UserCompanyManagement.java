@@ -78,9 +78,13 @@ public class UserCompanyManagement extends HttpServlet {
 				paraCompanyID = request.getParameter("companyID");
 				companySelected = false;
 			} else if(action.equalsIgnoreCase("User Update")) {
-				UserDetail userUpdate = WebUtils.request2Bean(request, UserDetail.class);
+				paraCompanyID = request.getParameter("companyID");
 				
-				System.out.println(userUpdate.getExpiryDate().toString());
+				userDetail = WebUtils.request2Bean(request, UserDetail.class);
+				user.updateUserInfo(userDetail, Integer.parseInt(paraCompanyID));
+
+				companySelected = false;
+				resultMessage = "User information updated.";
 			}
 
 			// Get All of Company tree.

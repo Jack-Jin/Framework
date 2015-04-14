@@ -102,42 +102,54 @@ public class UserTest {
 			showCompanyTree(tab + "\t", child);
 		}
 	}
-	
+
 	@Test
 	public void testGetUserCompany() throws SQLException {
 		UserCompany userCompany = user.getUserCompany(2);
-		
-		Assert.assertEquals("__System Default", userCompany.getCompanyName());		
+
+		Assert.assertEquals("__System Default", userCompany.getCompanyName());
 	}
-	
+
 	@Test
 	public void testGetUsersByCompanyID() throws SQLException {
 		List<UserDetail> users = user.getUsersByCompanyID(1);
-		
-		for(UserDetail user : users){
-			System.out.println("UserID: " + user.getId() + "; UserName: "+ user.getUserName());
+
+		for (UserDetail user : users) {
+			System.out.println("UserID: " + user.getId() + "; UserName: " + user.getUserName());
 		}
 	}
-	
+
 	@Test
 	public void testUpdateCompanyInfo() throws SQLException {
 		UserCompany company = user.getUserCompany(3);
-		
+
 		company.setCountry("Canada Test");
-		
+
 		user.updateCompanyInfo(company);
-		
+
 		company = user.getUserCompany(3);
-		
+
 		Assert.assertEquals("Canada Test", company.getCountry());
-		
+
 	}
-	
+
 	@Test
 	public void testUserDetail() throws SQLException {
 		UserDetail userDetail = user.getUserDetail(1);
-		
+
 		Assert.assertEquals("admin", userDetail.getUserName());
 		Assert.assertEquals(true, userDetail.isIsAdmin());
+	}
+
+	@Test
+	public void testUpdateUserDetail() throws SQLException {
+		UserDetail userDetail = user.getUserDetail(1);
+
+		userDetail.setTitle("Title test");
+		user.updateUserInfo(userDetail, 1);
+
+		userDetail = user.getUserDetail(1);
+
+		Assert.assertEquals("Title test", userDetail.getTitle());
 	}
 }

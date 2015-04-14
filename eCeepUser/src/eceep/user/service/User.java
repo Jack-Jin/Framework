@@ -33,4 +33,6 @@ public interface User {
 	boolean updateCompanyInfo(UserCompany company) throws SQLException;
 	
 	UserDetail getUserDetail(int userID) throws SQLException;
+	
+	boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException;
 }

@@ -100,4 +100,9 @@ public class UserService implements User {
 	public UserDetail getUserDetail(int userID) throws SQLException {
 		return userDao.getUserDetail(userID);
 	}
+	
+	@Override
+	public boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException {
+		return userDao.updateUserInfo(userDetail, companyID);
+	}
 }

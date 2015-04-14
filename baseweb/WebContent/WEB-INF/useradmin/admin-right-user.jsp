@@ -29,10 +29,6 @@
 		  </td>
 		</tr>
 		<tr>
-		  <td></td>
-		  <td></td>
-		</tr>
-		<tr>
 		  <td>Title</td>
 		  <td><input type="text" name="title" value="${userdetail.title}"/></td>
 		</tr>
@@ -98,6 +94,7 @@
 		    <input type="submit" name="btnUpdate" value="Update" class="CusButton" style="width: 80px;"/>
 		    <input type="hidden" name="action" value="User Update"/>
 		    <input type="hidden" name="id" value="${userdetail.id}"/>
+		    <input type="hidden" name="companyID" value="${usercompany.id}"/>
 	      </td>
 	    </tr>
 	    <tr>

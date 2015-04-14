@@ -2,6 +2,7 @@ package eceep.user.dao.impl;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -309,7 +310,7 @@ public class UserDaoService implements UserDao {
 	}
 
 	@Override
-	public boolean updateUserInfo(UserDetail userDetail) throws SQLException {
+	public boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -320,10 +321,34 @@ public class UserDaoService implements UserDao {
 
 			String sql = "UPDATE Users SET UserName=?,FirstName=?,LastName=?,Title=?,Address=?"; 
 			sql += ",Address1=?,City=?,State=?,Country=?,PostalCode=?"; 
-			sql += ",Telephone=?,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID		      ,IsAdmin,CreateByID,CreateDate		      ,LoginTime,LogoutTime WHERE ID=?";
+			sql += ",Telephone=?,Fax=?,Email=?,WWW=?,Note=?";
+			sql += ",IsAdmin=?,IsNeverExpire=?,ExpiryDate=?,CompanyID=?,Company=(SELECT CompanyName FROM UserCompany WHERE ID=?) ";
+			sql += "WHERE ID=?";
 			ps = conn.prepareStatement(sql);
+			ps.setString(1, userDetail.getUserName());
+			ps.setString(2, userDetail.getFirstName());
+			ps.setString(3, userDetail.getLastName());
+			ps.setString(4, userDetail.getTitle());
+			ps.setString(5, userDetail.getAddress());
+			ps.setString(6, userDetail.getAddress1());
+			ps.setString(7, userDetail.getCity());
+			ps.setString(8, userDetail.getState());
+			ps.setString(9, userDetail.getCountry());
+			ps.setString(10, userDetail.getPostalCode());
+			ps.setString(11, userDetail.getTelephone());
+			ps.setString(12, userDetail.getFax());
+			ps.setString(13, userDetail.getEmail());
+			ps.setString(14, userDetail.getWww());
+			ps.setString(15, userDetail.getNote());
+			ps.setBoolean(16, userDetail.isIsAdmin());
+			ps.setBoolean(17, userDetail.isIsNeverExpire());			
+			ps.setDate(18, new Date(userDetail.getExpiryDate().getTime()));
+			ps.setInt(19, companyID);
+			ps.setInt(20, companyID);
+			ps.setInt(21, userDetail.getId());
 
 			updateCount = ps.executeUpdate();
+			
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
