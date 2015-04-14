@@ -105,4 +105,9 @@ public class UserService implements User {
 	public boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException {
 		return userDao.updateUserInfo(userDetail, companyID);
 	}
+	
+	@Override
+	public Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException {
+		return userDao.getPolicy(pTrueCompany_FalseUser, pID);
+	}
 }

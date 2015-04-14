@@ -12,7 +12,7 @@ import org.junit.Test;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
-import eceep.user.domain.UserMenu;
+import eceep.user.domain.UserMenuGroup;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
 import eceep.user.service.User;
@@ -21,7 +21,7 @@ import eceep.user.service.impl.UserFactoryImpl;
 public class UserTest {
 	private User user;
 
-	@Before
+	@Before	
 	public void Prepare() throws SQLException {
 		user = UserFactoryImpl.getInstance();
 
@@ -35,17 +35,26 @@ public class UserTest {
 		Assert.assertTrue(result);
 	}
 
+	
 	@Test
 	public void logon() throws SQLException {
 		// Wrong username or password
-		boolean result = user.logon("test user", "Peter__123");
-		Assert.assertFalse(result);
+		boolean result = user.logon("admin", "1");
+		Assert.assertTrue(result);
+		Assert.assertEquals(1, user.getUserPolicy().getId());
+		//System.out.println(user.getUserPolicy().getId());
 
 		result = user.logon("test use", "peter__123");
 		Assert.assertFalse(result);
 
 		result = user.logon("", "");
 		Assert.assertFalse(result);
+		
+		//
+		result = user.logon("test1 user", "123");
+		Assert.assertTrue(result);
+		UserPolicy userPolicy = user.getUserPolicy();
+		Assert.assertEquals(2, userPolicy.getId()); 
 	}
 
 	@Test
@@ -72,12 +81,12 @@ public class UserTest {
 
 	@Test
 	public void TestMenu() {
-		Map<String, List<UserMenuLeaf>> menus = user.getUserMenu().getMenus();
+		List<UserMenuGroup> menus = user.getUserMenu().getMenus();
 
-		for (Entry<String, List<UserMenuLeaf>> entry : menus.entrySet()) {
-			System.out.println(entry.getKey() + "---------------------------------");
-			List<UserMenuLeaf> value = entry.getValue();
-			value.forEach(A -> System.out.println(A.getMenuText() + ", [" + A.getPageUrl() + "]"));
+		for (UserMenuGroup entry : menus) {
+			System.out.println(entry.getTitle() + "(" + entry.isIsVisible()  + ")---------------------------------");
+			List<UserMenuLeaf> value = entry.getLeaves();
+			value.forEach(A -> System.out.println(A.getMenuText() + "(" + A.isIsVisible() + "), [" + A.getPageUrl() + "]"));
 		}
 	}
 

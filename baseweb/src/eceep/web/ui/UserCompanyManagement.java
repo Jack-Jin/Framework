@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
+import eceep.user.domain.UserMenu;
+import eceep.user.domain.UserPolicy;
 import eceep.user.service.User;
 import eceep.web.repository.WebContext;
 import eceep.web.repository.WebUtils;
@@ -51,7 +53,7 @@ public class UserCompanyManagement extends HttpServlet {
 		User user = context.getUser();
 
 		try {
-			// Current Company ID
+			// Selected Company ID
 			String paraCompanyID = "";
 			// Selected company view.
 			boolean companySelected = true;
@@ -95,11 +97,16 @@ public class UserCompanyManagement extends HttpServlet {
 			if (paraCompanyID == null || paraCompanyID.isEmpty())
 				paraCompanyID = allOfCompanys.getChildren().get(0).getId() + "";
 
-			// Current Company Info.
+			// Selected Company Info.
 			UserCompany userCompany = user.getUserCompany(Integer.parseInt(paraCompanyID));
 
 			// User List of Current Company
 			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(paraCompanyID));
+			
+			// Selected company or user Policy.
+			Object[] oPolicy = user.getPolicy(companySelected, (companySelected? userCompany.getId(): userDetail.getId()));
+			UserPolicy userPolicy = (UserPolicy)oPolicy[0];
+			UserMenu userMenu = (UserMenu)oPolicy[1];
 
 			// Set attributes: node, usercompany, companyselected, users
 			request.setAttribute("node", allOfCompanys);

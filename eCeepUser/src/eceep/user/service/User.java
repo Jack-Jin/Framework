@@ -35,4 +35,7 @@ public interface User {
 	UserDetail getUserDetail(int userID) throws SQLException;
 	
 	boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException;
+
+	// Return UserPolicy, UserMenu
+	Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException;
 }

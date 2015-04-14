@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import eceep.user.dao.UserDao;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
+import eceep.user.domain.UserMenuGroup;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
@@ -50,8 +51,11 @@ public class UserDaoService implements UserDao {
 		UserPolicy userPolicy = null;
 		UserMenu userMenu = null;
 
+		boolean isLogon = false;
+
 		try {
 			conn = JdbcUtils.getConnection();
+
 			cStmt = conn.prepareCall("{ CALL UserLogon(?,?,?,?,?,?,?) }");
 			cStmt.setString(1, userName); // pUserName
 			cStmt.setString(2, password); // pPassword
@@ -61,21 +65,8 @@ public class UserDaoService implements UserDao {
 			cStmt.setInt(6, sessionTimeoutInMin); // pSessionTimeout
 			cStmt.registerOutParameter(7, Types.BIT); // pIsLogon
 
-			// rs = cStmt.executeQuery();
-			// boolean isLogon = cStmt.getBoolean(7);
-			// if (isLogon) {
-			// userDetail = new UserDetail();
-			// if (rs.next()) {
-			// try {
-			// userDetail = JdbcUtils.ResultSet2Object(rs, UserDetail.class);
-			// } catch (Exception e) {
-			// userDetail = null;
-			// }
-			// }
-			// }
-
 			boolean hadResults = cStmt.execute();
-			boolean isLogon = cStmt.getBoolean(7);
+			isLogon = cStmt.getBoolean(7);
 			if (isLogon) {
 				// 1. Get user info.
 				if (hadResults) {
@@ -101,39 +92,15 @@ public class UserDaoService implements UserDao {
 						}
 					}
 				}
-
-				// 3. Get User Policy
-				hadResults = cStmt.getMoreResults();
-				if (hadResults) {
-					rs = cStmt.getResultSet();
-					if (rs.next()) {
-						try {
-							userPolicy = JdbcUtils.ResultSet2Object(rs, UserPolicy.class);
-						} catch (Exception e) {
-							userPolicy = null;
-						}
-					}
-
-					// 4. Get User Menu.
-					hadResults = cStmt.getMoreResults();
-					if (hadResults) {
-						rs = cStmt.getResultSet();
-
-						userMenu = resultSet2Menu(rs);
-					}
-
-					// 5. Get Policy Detail.
-					hadResults = cStmt.getMoreResults();
-					if (userPolicy != null && hadResults) {
-						rs = cStmt.getResultSet();
-
-						result2PolicyDetail(rs, userPolicy.getRules());
-					}
-				}
-
 			}
 		} finally {
 			JdbcUtils.free(rs, cStmt, conn);
+		}
+
+		if (isLogon && userDetail != null) {
+			Object[] resultPolicy = getPolicy(false, userDetail.getId());
+			userPolicy = (UserPolicy) resultPolicy[0];
+			userMenu = (UserMenu) resultPolicy[1];
 		}
 
 		Object[] result = new Object[4];
@@ -141,6 +108,62 @@ public class UserDaoService implements UserDao {
 		result[1] = userCompany;
 		result[2] = userPolicy;
 		result[3] = userMenu;
+
+		return result;
+	}
+
+	@Override
+	public Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException {
+		Connection conn = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+
+		UserPolicy userPolicy = null;
+		UserMenu userMenu = null;
+
+		try {
+			conn = JdbcUtils.getConnection();
+
+			cStmt = conn.prepareCall("{ CALL GetPolicy(?,?) }");
+			cStmt.setBoolean(1, pTrueCompany_FalseUser);
+			cStmt.setInt(2, pID);
+
+			boolean hadResults = cStmt.execute();
+
+			// 3. Get User Policy
+			if (hadResults) {
+				rs = cStmt.getResultSet();
+				if (rs.next()) {
+					try {
+						userPolicy = JdbcUtils.ResultSet2Object(rs, UserPolicy.class);
+					} catch (Exception e) {
+						userPolicy = null;
+					}
+				}
+
+				// 4. Get User Menu.
+				hadResults = cStmt.getMoreResults();
+				if (hadResults) {
+					rs = cStmt.getResultSet();
+
+					userMenu = resultSet2Menu(rs);
+				}
+
+				// 5. Get Policy Detail.
+				hadResults = cStmt.getMoreResults();
+				if (userPolicy != null && hadResults) {
+					rs = cStmt.getResultSet();
+
+					result2PolicyDetail(rs, userPolicy.getRules());
+				}
+			}
+		} finally {
+			JdbcUtils.free(rs, cStmt, conn);
+		}
+
+		Object[] result = new Object[2];
+		result[0] = userPolicy;
+		result[1] = userMenu;
 
 		return result;
 	}
@@ -319,8 +342,8 @@ public class UserDaoService implements UserDao {
 		try {
 			conn = JdbcUtils.getConnection();
 
-			String sql = "UPDATE Users SET UserName=?,FirstName=?,LastName=?,Title=?,Address=?"; 
-			sql += ",Address1=?,City=?,State=?,Country=?,PostalCode=?"; 
+			String sql = "UPDATE Users SET UserName=?,FirstName=?,LastName=?,Title=?,Address=?";
+			sql += ",Address1=?,City=?,State=?,Country=?,PostalCode=?";
 			sql += ",Telephone=?,Fax=?,Email=?,WWW=?,Note=?";
 			sql += ",IsAdmin=?,IsNeverExpire=?,ExpiryDate=?,CompanyID=?,Company=(SELECT CompanyName FROM UserCompany WHERE ID=?) ";
 			sql += "WHERE ID=?";
@@ -341,14 +364,14 @@ public class UserDaoService implements UserDao {
 			ps.setString(14, userDetail.getWww());
 			ps.setString(15, userDetail.getNote());
 			ps.setBoolean(16, userDetail.isIsAdmin());
-			ps.setBoolean(17, userDetail.isIsNeverExpire());			
+			ps.setBoolean(17, userDetail.isIsNeverExpire());
 			ps.setDate(18, new Date(userDetail.getExpiryDate().getTime()));
 			ps.setInt(19, companyID);
 			ps.setInt(20, companyID);
 			ps.setInt(21, userDetail.getId());
 
 			updateCount = ps.executeUpdate();
-			
+
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
@@ -414,7 +437,7 @@ public class UserDaoService implements UserDao {
 	private UserMenu resultSet2Menu(ResultSet rs) throws SQLException {
 		UserMenu userMenu = new UserMenu();
 
-		Map<String, List<UserMenuLeaf>> menus = userMenu.getMenus();
+		List<UserMenuGroup> menus = userMenu.getMenus();
 		menus.clear();
 
 		List<UserMenuLeaf> menuLeaives = null;
@@ -423,16 +446,20 @@ public class UserDaoService implements UserDao {
 			// ID,ParentID,MenuText,IsLeaf,MenuNo,URL
 			String menuText = rs.getString("MenuText");
 			boolean isLeaf = rs.getBoolean("IsLeaf");
+			boolean isVisible = rs.getBoolean("IsVisiable");
 
 			if (!isLeaf) {
-				menuLeaives = new ArrayList<UserMenuLeaf>();
-				menus.put(menuText, menuLeaives);
+				UserMenuGroup menuGroup = new UserMenuGroup();
+				menuGroup.setTitle(menuText);
+				menuGroup.setIsVisible(isVisible);
+				menuLeaives = menuGroup.getLeaves();
+
+				menus.add(menuGroup);
 			} else {
 				UserMenuLeaf menuLeaf = new UserMenuLeaf();
 				menuLeaf.setMenuText(menuText);
 				menuLeaf.setPageUrl(rs.getString("URL"));
-				menuLeaf.setEnabled(true);
-				menuLeaf.setVisible(true);
+				menuLeaf.setIsVisible(isVisible);
 
 				menuLeaives.add(menuLeaf);
 			}

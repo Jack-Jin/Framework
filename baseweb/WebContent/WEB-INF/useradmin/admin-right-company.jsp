@@ -76,7 +76,7 @@
    	    </form>
 	  </div>
 	  <div id="tab2" style="display: none;">
-	  	Company Policy
+	  	<jsp:include page="/WEB-INF/useradmin/admin-right-policy.jsp"></jsp:include>
 	  </div>
 	</div>
 </div>

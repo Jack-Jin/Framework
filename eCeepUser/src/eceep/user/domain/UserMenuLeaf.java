@@ -3,8 +3,7 @@ package eceep.user.domain;
 public class UserMenuLeaf {
 	private String menuText;
     private String pageUrl;
-    private boolean visible;
-    private boolean enabled;
+    private boolean isVisible;
     
 	public String getMenuText() {
 		return menuText;
@@ -18,16 +17,10 @@ public class UserMenuLeaf {
 	public void setPageUrl(String pageUrl) {
 		this.pageUrl = pageUrl;
 	}
-	public boolean isVisible() {
-		return visible;
+	public boolean isIsVisible() {
+		return isVisible;
 	}
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setIsVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 }

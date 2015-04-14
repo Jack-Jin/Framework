@@ -8,16 +8,20 @@
 
 <%
 	WebContext webContext = WebContext.getContext(request.getSession());
-	Map<String,List<UserMenuLeaf>> menus = webContext.getUser().getUserMenu().getMenus();
+	List<UserMenuGroup> menus = webContext.getUser().getUserMenu().getMenus();
 	request.setAttribute("webmenus", menus);
 %>
 <div class="arrowGreenMenu">
   <c:forEach items="${webmenus}" var="entry">
-    <div>${entry.key}</div>
-    <ul>
-      <c:forEach items="${entry.value}" var="leaf">
-        <li><a href="${leaf.pageUrl}">${leaf.menuText}</a>
-      </c:forEach>
-    </ul>
+	<c:if test="${entry.isVisible}">
+	    <div>${entry.title}</div>
+	    <ul>
+	      <c:forEach items="${entry.leaves}" var="leaf">
+	      	<c:if test="${leaf.isVisible}">
+	        	<li><a href="${leaf.pageUrl}">${leaf.menuText}</a>
+	      	</c:if>
+	      </c:forEach>
+	    </ul>
+	</c:if>
   </c:forEach>
 </div>

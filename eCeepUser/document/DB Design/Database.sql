@@ -108,7 +108,7 @@ CREATE TABLE Policy (
 	PRIMARY KEY(ID)
 );
 INSERT INTO Policy(ID,PolicyName,Description,Menus) VALUES(1,'System Super Policy','This policy for super admin users.','10,11,12,13,14,15,20,21,30,31,32,40,41,42,50,51,60,61');
-#INSERT INTO Policy(ID,PolicyName,Description,Menus) VALUES(2,'System Default Policy','This is the system default policy','10,11,12,13,14,15,20,21,30,31,32,40,41,42,50,51,60,61');
+INSERT INTO Policy(ID,PolicyName,Description,Menus) VALUES(2,'System Default Policy','This is the system default policy','10,11,12,13,14,15,20,21,30,31,32,40,41,42,50,51,60,61');
 
 /******************************
  *  Table - PolicyDetail
