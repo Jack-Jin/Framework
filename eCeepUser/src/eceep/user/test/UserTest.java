@@ -3,7 +3,6 @@ package eceep.user.test;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -75,8 +74,19 @@ public class UserTest {
 		sValue = userPolicy.getRuleValueString("Factor1");
 		Assert.assertEquals(sValue, "2.88");
 
-		List<String> ruleValueList = userPolicy.getRuleValueList("ModelList");
-		ruleValueList.forEach(System.out::println);
+		Map<String, Boolean> ruleValueList = userPolicy.getRuleValueMap("ModelList");
+		for(Map.Entry<String, Boolean> value : ruleValueList.entrySet()){
+			System.out.println(value.getKey() + " : " + value.getValue()); 
+		}
+		
+		System.out.println("-------------------------------------");
+		
+		Map<String, String> options = userPolicy.getRuleValueMapOptions("ModelList");
+		for(Map.Entry<String, String> value : options.entrySet()){
+			System.out.println(value.getKey() + " : " + value.getValue()); 
+		}
+		
+		//ruleValueList.forEach(System.out::println);
 	}
 
 	@Test

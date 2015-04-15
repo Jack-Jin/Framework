@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.map.LinkedMap;
+
 import eceep.user.dao.UserDao;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
@@ -382,9 +384,10 @@ public class UserDaoService implements UserDao {
 	/* Functions */
 	/* -------------------------------------------------- */
 	private void result2PolicyDetail(ResultSet rs, List<UserPolicyRule> rules) throws SQLException {
-		// PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,ValueType,RuleValue
+		// PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleOptionName,RuleOptionValue,ValueType,RuleValue
 		String ruleName = "";
-		List<String> values = null;
+		Map<String, String> options = null;
+		Map<String, Boolean> values = null;
 
 		while (rs.next()) {
 			String valueType = rs.getString("ValueType");
@@ -395,40 +398,57 @@ public class UserDaoService implements UserDao {
 				// Rule Name
 				ruleName = rs.getString("PolicyRuleName");
 
+				// Policy Rule
 				UserPolicyRule<String> policyRule = new UserPolicyRule<String>(String.class);
-				rules.add(policyRule);
-				// ID, key
 				policyRule.setId(ruleID);
-				policyRule.setKey(ruleName);
-				// Value
+				policyRule.setName(ruleName);
+				// Policy Rule - Value
 				policyRule.setValue(value);
+
+				// Add Policy Rule in Rules
+				rules.add(policyRule);
 			} else if (valueType.equalsIgnoreCase("check")) { // ValueType(check)
 				// Rule Name
 				ruleName = rs.getString("PolicyRuleName");
 
+				// Policy Rule
 				UserPolicyRule<Boolean> policyRule = new UserPolicyRule<Boolean>(Boolean.class);
-				rules.add(policyRule);
-				// ID, key
 				policyRule.setId(ruleID);
-				policyRule.setKey(ruleName);
-				// Value
+				policyRule.setName(ruleName);
+				// Policy Rule - Value
 				policyRule.setValue((value.equalsIgnoreCase("true") ? true : false));
+
+				// Add Policy Rule in Rules
+				rules.add(policyRule);
 			} else if (valueType.equalsIgnoreCase("option")) { // ValueType(option)
+				String ruleOptionName = rs.getString("RuleOptionName");
+				String ruleOptionValue = rs.getString("RuleOptionValue");
+
 				if (!ruleName.equalsIgnoreCase(rs.getString("PolicyRuleName"))) {
 					// Rule Name
 					ruleName = rs.getString("PolicyRuleName");
-
-					UserPolicyRule<List> policyRule = new UserPolicyRule<List>(List.class);
-					rules.add(policyRule);
-					// ID, Key
+					
+					// Policy Rule
+					UserPolicyRule<Map> policyRule = new UserPolicyRule<Map>(Map.class);
 					policyRule.setId(ruleID);
-					policyRule.setKey(ruleName);
-					// Value
-					values = new ArrayList<String>();
-					values.add(value);
+					policyRule.setName(ruleName);
+					// Policy Rule - Option
+					options = new LinkedMap<String, String>();
+					options.put(ruleOptionName, ruleOptionValue);
+					policyRule.setOptions(options);
+					// Policy Rule - Value
+					values = new LinkedMap<String,Boolean>();
+					values.put(ruleOptionName, (value.equalsIgnoreCase("true") ? true : false));					
 					policyRule.setValue(values);
+					
+					// Add Policy Rule in Rules
+					rules.add(policyRule);
 				} else {
-					values.add(value);
+					// Policy Rule - Option
+					options.put(ruleOptionName, ruleOptionValue);
+					
+					// Policy Rule - Value
+					values.put(ruleOptionName, (value.equalsIgnoreCase("true") ? true : false));
 				}
 			}
 		}

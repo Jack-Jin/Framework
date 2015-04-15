@@ -42,12 +42,13 @@ BEGIN
 		  ,IF(ISNULL(B.PolicyName),'',B.PolicyName) AS 'PolicyName'
 		  ,IF(ISNULL(B.PolicyRuleID),A.ID,B.PolicyRuleID) AS 'PolicyRuleID'
 		  ,IF(ISNULL(B.PolicyRuleName),A.RuleName,B.PolicyRuleName) AS 'PolicyRuleName'
+          ,A.RuleOptionName
+          ,A.RuleOptionValue
 		  ,A.ValueType AS 'ValueType'
 		  ,IF(ISNULL(B.RuleValue),A.RuleValue,B.RuleValue) AS 'RuleValue' 
 	FROM PolicyRule A
-	LEFT JOIN (SELECT PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue FROM PolicyDetail WHERE PolicyID=UserPolicyID) B 
-	ON A.ID=B.PolicyRuleID
-	ORDER BY PolicyRuleID;
+	LEFT JOIN (SELECT PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue FROM PolicyDetail WHERE PolicyID=UserPolicyID) B ON A.ID=B.PolicyRuleID
+	ORDER BY PolicyRuleName,PolicyRuleID;
 END $$
 
 DELIMITER ;

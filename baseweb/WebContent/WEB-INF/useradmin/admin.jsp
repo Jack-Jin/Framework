@@ -11,6 +11,8 @@
   .UserAdminContent .Admin-Left-Middle { width: 100%; height: 16px; text-align: right; margin-top: 5px; margin-bottom: 1px; }
   .UserAdminContent .Admin-Left-Middle1 { width: 100%; height: 16px; text-align: right; padding-top: 1px; border-top: 1px solid #ccc; }
   .UserAdminContent .Admin-Left-Bottom { width: 100%; height: 260px; overflow: scroll; padding: 3px; }
+  
+  .Admin-Right input[type="checkbox"] { width: 10px; }
 </style>
 
 <div class="UserAdminContent">
@@ -33,7 +35,7 @@
       </div>
     </td>
     <%-- Right Detail Info. --%>
-    <td valign="top">
+    <td valign="top" class="Admin-Right">
 		<jsp:include page="/WEB-INF/useradmin/admin-right.jsp"/>
     </td>
   </tr>

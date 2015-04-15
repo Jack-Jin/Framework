@@ -3,6 +3,7 @@ package eceep.web.ui;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -107,11 +108,15 @@ public class UserCompanyManagement extends HttpServlet {
 			
 			// Selected company or user Policy.
 			Object[] oPolicy = user.getPolicy(companySelected, (companySelected? userCompany.getId(): userDetail.getId()));
+			
+			// Selected policy
 			UserPolicy userPolicy = (UserPolicy)oPolicy[0];
+			
 			List<UserPolicyRule<Boolean>> userPolicyCheck = userPolicy.getRules().stream().filter(A -> A.getType()==Boolean.class).collect(Collectors.toList());
-			List<UserPolicyRule<List>> userPolicyOption = userPolicy.getRules().stream().filter(A -> A.getType()==List.class).collect(Collectors.toList());			
+			List<UserPolicyRule<Map>> userPolicyOption = userPolicy.getRules().stream().filter(A -> A.getType()==Map.class).collect(Collectors.toList());			
 			List<UserPolicyRule<String>> userPolicyValue = userPolicy.getRules().stream().filter(A -> A.getType()==String.class).collect(Collectors.toList());
 			
+			// Selected menu
 			UserMenu userMenu = (UserMenu)oPolicy[1];
 
 			// Set attributes: node, usercompany, companyselected, users
