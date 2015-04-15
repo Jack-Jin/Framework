@@ -3,6 +3,7 @@ package eceep.web.ui;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
+import eceep.user.domain.UserPolicyRule;
 import eceep.user.service.User;
 import eceep.web.repository.WebContext;
 import eceep.web.repository.WebUtils;
@@ -106,6 +108,10 @@ public class UserCompanyManagement extends HttpServlet {
 			// Selected company or user Policy.
 			Object[] oPolicy = user.getPolicy(companySelected, (companySelected? userCompany.getId(): userDetail.getId()));
 			UserPolicy userPolicy = (UserPolicy)oPolicy[0];
+			List<UserPolicyRule<Boolean>> userPolicyCheck = userPolicy.getRules().stream().filter(A -> A.getType()==Boolean.class).collect(Collectors.toList());
+			List<UserPolicyRule<List>> userPolicyOption = userPolicy.getRules().stream().filter(A -> A.getType()==List.class).collect(Collectors.toList());			
+			List<UserPolicyRule<String>> userPolicyValue = userPolicy.getRules().stream().filter(A -> A.getType()==String.class).collect(Collectors.toList());
+			
 			UserMenu userMenu = (UserMenu)oPolicy[1];
 
 			// Set attributes: node, usercompany, companyselected, users
@@ -114,6 +120,12 @@ public class UserCompanyManagement extends HttpServlet {
 			request.setAttribute("companyselected", companySelected);
 			request.setAttribute("users", users);
 			request.setAttribute("userdetail", userDetail);
+			request.setAttribute("userpolicy", userPolicy);
+			request.setAttribute("userpolicycheck", userPolicyCheck);
+			request.setAttribute("userpolicyoption", userPolicyOption);
+			request.setAttribute("userpolicyvalue", userPolicyValue);
+			
+			request.setAttribute("usermenu", userMenu);
 			request.setAttribute("resultmessage", resultMessage);
 
 		} catch (SQLException e) {

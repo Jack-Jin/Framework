@@ -451,7 +451,6 @@ public class UserDaoService implements UserDao {
 			if (!isLeaf) {
 				UserMenuGroup menuGroup = new UserMenuGroup();
 				menuGroup.setTitle(menuText);
-				menuGroup.setIsVisible(isVisible);
 				menuLeaives = menuGroup.getLeaves();
 
 				menus.add(menuGroup);

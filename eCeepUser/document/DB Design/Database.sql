@@ -76,6 +76,7 @@ INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61,60,'Deleted Q
 CREATE TABLE PolicyRule (
 	ID                 	INT             NOT NULL 		AUTO_INCREMENT,
 	RuleName	        VARCHAR(255)    NOT NULL,
+    RuleKey             VARCHAR(255)    NOT NULL        DEFAULT '',
 	ValueType	        VARCHAR(255)    NOT NULL,
 	RuleValue	        VARCHAR(255)    NOT NULL,
 	IsSystemRule        BIT             NOT NULL 		DEFAULT True,
@@ -86,14 +87,14 @@ CREATE TABLE PolicyRule (
 INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(20,'Access All Customer','Check','True',FALSE,20);
 INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(21,'Show All Quotes','Check','True',FALSE,21);
 
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(101,'ModelList','Option','1',FALSE,101);
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(102,'ModelList','Option','2',FALSE,102);
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(103,'ModelList','Option','3',FALSE,103);
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(104,'ModelList','Option','4',FALSE,104);
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(105,'ModelList','Option','5',FALSE,105);
+INSERT INTO PolicyRule(ID,RuleName,RuleKey,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(101,'ModelList','1','Option','True',FALSE,101);
+INSERT INTO PolicyRule(ID,RuleName,RuleKey,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(102,'ModelList','2','Option','True',FALSE,102);
+INSERT INTO PolicyRule(ID,RuleName,RuleKey,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(103,'ModelList','3','Option','True',FALSE,103);
+INSERT INTO PolicyRule(ID,RuleName,RuleKey,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(104,'ModelList','4','Option','True',FALSE,104);
+INSERT INTO PolicyRule(ID,RuleName,RuleKey,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(105,'ModelList','5','Option','True',FALSE,105);
 
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(500,'Factor','value','0.43',FALSE,500);
-INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(501,'Factor1','value','2.88',TRUE,501);
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(500,'Factor','Value','0.43',FALSE,500);
+INSERT INTO PolicyRule(ID,RuleName,ValueType,RuleValue,IsSystemRule,DisplayOrder) VALUES(501,'Factor1','Value','2.88',TRUE,501);
 
 /******************************
  *  Table - Policy
@@ -125,11 +126,11 @@ CREATE TABLE PolicyDetail (
 );
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',20,'Access All Customer','True');
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',21,'Show All Quotes','False');
-INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',101,'ModelList','1');
-INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',102,'ModelList','2');
-INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',103,'ModelList','3');
-INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',104,'ModelList','4');
-INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',105,'ModelList','5');
+INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',101,'ModelList','True');
+INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',102,'ModelList','True');
+INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',103,'ModelList','True');
+INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',104,'ModelList','True');
+INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',105,'ModelList','True');
 INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(1,'System Super Policy',500,'Factor','1.85');
 
 #INSERT INTO PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) VALUES(2,'System Default Policy',20,'Access All Customer','True');

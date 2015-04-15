@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserMenuGroup {
-	private boolean isVisible;
 	private String title;
 	private List<UserMenuLeaf> leaves;
 	
@@ -13,11 +12,11 @@ public class UserMenuGroup {
 	}
 
 	public boolean isIsVisible() {
-		return isVisible;
-	}
-
-	public void setIsVisible(boolean isVisible) {
-		this.isVisible = isVisible;
+		if(leaves.size()<=0) return false;
+		
+		boolean found = leaves.stream().filter(A -> A.isIsVisible()).count()>0;
+		
+		return found;
 	}
 
 	public String getTitle() {
