@@ -14,6 +14,7 @@ import eceep.user.domain.UserDetail;
 import eceep.user.domain.UserMenuGroup;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
+import eceep.user.domain.UserPolicyOption;
 import eceep.user.service.User;
 import eceep.user.service.impl.UserFactoryImpl;
 
@@ -74,17 +75,13 @@ public class UserTest {
 		sValue = userPolicy.getRuleValueString("Factor1");
 		Assert.assertEquals(sValue, "2.88");
 
-		Map<String, Boolean> ruleValueList = userPolicy.getRuleValueMap("ModelList");
-		for(Map.Entry<String, Boolean> value : ruleValueList.entrySet()){
-			System.out.println(value.getKey() + " : " + value.getValue()); 
+		String optionPolicyName = userPolicy.getPolicyName();
+		List<UserPolicyOption> ruleValueOptions = userPolicy.getRuleValueOptions("ModelList");
+		System.out.println("Option policy name: " + optionPolicyName);
+		for(UserPolicyOption option : ruleValueOptions){
+			System.out.println(option.getOptionName() + " : " + option.getOptionValue() + ", " + option.isRuleValue()); 
 		}
 		
-		System.out.println("-------------------------------------");
-		
-		Map<String, String> options = userPolicy.getRuleValueMapOptions("ModelList");
-		for(Map.Entry<String, String> value : options.entrySet()){
-			System.out.println(value.getKey() + " : " + value.getValue()); 
-		}
 		
 		//ruleValueList.forEach(System.out::println);
 	}

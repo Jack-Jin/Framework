@@ -1,20 +1,14 @@
 package eceep.user.domain;
 
-import java.util.Map;
-import org.apache.commons.collections4.map.LinkedMap;
-
 public class UserPolicyRule<T> {
 	private final Class<T> type;
 
 	private int id;
 	private String name;
-	private Map<String, String> options;
 
 	private T value;
 
 	public UserPolicyRule(Class<T> type) {
-		this.options = new LinkedMap<String, String>();
-
 		this.type = type;
 	}
 
@@ -44,14 +38,5 @@ public class UserPolicyRule<T> {
 
 	public void setValue(T value) {
 		this.value = value;
-	}
-
-	public Map<String, String> getOptions() {
-		return options;
-	}
-	
-
-	public void setOptions(Map<String, String> options) {
-		this.options = options;
 	}
 }

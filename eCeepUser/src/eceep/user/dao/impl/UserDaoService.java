@@ -22,6 +22,7 @@ import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
+import eceep.user.domain.UserPolicyOption;
 import eceep.user.domain.UserPolicyRule;
 
 public class UserDaoService implements UserDao {
@@ -386,8 +387,7 @@ public class UserDaoService implements UserDao {
 	private void result2PolicyDetail(ResultSet rs, List<UserPolicyRule> rules) throws SQLException {
 		// PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleOptionName,RuleOptionValue,ValueType,RuleValue
 		String ruleName = "";
-		Map<String, String> options = null;
-		Map<String, Boolean> values = null;
+		List<UserPolicyOption> options = null;
 
 		while (rs.next()) {
 			String valueType = rs.getString("ValueType");
@@ -429,26 +429,20 @@ public class UserDaoService implements UserDao {
 					ruleName = rs.getString("PolicyRuleName");
 					
 					// Policy Rule
-					UserPolicyRule<Map> policyRule = new UserPolicyRule<Map>(Map.class);
+					Class<?> userPolicyOptionClazz = (new ArrayList<UserPolicyOption>()).getClass();
+					UserPolicyRule<List<UserPolicyOption>> policyRule = new UserPolicyRule(userPolicyOptionClazz);
 					policyRule.setId(ruleID);
 					policyRule.setName(ruleName);
 					// Policy Rule - Option
-					options = new LinkedMap<String, String>();
-					options.put(ruleOptionName, ruleOptionValue);
-					policyRule.setOptions(options);
-					// Policy Rule - Value
-					values = new LinkedMap<String,Boolean>();
-					values.put(ruleOptionName, (value.equalsIgnoreCase("true") ? true : false));					
-					policyRule.setValue(values);
+					options = new ArrayList<UserPolicyOption>();
+					options.add(new UserPolicyOption(ruleID, ruleOptionName, ruleOptionValue, (value.equalsIgnoreCase("true") ? true : false)));
+					policyRule.setValue(options);
 					
 					// Add Policy Rule in Rules
 					rules.add(policyRule);
 				} else {
 					// Policy Rule - Option
-					options.put(ruleOptionName, ruleOptionValue);
-					
-					// Policy Rule - Value
-					values.put(ruleOptionName, (value.equalsIgnoreCase("true") ? true : false));
+					options.add(new UserPolicyOption(ruleID, ruleOptionName, ruleOptionValue, (value.equalsIgnoreCase("true") ? true : false)));
 				}
 			}
 		}

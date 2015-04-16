@@ -60,6 +60,16 @@ public class UserPolicy {
 		return null;
 	}
 
+	public List<UserPolicyOption> getRuleValueOptions(String ruleName){
+		UserPolicyRule<List> rule = this.getRuleValue(List.class, ruleName);
+		
+		if(rule.getType().equals(UserPolicyOption.class))
+			return (List<UserPolicyOption>)rule.getValue();
+		
+		return null;
+	}
+	
+	/*
 	public Map<String, Boolean> getRuleValueMap(String ruleName) {
 		UserPolicyRule<Map> rule = this.getRuleValue(Map.class, ruleName);
 
@@ -96,6 +106,7 @@ public class UserPolicy {
 
 		return result;
 	}
+	*/
 
 	public int getId() {
 		return id;
