@@ -458,6 +458,7 @@ public class UserDaoService implements UserDao {
 
 		while (rs.next()) {
 			// ID,ParentID,MenuText,IsLeaf,MenuNo,URL
+			int id = rs.getInt("ID");
 			String menuText = rs.getString("MenuText");
 			boolean isLeaf = rs.getBoolean("IsLeaf");
 			boolean isVisible = rs.getBoolean("IsVisiable");
@@ -470,6 +471,7 @@ public class UserDaoService implements UserDao {
 				menus.add(menuGroup);
 			} else {
 				UserMenuLeaf menuLeaf = new UserMenuLeaf();
+				menuLeaf.setId(id);
 				menuLeaf.setMenuText(menuText);
 				menuLeaf.setPageUrl(rs.getString("URL"));
 				menuLeaf.setIsVisible(isVisible);

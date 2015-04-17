@@ -81,8 +81,7 @@ public class UserTest {
 		for(UserPolicyOption option : ruleValueOptions){
 			System.out.println(option.getOptionName() + " : " + option.getOptionValue() + ", " + option.isRuleValue()); 
 		}
-		
-		
+			
 		//ruleValueList.forEach(System.out::println);
 	}
 
@@ -93,7 +92,7 @@ public class UserTest {
 		for (UserMenuGroup entry : menus) {
 			System.out.println(entry.getTitle() + "(" + entry.isIsVisible()  + ")---------------------------------");
 			List<UserMenuLeaf> value = entry.getLeaves();
-			value.forEach(A -> System.out.println(A.getMenuText() + "(" + A.isIsVisible() + "), [" + A.getPageUrl() + "]"));
+			value.forEach(A -> System.out.println(A.getId() + " - " + A.getMenuText() + "(" + A.isIsVisible() + "), [" + A.getPageUrl() + "]"));
 		}
 	}
 

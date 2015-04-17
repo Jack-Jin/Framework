@@ -2,6 +2,7 @@ package eceep.web.ui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
 import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
+import eceep.user.domain.UserPolicyOption;
 import eceep.user.domain.UserPolicyRule;
 import eceep.user.service.User;
 import eceep.web.repository.WebContext;
@@ -113,7 +115,8 @@ public class UserCompanyManagement extends HttpServlet {
 			UserPolicy userPolicy = (UserPolicy)oPolicy[0];
 			
 			List<UserPolicyRule<Boolean>> userPolicyCheck = userPolicy.getRules().stream().filter(A -> A.getType()==Boolean.class).collect(Collectors.toList());
-			List<UserPolicyRule<Map>> userPolicyOption = userPolicy.getRules().stream().filter(A -> A.getType()==Map.class).collect(Collectors.toList());			
+			Class<?> userPolicyOptionListType = (new ArrayList<UserPolicyOption>()).getClass();
+			List<UserPolicyRule<List>> userPolicyOption = userPolicy.getRules().stream().filter(A -> A.getType()==userPolicyOptionListType).collect(Collectors.toList());			
 			List<UserPolicyRule<String>> userPolicyValue = userPolicy.getRules().stream().filter(A -> A.getType()==String.class).collect(Collectors.toList());
 			
 			// Selected menu

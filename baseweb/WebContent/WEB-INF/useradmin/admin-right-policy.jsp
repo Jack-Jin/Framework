@@ -7,6 +7,8 @@
   .TBL-PolicyOptions, .TBL-PolicyOptions tr, .TBL-PolicyOptions td { border: 0; padding: 0; margin: 0; }
 </style>
 
+<form action="" method="post">
+
 <%-- Menus --%>
 <c:set value="${0}" var="num" scope="request"></c:set>
 <c:set value="${4}" var="colnum" scope="request"></c:set>
@@ -17,7 +19,7 @@
 <tr>
 <c:forEach items="${usermenu.menus}" var="usermenugroup">
 	<c:forEach items="${usermenugroup.leaves}" var="usermenuleaf">
-		<td><input type="checkbox" name="isVisible" ${usermenuleaf.isVisible? "checked=checked" : ""} />${usermenuleaf.menuText}</td>
+		<td><input type="checkbox" name="menu-${usermenuleaf.id}" ${usermenuleaf.isVisible? "checked=checked" : ""} />${usermenuleaf.menuText}</td>
 		
 		<c:set value="${num+1}" var="num" scope="request"></c:set>
 		<c:if test="${num%colnum == 0}">
@@ -34,14 +36,15 @@
 <%-- Policy - Check --%>
 <c:if test="${userpolicycheck != null}">
 	<c:set value="${0}" var="num" scope="request"></c:set>
-	<c:set value="${4}" var="colnum" scope="request"></c:set>
+	<c:set value="${3}" var="colnum" scope="request"></c:set>
+	<c:set value="${100/colnum}" var="colwidth" scope="request"></c:set>
 	<table style="width: 95%;">
 	<tr>
 	  <td colspan="${colnum}" class="blockline">Policy</td>
 	</tr>
 	<tr>
 	<c:forEach items="${userpolicycheck}" var="checkpolicy">
-	    <td><input type="checkbox" name="" ${checkpolicy.value? "checked=checked" : ""} />${checkpolicy.name}</td>
+	    <td style="width: ${colwidth}%;"><input type="checkbox" name="policy-${checkpolicy.id}" ${checkpolicy.value? "checked=checked" : ""} />${checkpolicy.name}</td>
 	  
 		<c:set value="${num+1}" var="num" scope="request"/>
 		<c:if test="${num%colnum == 0}">
@@ -49,7 +52,7 @@
 		</c:if>	  
 	</c:forEach>
 	<c:forEach begin="1" end="${colnum-num%colnum}" var="ii" step="1">
-		<td></td>
+		<td style="width: ${colwidth}%;"></td>
 	</c:forEach>
 	</tr>
 	</table>
@@ -61,14 +64,15 @@
 	<c:forEach items="${userpolicyoption}" var="optionpolicy">
 	  <tr><td colspan=2 class="blockline">&nbsp;</td></tr>
       <tr>
-        <td valign="top" style="padding-top: 3px;">${optionpolicy.name}</td>
+        <td valign="top" style="width: 15%; padding-top: 3px;">${optionpolicy.name}</td>
         <td>
 			<c:set value="${0}" var="num" scope="request"></c:set>
-			<c:set value="${8}" var="colnum" scope="request"></c:set>
+			<c:set value="${6}" var="colnum" scope="request"></c:set>
+			<c:set value="${100/colnum}" var="colwidth" scope="request"></c:set>
 			<table class="TBL-PolicyOptions">
 			<tr valign="top">
 			<c:forEach items="${optionpolicy.value}" var="optionpolicyitem">
-			    <td><input type="checkbox" name="${optionpolicyitem.key}" ${optionpolicyitem.value? "checked=checked" : ""} />${optionpolicyitem.key}</td>
+			    <td style="width: ${colwidth}%;"><input type="checkbox" name="policy-${optionpolicyitem.id}" ${optionpolicyitem.ruleValue? "checked=checked" : ""} />${optionpolicyitem.optionName}</td>
 			  
 				<c:set value="${num+1}" var="num" scope="request"/>
 				<c:if test="${num%colnum == 0}">
@@ -76,7 +80,7 @@
 				</c:if>	  
 			</c:forEach>
 			<c:forEach begin="1" end="${colnum-num%colnum}" var="ii" step="1">
-				<td></td>
+				<td style="width: ${colwidth}%;"></td>
 			</c:forEach>
 			</tr>
 			</table>
@@ -89,16 +93,17 @@
 <%-- Policy - Values --%>
 <c:if test="${userpolicyvalue != null}">
 	<c:set value="${0}" var="num" scope="request"></c:set>
-	<c:set value="${4}" var="colnum" scope="request"></c:set>
+	<c:set value="${3}" var="colnum" scope="request"></c:set>
+	<c:set value="${100/colnum}" var="colwidth" scope="request"></c:set>
 	<table style="width: 95%;">
 	<tr>
 	  <td colspan="${colnum}" class="blockline">&nbsp;</td>
 	</tr>
 	<tr>
 	<c:forEach items="${userpolicyvalue}" var="voluepolicy">
-	    <td>
+	    <td style="width: ${colwidth}%;">
 	      ${voluepolicy.name}:&nbsp;
-	      <input type="text" name="" value="${voluepolicy.value}" />
+	      <input type="text" name="policy-${voluepolicy.id}" value="${voluepolicy.value}" style="width: 80px;"/>
 	    </td>
 	  
 		<c:set value="${num+1}" var="num" scope="request"/>
@@ -107,12 +112,15 @@
 		</c:if>	  
 	</c:forEach>
 	<c:forEach begin="1" end="${colnum-num%colnum}" var="ii" step="1">
-		<td></td>
+		<td style="width: ${colwidth}%;"></td>
 	</c:forEach>
 	</tr>
 	</table>
 </c:if>
 
-
-
-
+<div style="width: 95%; padding-left: 120px; margin-top: 10px;">
+    <input type="submit" name="btnUpdate" value="Update" class="CusButton" style="width: 80px;"/>
+    <input type="hidden" name="action" value="Policy Update"/>
+    <input type="hidden" name="id" value="${userpolicy.id}"/>
+</div>
+</form>

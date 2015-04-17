@@ -48,7 +48,7 @@ BEGIN
 		  ,IF(ISNULL(B.RuleValue),A.RuleValue,B.RuleValue) AS 'RuleValue' 
 	FROM PolicyRule A
 	LEFT JOIN (SELECT PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue FROM PolicyDetail WHERE PolicyID=UserPolicyID) B ON A.ID=B.PolicyRuleID
-	ORDER BY PolicyRuleName,PolicyRuleID;
+	ORDER BY DisplayOrder;
 END $$
 
 DELIMITER ;

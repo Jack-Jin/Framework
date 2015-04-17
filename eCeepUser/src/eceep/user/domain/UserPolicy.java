@@ -63,7 +63,8 @@ public class UserPolicy {
 	public List<UserPolicyOption> getRuleValueOptions(String ruleName){
 		UserPolicyRule<List> rule = this.getRuleValue(List.class, ruleName);
 		
-		if(rule.getType().equals(UserPolicyOption.class))
+		Class<?> userPolicyOptionListType = (new ArrayList<UserPolicyOption>()).getClass();
+		if(rule.getType().equals(userPolicyOptionListType))
 			return (List<UserPolicyOption>)rule.getValue();
 		
 		return null;
