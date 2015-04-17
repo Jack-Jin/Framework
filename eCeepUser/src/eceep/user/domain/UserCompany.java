@@ -18,6 +18,8 @@ public class UserCompany {
 	private boolean isSystem;
 	private int parentID;
 
+	private boolean policyInherited;
+
 	public int getId() {
 		return id;
 	}
@@ -144,6 +146,14 @@ public class UserCompany {
 
 	public void setParentID(int parentID) {
 		this.parentID = parentID;
+	}
+
+	public boolean isPolicyInherited() {
+		return policyInherited;
+	}
+
+	public void setPolicyInherited(boolean policyInherited) {
+		this.policyInherited = policyInherited;
 	}
 
 }

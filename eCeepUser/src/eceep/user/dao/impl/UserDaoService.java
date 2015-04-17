@@ -183,7 +183,8 @@ public class UserDaoService implements UserDao {
 			conn = JdbcUtils.getConnection();
 
 			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode";
-			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime ";
+			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime,";
+			sql += "IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' ";
 			sql += "FROM Users WHERE CompanyID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, companyID);
@@ -238,12 +239,12 @@ public class UserDaoService implements UserDao {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		CompanyNode node = new CompanyNode(0, "root");
+		CompanyNode node = new CompanyNode(0, "root", false);
 
 		List<UserCompany> companys = new ArrayList<UserCompany>();
 		try {
 			conn = JdbcUtils.getConnection();
-			String sql = "SELECT ID,CompanyName,ParentID ";
+			String sql = "SELECT ID,CompanyName,ParentID,IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' ";
 			sql += "FROM UserCompany";
 			ps = conn.prepareStatement(sql);
 
@@ -491,7 +492,8 @@ public class UserDaoService implements UserDao {
 				.collect(Collectors.toList());
 
 		for (int i = 0; children != null && i < children.size(); i++) {
-			CompanyNode childNode = new CompanyNode(children.get(i).getId(), children.get(i).getCompanyName());
+			UserCompany company = children.get(i);
+			CompanyNode childNode = new CompanyNode(company.getId(), company.getCompanyName(), company.isPolicyInherited());
 			getCompanyTree(childNode, companys);
 
 			node.getChildren().add(childNode);

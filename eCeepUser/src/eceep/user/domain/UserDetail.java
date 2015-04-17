@@ -24,6 +24,8 @@ public class UserDetail {
 	private boolean isNeverExpire;
 	private Date expiryDate;
 
+	private boolean policyInherited;
+
 	private int currencyID;
 	private int unitID;
 	private int languageID;
@@ -184,6 +186,14 @@ public class UserDetail {
 
 	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
+	}
+
+	public boolean isPolicyInherited() {
+		return policyInherited;
+	}
+
+	public void setPolicyInherited(boolean policyInherited) {
+		this.policyInherited = policyInherited;
 	}
 
 	public int getCurrencyID() {

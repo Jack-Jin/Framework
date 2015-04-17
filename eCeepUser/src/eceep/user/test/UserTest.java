@@ -112,7 +112,7 @@ public class UserTest {
 		for (int i = 0; i < node.getChildren().size(); i++) {
 			CompanyNode child = node.getChildren().get(i);
 
-			System.out.println(tab + child.getName() + "(" + child.getId() + ")");
+			System.out.println(tab + child.getName() + "(" + child.getId() + " ,Inherited: " + child.isPolicyInherited() +  ")");
 
 			showCompanyTree(tab + "\t", child);
 		}

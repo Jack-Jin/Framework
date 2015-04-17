@@ -123,17 +123,20 @@ public class UserCompanyManagement extends HttpServlet {
 			UserMenu userMenu = (UserMenu)oPolicy[1];
 
 			// Set attributes: node, usercompany, companyselected, users
+			request.setAttribute("companyselected", companySelected);
+			
 			request.setAttribute("node", allOfCompanys);
 			request.setAttribute("usercompany", userCompany);
-			request.setAttribute("companyselected", companySelected);
+			
 			request.setAttribute("users", users);
 			request.setAttribute("userdetail", userDetail);
+			
 			request.setAttribute("userpolicy", userPolicy);
 			request.setAttribute("userpolicycheck", userPolicyCheck);
 			request.setAttribute("userpolicyoption", userPolicyOption);
 			request.setAttribute("userpolicyvalue", userPolicyValue);
-			
 			request.setAttribute("usermenu", userMenu);
+			
 			request.setAttribute("resultmessage", resultMessage);
 
 		} catch (SQLException e) {
