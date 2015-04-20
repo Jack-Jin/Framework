@@ -2,6 +2,7 @@ package eceep.user.service.impl;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import eceep.user.dao.UserDao;
 import eceep.user.dao.impl.UserDaoFactoryMySql;
@@ -100,14 +101,25 @@ public class UserService implements User {
 	public UserDetail getUserDetail(int userID) throws SQLException {
 		return userDao.getUserDetail(userID);
 	}
-	
+
 	@Override
 	public boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException {
 		return userDao.updateUserInfo(userDetail, companyID);
 	}
-	
+
 	@Override
 	public Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException {
 		return userDao.getPolicy(pTrueCompany_FalseUser, pID);
+	}
+
+	@Override
+	public int updatePolicy(Map<Integer, Boolean> pMenus, Map<Integer, String> pRules, boolean companySelected, int id)
+			throws SQLException {
+		return userDao.updatePolicy(pMenus, pRules, companySelected, id);
+	}
+
+	@Override
+	public void removePolicy(boolean companySelected, int id) throws SQLException {
+		userDao.removePolicy(companySelected, id);
 	}
 }

@@ -3,6 +3,8 @@ package eceep.web.ui;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,6 +34,9 @@ import eceep.web.repository.WebUtils;
 public class UserCompanyManagement extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private String caption_Button_PolicyUpdate = "Update";
+	private String caption_Button_PolicyRemove = "Remove Private Policy";
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -59,7 +64,7 @@ public class UserCompanyManagement extends HttpServlet {
 
 		try {
 			// Selected Company ID
-			String paraCompanyID = "";
+			String selectedCompanyID = "";
 			// Selected company view.
 			boolean companySelected = true;
 			// Selected User Detail
@@ -69,29 +74,53 @@ public class UserCompanyManagement extends HttpServlet {
 
 			// Action: "Selected Company", "Company Update"
 			if (action.equalsIgnoreCase("Selected Company")) {
-				paraCompanyID = request.getParameter("companyID");
+				selectedCompanyID = request.getParameter("companyID");
 				companySelected = true;
 			} else if (action.equalsIgnoreCase("Company Update")) {
 				UserCompany company = WebUtils.request2Bean(request, UserCompany.class);
 				user.updateCompanyInfo(company);
 
-				paraCompanyID = company.getId() + "";
+				selectedCompanyID = company.getId() + "";
 				companySelected = true;
 				resultMessage = "Company information updated.";
 			} else if (action.equalsIgnoreCase("Selected User")) {
-				int paraUserID = Integer.parseInt(request.getParameter("userID"));
-				userDetail = user.getUserDetail(paraUserID);
-						
-				paraCompanyID = request.getParameter("companyID");
+				int selectedUserID = Integer.parseInt(request.getParameter("userID"));
+				userDetail = user.getUserDetail(selectedUserID);
+
+				selectedCompanyID = request.getParameter("companyID");
 				companySelected = false;
-			} else if(action.equalsIgnoreCase("User Update")) {
-				paraCompanyID = request.getParameter("companyID");
-				
+			} else if (action.equalsIgnoreCase("User Update")) {
+				selectedCompanyID = request.getParameter("companyID");
+
 				userDetail = WebUtils.request2Bean(request, UserDetail.class);
-				user.updateUserInfo(userDetail, Integer.parseInt(paraCompanyID));
+				user.updateUserInfo(userDetail, Integer.parseInt(selectedCompanyID));
 
 				companySelected = false;
 				resultMessage = "User information updated.";
+			} else if (action.equalsIgnoreCase("Company Policy Update")
+					|| action.equalsIgnoreCase("User Policy Update")) {
+				companySelected = action.equalsIgnoreCase("Company Policy Update");
+				int policyID = Integer.parseInt(request.getParameter("policyID"));
+				selectedCompanyID = request.getParameter("companyID");
+				
+				int selectedUserID = -1;
+				if (!companySelected){
+					selectedUserID = Integer.parseInt(request.getParameter("userID"));
+					
+					userDetail = user.getUserDetail(selectedUserID);
+				}
+				
+				if(request.getParameter("btnUpdate").equals(caption_Button_PolicyUpdate)){
+					updatePolicy(user, request, companySelected, Integer.parseInt(selectedCompanyID), selectedUserID);
+					
+					resultMessage = "Policy updated.";					
+				} else {
+					int id = companySelected? Integer.parseInt(selectedCompanyID) : selectedUserID;
+					
+					user.removePolicy(companySelected, id);
+					
+					resultMessage = "Private policy removed.";
+				}
 			}
 
 			// Get All of Company tree.
@@ -99,45 +128,52 @@ public class UserCompanyManagement extends HttpServlet {
 
 			// If no company ID, set current company ID is the first one of
 			// company tree.
-			if (paraCompanyID == null || paraCompanyID.isEmpty())
-				paraCompanyID = allOfCompanys.getChildren().get(0).getId() + "";
+			if (selectedCompanyID == null || selectedCompanyID.isEmpty())
+				selectedCompanyID = allOfCompanys.getChildren().get(0).getId() + "";
 
 			// Selected Company Info.
-			UserCompany userCompany = user.getUserCompany(Integer.parseInt(paraCompanyID));
+			UserCompany userCompany = user.getUserCompany(Integer.parseInt(selectedCompanyID));
 
 			// User List of Current Company
-			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(paraCompanyID));
-			
+			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(selectedCompanyID));
+
 			// Selected company or user Policy.
-			Object[] oPolicy = user.getPolicy(companySelected, (companySelected? userCompany.getId(): userDetail.getId()));
-			
+			Object[] oPolicy = user.getPolicy(companySelected,
+					(companySelected ? userCompany.getId() : userDetail.getId()));
+
 			// Selected policy
-			UserPolicy userPolicy = (UserPolicy)oPolicy[0];
-			
-			List<UserPolicyRule<Boolean>> userPolicyCheck = userPolicy.getRules().stream().filter(A -> A.getType()==Boolean.class).collect(Collectors.toList());
+			UserPolicy userPolicy = (UserPolicy) oPolicy[0];
+
+			List<UserPolicyRule<Boolean>> userPolicyCheck = userPolicy.getRules().stream()
+					.filter(A -> A.getType() == Boolean.class).collect(Collectors.toList());
 			Class<?> userPolicyOptionListType = (new ArrayList<UserPolicyOption>()).getClass();
-			List<UserPolicyRule<List>> userPolicyOption = userPolicy.getRules().stream().filter(A -> A.getType()==userPolicyOptionListType).collect(Collectors.toList());			
-			List<UserPolicyRule<String>> userPolicyValue = userPolicy.getRules().stream().filter(A -> A.getType()==String.class).collect(Collectors.toList());
-			
+			List<UserPolicyRule<List>> userPolicyOption = userPolicy.getRules().stream()
+					.filter(A -> A.getType() == userPolicyOptionListType).collect(Collectors.toList());
+			List<UserPolicyRule<String>> userPolicyValue = userPolicy.getRules().stream()
+					.filter(A -> A.getType() == String.class).collect(Collectors.toList());
+
 			// Selected menu
-			UserMenu userMenu = (UserMenu)oPolicy[1];
+			UserMenu userMenu = (UserMenu) oPolicy[1];
 
 			// Set attributes: node, usercompany, companyselected, users
 			request.setAttribute("companyselected", companySelected);
-			
+
 			request.setAttribute("node", allOfCompanys);
 			request.setAttribute("usercompany", userCompany);
-			
+
 			request.setAttribute("users", users);
 			request.setAttribute("userdetail", userDetail);
-			
+
 			request.setAttribute("userpolicy", userPolicy);
 			request.setAttribute("userpolicycheck", userPolicyCheck);
 			request.setAttribute("userpolicyoption", userPolicyOption);
 			request.setAttribute("userpolicyvalue", userPolicyValue);
 			request.setAttribute("usermenu", userMenu);
-			
+
 			request.setAttribute("resultmessage", resultMessage);
+			
+			request.setAttribute("caption_Button_PolicyUpdate", caption_Button_PolicyUpdate);
+			request.setAttribute("caption_Button_PolicyRemove", caption_Button_PolicyRemove);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -157,4 +193,31 @@ public class UserCompanyManagement extends HttpServlet {
 		this.doGet(request, response);
 	}
 
+	private void updatePolicy(User user, HttpServletRequest request, boolean companySelected, int selectedCompanyID,
+			int selectedUserID) throws SQLException {
+		Map<Integer, Boolean> menus = new HashMap<Integer, Boolean>();
+		Map<Integer, String> rules = new HashMap<Integer, String>();
+
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+
+			if (paramName.isEmpty())
+				continue;
+
+			if (paramName.startsWith("menus-")) {
+				int key = Integer.parseInt(paramName.substring(6));
+				Boolean value = request.getParameter("menus-" + key).equals("on") ? true : false;
+
+				menus.put(key, value);
+			} else if (paramName.startsWith("policy-")) {
+				int key = Integer.parseInt(paramName.substring(7));
+				String value = request.getParameter("policy-" + key);
+
+				rules.put(key, value);
+			}
+		}
+
+		user.updatePolicy(menus, rules, companySelected, (companySelected ? selectedCompanyID : selectedUserID));
+	}
 }

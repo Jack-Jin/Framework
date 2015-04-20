@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,7 +134,7 @@ public class UserDaoService implements UserDao {
 
 			boolean hadResults = cStmt.execute();
 
-			// 3. Get User Policy
+			// 1. Get User Policy
 			if (hadResults) {
 				rs = cStmt.getResultSet();
 				if (rs.next()) {
@@ -144,7 +145,7 @@ public class UserDaoService implements UserDao {
 					}
 				}
 
-				// 4. Get User Menu.
+				// 2. Get User Menu.
 				hadResults = cStmt.getMoreResults();
 				if (hadResults) {
 					rs = cStmt.getResultSet();
@@ -152,13 +153,26 @@ public class UserDaoService implements UserDao {
 					userMenu = resultSet2Menu(rs);
 				}
 
-				// 5. Get Policy Detail.
+				// 3. Get Policy Detail.
 				hadResults = cStmt.getMoreResults();
 				if (userPolicy != null && hadResults) {
 					rs = cStmt.getResultSet();
 
 					result2PolicyDetail(rs, userPolicy.getRules());
 				}
+
+				// 4. Get Policy Inherited.
+				hadResults = cStmt.getMoreResults();
+				if (userPolicy != null && hadResults) {
+					rs = cStmt.getResultSet();
+
+					boolean policyInherited = false;
+					if (rs.next())
+						policyInherited = rs.getBoolean("PolicyInherited");
+
+					userPolicy.setPolicyInherited(policyInherited);
+				}
+
 			}
 		} finally {
 			JdbcUtils.free(rs, cStmt, conn);
@@ -383,6 +397,168 @@ public class UserDaoService implements UserDao {
 		return (updateCount > 0) ? true : false;
 	}
 
+	@Override
+	public int updatePolicy(Map<Integer, Boolean> pMenus, Map<Integer, String> pRules, boolean companySelected, int id)
+			throws SQLException {
+		int policyID = -1;
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = JdbcUtils.getConnection();
+
+			boolean inherited = false;
+
+			// Get Policy ID, Is inherited.
+			String sql = "";
+			if (companySelected)
+				sql = "SELECT PolicyID,IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' FROM UserCompany WHERE ID=?";
+			else
+				sql = "SELECT PolicyID,IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' FROM Users WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, id);
+
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				policyID = rs.getInt("PolicyID");
+				inherited = rs.getBoolean("PolicyInherited");
+			}
+
+			// Determine is insert or update.
+			boolean isInsert = false;
+			if (inherited) {
+				if (companySelected) {
+					if (id != 1 && id != 2) { // admin company & default company
+						isInsert = true;
+					}
+				} else { // user
+					isInsert = true;
+				}
+			}
+
+			// Default company policy.
+			boolean defaultCompanyPolicy = false;
+			if (companySelected && id == 2)
+				defaultCompanyPolicy = true;
+
+			if (isInsert) {
+				// Insert new policy from default policy.
+				sql = "INSERT INTO Policy(PolicyName,Menus) SELECT ? AS 'PolicyName',Menus FROM Policy WHERE ID=2";
+				ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+				String policyName = companySelected ? "C_" + id : "U_" + id;
+				ps.setString(1, policyName);
+
+				int count = ps.executeUpdate();
+
+				rs = ps.getGeneratedKeys();
+				if (rs.next())
+					policyID = rs.getInt(1);
+
+				if (count > 0) {
+					// Insert Policy Detail from default policy.
+					sql = "INSERT PolicyDetail(PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue) ";
+					sql += "SELECT ? AS 'PolicyID',? AS 'PolicyName',ID AS 'PolicyRuleID',RuleName AS 'PolicyRuleName',RuleValue ";
+					sql += "FROM PolicyRule ORDER BY DisplayOrder";
+					ps = conn.prepareStatement(sql);
+					ps.setInt(1, policyID);
+					ps.setString(2, policyName);
+
+					count = ps.executeUpdate();
+
+					// Update company or user policy ID by new policy ID.
+					if (companySelected)
+						sql = "UPDATE UserCompany SET PolicyID=?,Policy=? WHERE ID=?";
+					else
+						sql = "UPDATE Users SET PolicyID=?,Policy=? WHERE ID=?";
+					ps = conn.prepareStatement(sql);
+					ps.setInt(1, policyID);
+					ps.setString(2, policyName);
+					ps.setInt(3, id);
+
+					count = ps.executeUpdate();
+				}
+			}
+
+			// Update Menu
+			String menus = "-1";
+			for (Map.Entry<Integer, Boolean> menu : pMenus.entrySet())
+				menus += menu.getValue() ? "," + menu.getKey() : "";
+
+			sql = "UPDATE Policy SET Menus=? WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, menus);
+			ps.setInt(2, policyID);
+
+			int affectCount = ps.executeUpdate();
+
+			// Update Details
+			//   set value is false when value type is check or option.
+			if (defaultCompanyPolicy) {
+				sql = "UPDATE PolicyRule SET RuleValue='False' WHERE ValueType='Check' OR ValueType='Option'";
+				ps = conn.prepareStatement(sql);
+			} else {
+				sql = "UPDATE PolicyDetail SET RuleValue='False' WHERE PolicyID=? AND PolicyRuleID in (SELECT ID FROM PolicyRule WHERE ValueType='Check' OR ValueType='Option')";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, policyID);
+			}
+			ps.executeUpdate();
+
+			//   update values.
+			if(defaultCompanyPolicy){
+				sql = "UPDATE PolicyRule SET RuleValue=? WHERE ID=?";
+				ps = conn.prepareStatement(sql);
+				
+				for(Map.Entry<Integer, String> rule: pRules.entrySet()) {
+					String v = rule.getValue().equals("on")? "True": rule.getValue();
+					ps.setString(1, v);
+					ps.setInt(2, rule.getKey());
+					
+					ps.addBatch();
+				}
+			} else {				
+				sql = "UPDATE PolicyDetail SET RuleValue=? WHERE PolicyID=? AND PolicyRuleID=?";
+				ps = conn.prepareStatement(sql);
+				
+				for (Map.Entry<Integer, String> rule : pRules.entrySet()) {
+					String v = rule.getValue().equals("on") ? "True" : rule.getValue();
+					ps.setString(1, v);
+					ps.setInt(2, policyID);
+					ps.setInt(3, rule.getKey());
+					
+					ps.addBatch();
+				}
+			}
+
+			ps.executeBatch();
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return policyID;
+	}
+
+	@Override
+	public void removePolicy(boolean companySelected, int id) throws SQLException {
+		Connection conn = null;
+		CallableStatement cs = null;
+
+		try {
+			conn = JdbcUtils.getConnection();
+
+			cs = conn.prepareCall("{ CALL RemovePolicy(?,?) }");
+			cs.setBoolean(1, companySelected);
+			cs.setInt(2, id);
+
+			cs.execute();
+		} finally {
+			JdbcUtils.free(null, cs, conn);
+		}
+	}
+
 	/* Functions */
 	/* -------------------------------------------------- */
 	private void result2PolicyDetail(ResultSet rs, List<UserPolicyRule> rules) throws SQLException {
@@ -428,7 +604,7 @@ public class UserDaoService implements UserDao {
 				if (!ruleName.equalsIgnoreCase(rs.getString("PolicyRuleName"))) {
 					// Rule Name
 					ruleName = rs.getString("PolicyRuleName");
-					
+
 					// Policy Rule
 					Class<?> userPolicyOptionClazz = (new ArrayList<UserPolicyOption>()).getClass();
 					UserPolicyRule<List<UserPolicyOption>> policyRule = new UserPolicyRule(userPolicyOptionClazz);
@@ -436,14 +612,16 @@ public class UserDaoService implements UserDao {
 					policyRule.setName(ruleName);
 					// Policy Rule - Option
 					options = new ArrayList<UserPolicyOption>();
-					options.add(new UserPolicyOption(ruleID, ruleOptionName, ruleOptionValue, (value.equalsIgnoreCase("true") ? true : false)));
+					options.add(new UserPolicyOption(ruleID, ruleOptionName, ruleOptionValue, (value
+							.equalsIgnoreCase("true") ? true : false)));
 					policyRule.setValue(options);
-					
+
 					// Add Policy Rule in Rules
 					rules.add(policyRule);
 				} else {
 					// Policy Rule - Option
-					options.add(new UserPolicyOption(ruleID, ruleOptionName, ruleOptionValue, (value.equalsIgnoreCase("true") ? true : false)));
+					options.add(new UserPolicyOption(ruleID, ruleOptionName, ruleOptionValue, (value
+							.equalsIgnoreCase("true") ? true : false)));
 				}
 			}
 		}
@@ -493,10 +671,12 @@ public class UserDaoService implements UserDao {
 
 		for (int i = 0; children != null && i < children.size(); i++) {
 			UserCompany company = children.get(i);
-			CompanyNode childNode = new CompanyNode(company.getId(), company.getCompanyName(), company.isPolicyInherited());
+			CompanyNode childNode = new CompanyNode(company.getId(), company.getCompanyName(),
+					company.isPolicyInherited());
 			getCompanyTree(childNode, companys);
 
 			node.getChildren().add(childNode);
 		}
 	}
+
 }

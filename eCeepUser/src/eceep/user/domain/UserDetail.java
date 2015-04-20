@@ -24,12 +24,12 @@ public class UserDetail {
 	private boolean isNeverExpire;
 	private Date expiryDate;
 
-	private boolean policyInherited;
-
 	private int currencyID;
 	private int unitID;
 	private int languageID;
 
+	private boolean policyInherited;
+	
 	private int createByID;
 	private Date createDate;
 
@@ -188,14 +188,6 @@ public class UserDetail {
 		this.expiryDate = expiryDate;
 	}
 
-	public boolean isPolicyInherited() {
-		return policyInherited;
-	}
-
-	public void setPolicyInherited(boolean policyInherited) {
-		this.policyInherited = policyInherited;
-	}
-
 	public int getCurrencyID() {
 		return currencyID;
 	}
@@ -218,6 +210,14 @@ public class UserDetail {
 
 	public void setLanguageID(int languageID) {
 		this.languageID = languageID;
+	}
+
+	public boolean isPolicyInherited() {
+		return policyInherited;
+	}
+
+	public void setPolicyInherited(boolean policyInherited) {
+		this.policyInherited = policyInherited;
 	}
 
 	public int getCreateByID() {

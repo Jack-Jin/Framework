@@ -7,11 +7,15 @@ BEGIN
 	DECLARE UserPolicyID INTEGER;
 	DECLARE UserCompanyID INTEGER;
 	DECLARE UserParentCompanyID INTEGER;
+    DECLARE PolicyInherited BIT;
 	
-	IF pTrueCompany_FalseUser THEN
-		SELECT PolicyID,ID,ParentID INTO UserPolicyID,UserCompanyID,UserParentCompanyID FROM UserCompany WHERE ID=pID;
+	# Get UserPolicyID,UserCompanyID,UserParentCompanyID,PolicyInherited
+    IF pTrueCompany_FalseUser THEN
+		SELECT PolicyID,ID,ParentID,IFNULL(PolicyID,2)<=2 INTO UserPolicyID,UserCompanyID,UserParentCompanyID,PolicyInherited
+        FROM UserCompany WHERE ID=pID;
 	ELSE
-		SELECT PolicyID,CompanyID INTO UserPolicyID,UserCompanyID FROM Users WHERE ID=pID;
+		SELECT PolicyID,CompanyID,IFNULL(PolicyID,2)<=2 INTO UserPolicyID,UserCompanyID,PolicyInherited
+        FROM Users WHERE ID=pID;
         
         IF UserPolicyID IS NULL OR UserPolicyID<=0 THEN
 			# Get User Company Policy ID
@@ -49,6 +53,10 @@ BEGIN
 	FROM PolicyRule A
 	LEFT JOIN (SELECT PolicyID,PolicyName,PolicyRuleID,PolicyRuleName,RuleValue FROM PolicyDetail WHERE PolicyID=UserPolicyID) B ON A.ID=B.PolicyRuleID
 	ORDER BY DisplayOrder;
+    
+    # 4. PolicyInherited
+    SELECT PolicyInherited AS 'PolicyInherited';
+    
 END $$
 
 DELIMITER ;

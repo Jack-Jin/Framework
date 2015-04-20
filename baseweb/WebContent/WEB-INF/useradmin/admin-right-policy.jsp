@@ -19,7 +19,7 @@
 <tr>
 <c:forEach items="${usermenu.menus}" var="usermenugroup">
 	<c:forEach items="${usermenugroup.leaves}" var="usermenuleaf">
-		<td><input type="checkbox" name="menu-${usermenuleaf.id}" ${usermenuleaf.isVisible? "checked=checked" : ""} />${usermenuleaf.menuText}</td>
+		<td><input type="checkbox" name="menus-${usermenuleaf.id}" ${usermenuleaf.isVisible? "checked=checked" : ""} />${usermenuleaf.menuText}</td>
 		
 		<c:set value="${num+1}" var="num" scope="request"></c:set>
 		<c:if test="${num%colnum == 0}">
@@ -119,8 +119,24 @@
 </c:if>
 
 <div style="width: 95%; padding-left: 120px; margin-top: 10px;">
-    <input type="submit" name="btnUpdate" value="Update" class="CusButton" style="width: 80px;"/>
-    <input type="hidden" name="action" value="Policy Update"/>
-    <input type="hidden" name="id" value="${userpolicy.id}"/>
+    <input type="submit" name="btnUpdate" value="${caption_Button_PolicyUpdate}" class="CusButton" style="width: 80px;"/>
+   	<c:if test="${!userpolicy.policyInherited}">
+	    <input type="submit" name="btnUpdate" value="${caption_Button_PolicyRemove}" class="CusButton" style="width: 160px;"/>
+   	</c:if>
+
+    <c:choose>
+    <c:when test="${companyselected}">
+	    <input type="hidden" name="action" value="Company Policy Update"/>
+    </c:when>
+    <c:otherwise>
+	    <input type="hidden" name="action" value="User Policy Update"/>
+    </c:otherwise>
+    </c:choose>
+    
+    <input type="hidden" name="companyID" value="${usercompany.id}"/>
+    <c:if test="${!companyselected}">
+	    <input type="hidden" name="userID" value="${userdetail.id}"/>
+    </c:if>
+    <input type="hidden" name="policyID" value="${userpolicy.id}"/>
 </div>
 </form>

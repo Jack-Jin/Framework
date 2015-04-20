@@ -12,6 +12,7 @@ public class UserPolicy {
 	private String policyName;
 	private String menus;
 	private String description;
+	private boolean policyInherited;
 
 	private List<UserPolicyRule> rules;
 
@@ -131,6 +132,14 @@ public class UserPolicy {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean isPolicyInherited() {
+		return policyInherited;
+	}
+
+	public void setPolicyInherited(boolean policyInherited) {
+		this.policyInherited = policyInherited;
 	}
 
 	public String getMenus() {

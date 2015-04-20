@@ -18,7 +18,7 @@
             <span onclick="nodeclick(this.parentElement);"></span>
             <span style='${usercompany.id==node.id?"background-color: #ccc;":""}' 
                   onclick='post("${pageContext.request.contextPath}/UserCompanyManagement", { action : "Selected Company", companyID : ${node.id} });'>
-                  ${node.name}${node.policyInherited?"<span style='color: red;'>&nbsp;*<span>":""}
+                  ${node.name}${node.policyInherited? "" : "<span style='color: red;'>&nbsp;!<span>"}
             </span>
           </div>
 	  	  <ul class="treeoftree">
@@ -32,7 +32,7 @@
     <c:otherwise>
 		<li><span style='${usercompany.id==node.id?"background-color: #ccc;":""}' 
 		          onclick='post("${pageContext.request.contextPath}/UserCompanyManagement", { action : "Selected Company", companyID : ${node.id} });'>
-		          ${node.name}${node.policyInherited?"<span style='color: red;'>&nbsp;*<span>":""}
+		          ${node.name}${node.policyInherited? "" : "<span style='color: red;'>&nbsp;!<span>"}
 		    </span>
 		</li>
     </c:otherwise>

@@ -19,7 +19,7 @@ public class UserCompany {
 	private int parentID;
 
 	private boolean policyInherited;
-
+	
 	public int getId() {
 		return id;
 	}
@@ -155,5 +155,5 @@ public class UserCompany {
 	public void setPolicyInherited(boolean policyInherited) {
 		this.policyInherited = policyInherited;
 	}
-
+	
 }

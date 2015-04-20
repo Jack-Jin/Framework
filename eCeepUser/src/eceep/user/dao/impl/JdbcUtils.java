@@ -92,7 +92,8 @@ public class JdbcUtils {
 		}
 	}
 
-	public static <T> T ResultSet2Object(ResultSet rs, Class<T> clazz) throws InstantiationException, IllegalAccessException {
+	public static <T> T ResultSet2Object(ResultSet rs, Class<T> clazz) throws InstantiationException,
+			IllegalAccessException {
 		T object = clazz.newInstance();
 
 		Method[] methods = clazz.getDeclaredMethods();
@@ -104,10 +105,14 @@ public class JdbcUtils {
 
 				// If column name not match, skip.
 				try {
-					md.invoke(object, rs.getObject(colName));
+					if (md.getParameterTypes()[0].equals(boolean.class))
+						md.invoke(object, rs.getBoolean(colName));
+					else
+						md.invoke(object, rs.getObject(colName));
 				} catch (Exception e) {
 				}
 			}
+
 		}
 
 		return object;
