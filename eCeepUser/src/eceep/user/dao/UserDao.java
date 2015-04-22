@@ -18,9 +18,13 @@ public interface UserDao {
 
 	UserCompany getUserCompany(int companyID) throws SQLException;
 
-	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
-
 	boolean updateCompanyInfo(UserCompany company) throws SQLException;
+	
+	int AddNewCompany(boolean nearby, int companyID) throws SQLException;
+	
+	boolean RemoveCompany(int companyID, int byUserID) throws SQLException;
+	
+	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
 
 	UserDetail getUserDetail(int userID) throws SQLException;
 

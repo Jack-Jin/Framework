@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <t:layout>
 
 <style>
@@ -24,8 +25,14 @@
 		<jsp:include page="/WEB-INF/useradmin/admin-left-top.jsp"/>
       </div>
       <div class="Admin-Left-Middle">
-          <span class="CusButton" style="font-size: 0.75em;">+ Company</span>
-          <span class="CusButton" style="font-size: 0.75em;">+ Child</span>
+       <c:if test="${usercompany.id>2}">
+          <span class="CusButton" style="font-size: 0.75em;" 
+                onclick='post("${pageContext.request.contextPath}/UserCompanyManagement",{ action : "Add Company", companyID: ${usercompany.id} });'>+ Company</span>
+          <span class="CusButton" style="font-size: 0.75em;"
+                onclick='post("${pageContext.request.contextPath}/UserCompanyManagement",{ action : "Add Child Company", companyID: ${usercompany.id} });'>+ Child</span>
+          <span class="CusButton" style="font-size: 0.75em;"
+                onclick='post("${pageContext.request.contextPath}/UserCompanyManagement",{ action : "Delete Company", companyID: ${usercompany.id} });'>Delete</span>
+       </c:if>
       </div>
       <div class="Admin-Left-Middle1">
           <span class="CusButton" style="font-size: 0.75em;">+ User</span>
@@ -34,6 +41,7 @@
         <jsp:include page="/WEB-INF/useradmin/admin-left-bottom.jsp"/>
       </div>
     </td>
+    
     <%-- Right Detail Info. --%>
     <td valign="top" class="Admin-Right">
 		<jsp:include page="/WEB-INF/useradmin/admin-right.jsp"/>

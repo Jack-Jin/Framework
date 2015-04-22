@@ -82,7 +82,7 @@ public class UserTest {
 	@Test
 	public void testMenu() {
 		UserMenu userMenu = user.getUserMenu();
-		
+
 		this.displayMenu(userMenu);
 	}
 
@@ -106,16 +106,6 @@ public class UserTest {
 	}
 
 	@Test
-	public void testGetUsersByCompanyID() throws SQLException {
-		List<UserDetail> users = user.getUsersByCompanyID(1);
-
-		for (UserDetail user : users) {
-			System.out.println("UserID: " + user.getId() + "; UserName: " + user.getUserName() + "; PolicyInherited: "
-					+ user.isPolicyInherited());
-		}
-	}
-
-	@Test
 	public void testUpdateCompanyInfo() throws SQLException {
 		UserCompany company = user.getUserCompany(3);
 
@@ -127,6 +117,27 @@ public class UserTest {
 
 		Assert.assertEquals("Canada Test", company.getCountry());
 
+	}
+
+	@Test
+	public void AddNewCompany() throws SQLException {
+		int newCompanyID = user.AddNewCompany(true, 4);
+
+		Assert.assertTrue(newCompanyID > -1);
+
+		System.out.println(newCompanyID);
+		
+		user.RemoveCompany(newCompanyID, 1);
+	}
+
+	@Test
+	public void testGetUsersByCompanyID() throws SQLException {
+		List<UserDetail> users = user.getUsersByCompanyID(1);
+
+		for (UserDetail user : users) {
+			System.out.println("UserID: " + user.getId() + "; UserName: " + user.getUserName() + "; PolicyInherited: "
+					+ user.isPolicyInherited());
+		}
 	}
 
 	@Test
@@ -180,7 +191,7 @@ public class UserTest {
 
 		int companyID = 4;
 		int policyID = user.updatePolicy(menus, rules, true, companyID);
-		
+
 		Object[] result = user.getPolicy(true, companyID);
 		UserPolicy policy = (UserPolicy) result[0];
 		this.displayPolicy(policy);
@@ -198,7 +209,7 @@ public class UserTest {
 		menus.put(13, true);
 		menus.put(14, true);
 		menus.put(15, true);
-		
+
 		Map<Integer, String> rules = new HashMap<Integer, String>();
 		rules.put(21, "False");
 		rules.put(101, "True");
@@ -207,19 +218,19 @@ public class UserTest {
 		rules.put(104, "True");
 		rules.put(105, "False");
 		rules.put(500, "50");
-		
+
 		int userID = 2;
 		int policyID = user.updatePolicy(menus, rules, false, userID);
-		
+
 		Object[] result = user.getPolicy(false, userID);
 		UserPolicy policy = (UserPolicy) result[0];
 		this.displayPolicy(policy);
-		
+
 		System.out.println("\n== Menu =================================================");
 		UserMenu menu = (UserMenu) result[1];
 		this.displayMenu(menu);
 	}
-	
+
 	private void showCompanyTree(String tab, CompanyNode node) {
 		for (int i = 0; i < node.getChildren().size(); i++) {
 			CompanyNode child = node.getChildren().get(i);

@@ -172,6 +172,12 @@ CREATE TABLE UserCompany (
 	ContactName         VARCHAR(255)    NULL,
 	PolicyID            INT             NULL, 
 	Policy              VARCHAR(255)    NULL,
+    
+	IsDeleted           BIT             NOT NULL 		DEFAULT FALSE,
+	DeleteByID          INTEGER  		NULL,
+	DeletedBy           VARCHAR(255)    NULL,
+	DeletedDate         DATETIME        NULL,
+
 	IsSystem            BIT             NOT NULL 		DEFAULT FALSE,
 	
 	PRIMARY KEY(ID)

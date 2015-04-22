@@ -12,6 +12,8 @@ SELECT * FROM Users;
 SELECT * FROM UserLoginhistory;
 
 /***************************************************/
+CALL GetPolicy(TRUE,19);
+CALL RemoveCompany(19,1);
 
 SELECT RuleName, ValueType='Check' OR ValueType='Option' FROM PolicyRule;
 

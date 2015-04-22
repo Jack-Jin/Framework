@@ -36,7 +36,7 @@ public class UserCompanyManagement extends HttpServlet {
 
 	private String caption_Button_PolicyUpdate = "Update";
 	private String caption_Button_PolicyRemove = "Remove Private Policy";
-	
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -89,7 +89,24 @@ public class UserCompanyManagement extends HttpServlet {
 
 				selectedCompanyID = request.getParameter("companyID");
 				companySelected = false;
-			} else if (action.equalsIgnoreCase("User Update")) {
+			} else if (action.equalsIgnoreCase("Add Company") || action.equalsIgnoreCase("Add Child Company")) {
+				boolean nearby = action.equalsIgnoreCase("Add Company");
+				
+				int nearCompanyID = Integer.parseInt(request.getParameter("companyID"));
+				int newCompanyID = user.AddNewCompany(nearby, nearCompanyID);
+				
+				selectedCompanyID = "" + newCompanyID;
+				companySelected = true;
+				resultMessage = "This is new company.";
+			} else if (action.equalsIgnoreCase("Delete Company")){
+				int deleteCompanyID = Integer.parseInt(request.getParameter("companyID"));
+				
+				user.RemoveCompany(deleteCompanyID, user.getUserDetail().getId());
+				
+				selectedCompanyID = "";
+				companySelected = true;
+				
+			}else if (action.equalsIgnoreCase("User Update")) {
 				selectedCompanyID = request.getParameter("companyID");
 
 				userDetail = WebUtils.request2Bean(request, UserDetail.class);
@@ -102,23 +119,23 @@ public class UserCompanyManagement extends HttpServlet {
 				companySelected = action.equalsIgnoreCase("Company Policy Update");
 				int policyID = Integer.parseInt(request.getParameter("policyID"));
 				selectedCompanyID = request.getParameter("companyID");
-				
+
 				int selectedUserID = -1;
-				if (!companySelected){
+				if (!companySelected) {
 					selectedUserID = Integer.parseInt(request.getParameter("userID"));
-					
+
 					userDetail = user.getUserDetail(selectedUserID);
 				}
-				
-				if(request.getParameter("btnUpdate").equals(caption_Button_PolicyUpdate)){
+
+				if (request.getParameter("btnUpdate").equals(caption_Button_PolicyUpdate)) {
 					updatePolicy(user, request, companySelected, Integer.parseInt(selectedCompanyID), selectedUserID);
-					
-					resultMessage = "Policy updated.";					
+
+					resultMessage = "Policy updated.";
 				} else {
-					int id = companySelected? Integer.parseInt(selectedCompanyID) : selectedUserID;
-					
+					int id = companySelected ? Integer.parseInt(selectedCompanyID) : selectedUserID;
+
 					user.removePolicy(companySelected, id);
-					
+
 					resultMessage = "Private policy removed.";
 				}
 			}
@@ -171,7 +188,7 @@ public class UserCompanyManagement extends HttpServlet {
 			request.setAttribute("usermenu", userMenu);
 
 			request.setAttribute("resultmessage", resultMessage);
-			
+
 			request.setAttribute("caption_Button_PolicyUpdate", caption_Button_PolicyUpdate);
 			request.setAttribute("caption_Button_PolicyRemove", caption_Button_PolicyRemove);
 

@@ -186,39 +186,6 @@ public class UserDaoService implements UserDao {
 	}
 
 	@Override
-	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		List<UserDetail> users = new ArrayList<UserDetail>();
-
-		try {
-			conn = JdbcUtils.getConnection();
-
-			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode";
-			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime,";
-			sql += "IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' ";
-			sql += "FROM Users WHERE CompanyID=?";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, companyID);
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				UserDetail userDetail = JdbcUtils.ResultSet2Object(rs, UserDetail.class);
-				users.add(userDetail);
-			}
-
-		} catch (InstantiationException | IllegalAccessException e) {
-		} finally {
-			JdbcUtils.free(rs, ps, conn);
-		}
-
-		return users;
-	}
-
-	@Override
 	public UserCompany getUserCompany(int companyID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -317,6 +284,105 @@ public class UserDaoService implements UserDao {
 		}
 
 		return (updateCount > 0) ? true : false;
+	}
+
+	@Override
+	public int AddNewCompany(boolean nearby, int companyID) throws SQLException {
+		// Super or Default company can not add child company.
+		if(!nearby && (companyID==1 || companyID==2))
+			return companyID;
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		int newCompanyID = -1;
+		try {
+			conn = JdbcUtils.getConnection();
+			
+			String sql = "";
+			if(nearby){
+				sql = "INSERT UserCompany(CompanyName,ParentID,ParentName,PolicyID,Policy) ";
+				sql += "SELECT 'New Company' AS 'CompanyName',ParentID,ParentName";
+				sql += ",IF(ParentID=0,2,NULL) AS 'PolicyID',IF(ParentID=0,'System Default Policy',NULL) AS 'Policy' FROM UserCompany WHERE ID=?";
+			} else {
+				sql = "INSERT UserCompany(CompanyName,ParentID,ParentName) ";
+				sql += "SELECT 'New Company' AS 'CompanyName',ID AS 'ParentID',CompanyName AS 'ParentName' FROM UserCompany WHERE ID=?";
+			}
+				
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, companyID);
+			
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			
+			if(rs.next())
+				newCompanyID = rs.getInt(1);
+			
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+		
+		return newCompanyID;
+	}
+
+	@Override
+	public boolean RemoveCompany(int companyID, int byUserID) throws SQLException {
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rs = null;
+		
+		boolean result = false;
+		
+		try{
+			conn = JdbcUtils.getConnection();
+			
+			cs = conn.prepareCall("{ CALL RemoveCompany(?,?) }");
+			cs.setInt(1, companyID);
+			cs.setInt(2, byUserID);
+			
+			cs.execute();
+			
+			result = true;
+			
+		} finally {
+			JdbcUtils.free(rs, cs, conn);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		List<UserDetail> users = new ArrayList<UserDetail>();
+
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode";
+			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime,";
+			sql += "IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' ";
+			sql += "FROM Users WHERE CompanyID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, companyID);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				UserDetail userDetail = JdbcUtils.ResultSet2Object(rs, UserDetail.class);
+				users.add(userDetail);
+			}
+
+		} catch (InstantiationException | IllegalAccessException e) {
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return users;
 	}
 
 	@Override
@@ -495,7 +561,7 @@ public class UserDaoService implements UserDao {
 			int affectCount = ps.executeUpdate();
 
 			// Update Details
-			//   set value is false when value type is check or option.
+			// set value is false when value type is check or option.
 			if (defaultCompanyPolicy) {
 				sql = "UPDATE PolicyRule SET RuleValue='False' WHERE ValueType='Check' OR ValueType='Option'";
 				ps = conn.prepareStatement(sql);
@@ -506,28 +572,28 @@ public class UserDaoService implements UserDao {
 			}
 			ps.executeUpdate();
 
-			//   update values.
-			if(defaultCompanyPolicy){
+			// update values.
+			if (defaultCompanyPolicy) {
 				sql = "UPDATE PolicyRule SET RuleValue=? WHERE ID=?";
 				ps = conn.prepareStatement(sql);
-				
-				for(Map.Entry<Integer, String> rule: pRules.entrySet()) {
-					String v = rule.getValue().equals("on")? "True": rule.getValue();
+
+				for (Map.Entry<Integer, String> rule : pRules.entrySet()) {
+					String v = rule.getValue().equals("on") ? "True" : rule.getValue();
 					ps.setString(1, v);
 					ps.setInt(2, rule.getKey());
-					
+
 					ps.addBatch();
 				}
-			} else {				
+			} else {
 				sql = "UPDATE PolicyDetail SET RuleValue=? WHERE PolicyID=? AND PolicyRuleID=?";
 				ps = conn.prepareStatement(sql);
-				
+
 				for (Map.Entry<Integer, String> rule : pRules.entrySet()) {
 					String v = rule.getValue().equals("on") ? "True" : rule.getValue();
 					ps.setString(1, v);
 					ps.setInt(2, policyID);
 					ps.setInt(3, rule.getKey());
-					
+
 					ps.addBatch();
 				}
 			}

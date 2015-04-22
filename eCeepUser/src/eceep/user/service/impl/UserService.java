@@ -88,13 +88,23 @@ public class UserService implements User {
 	}
 
 	@Override
-	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
-		return userDao.getUsersByCompanyID(companyID);
-	}
-
-	@Override
 	public boolean updateCompanyInfo(UserCompany company) throws SQLException {
 		return userDao.updateCompanyInfo(company);
+	}
+	
+	@Override
+	public int AddNewCompany(boolean nearby, int companyID) throws SQLException {
+		return userDao.AddNewCompany(nearby, companyID);
+	}
+	
+	@Override
+	public boolean RemoveCompany(int companyID, int byUserID) throws SQLException {
+		return userDao.RemoveCompany(companyID, byUserID);
+	}
+	
+	@Override
+	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
+		return userDao.getUsersByCompanyID(companyID);
 	}
 
 	@Override
