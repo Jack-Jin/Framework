@@ -248,6 +248,27 @@ public class UserDaoService implements UserDao {
 		return node;
 	}
 
+	public boolean IsLeafCompany(CompanyNode node, int companyID) {
+		boolean result = false;
+
+		if (node.getId() == companyID && (node.getChildren() == null || node.getChildren().size() <= 0)) {
+			result = true;
+
+		} else if (node.getId() == companyID && (node.getChildren() != null || node.getChildren().size() > 0)) {
+			result = false;
+
+		} else {
+			List<CompanyNode> children = node.getChildren();
+			for (CompanyNode child : children) {
+				result = IsLeafCompany(child, companyID);
+				if(result) 
+					break;
+			}
+		}
+
+		return result;
+	}
+
 	@Override
 	public boolean updateCompanyInfo(UserCompany company) throws SQLException {
 		Connection conn = null;
@@ -289,19 +310,19 @@ public class UserDaoService implements UserDao {
 	@Override
 	public int AddNewCompany(boolean nearby, int companyID) throws SQLException {
 		// Super or Default company can not add child company.
-		if(!nearby && (companyID==1 || companyID==2))
+		if (!nearby && (companyID == 1 || companyID == 2))
 			return companyID;
-		
+
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		int newCompanyID = -1;
 		try {
 			conn = JdbcUtils.getConnection();
-			
+
 			String sql = "";
-			if(nearby){
+			if (nearby) {
 				sql = "INSERT UserCompany(CompanyName,ParentID,ParentName,PolicyID,Policy) ";
 				sql += "SELECT 'New Company' AS 'CompanyName',ParentID,ParentName";
 				sql += ",IF(ParentID=0,2,NULL) AS 'PolicyID',IF(ParentID=0,'System Default Policy',NULL) AS 'Policy' FROM UserCompany WHERE ID=?";
@@ -309,20 +330,20 @@ public class UserDaoService implements UserDao {
 				sql = "INSERT UserCompany(CompanyName,ParentID,ParentName) ";
 				sql += "SELECT 'New Company' AS 'CompanyName',ID AS 'ParentID',CompanyName AS 'ParentName' FROM UserCompany WHERE ID=?";
 			}
-				
+
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, companyID);
-			
+
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
-			
-			if(rs.next())
+
+			if (rs.next())
 				newCompanyID = rs.getInt(1);
-			
+
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
+
 		return newCompanyID;
 	}
 
@@ -331,27 +352,27 @@ public class UserDaoService implements UserDao {
 		Connection conn = null;
 		CallableStatement cs = null;
 		ResultSet rs = null;
-		
+
 		boolean result = false;
-		
-		try{
+
+		try {
 			conn = JdbcUtils.getConnection();
-			
+
 			cs = conn.prepareCall("{ CALL RemoveCompany(?,?) }");
 			cs.setInt(1, companyID);
 			cs.setInt(2, byUserID);
-			
+
 			cs.execute();
-			
+
 			result = true;
-			
+
 		} finally {
 			JdbcUtils.free(rs, cs, conn);
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
 		Connection conn = null;

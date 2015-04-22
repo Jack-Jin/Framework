@@ -87,15 +87,23 @@ public class UserTest {
 	}
 
 	@Test
-	public void testCompanyTree() {
-		try {
-			CompanyNode allOfCompanys = user.getAllOfCompanys();
+	public void testCompanyTree() throws SQLException {
 
-			showCompanyTree("", allOfCompanys);
+		CompanyNode allOfCompanys = user.getAllOfCompanys();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		showCompanyTree("", allOfCompanys);
+	}
+
+	@Test
+	public void IsLeafCompany() throws SQLException {
+		CompanyNode allOfCompanys = user.getAllOfCompanys();
+
+		boolean isLeaf = user.IsLeafCompany(allOfCompanys, 4);
+		Assert.assertTrue(isLeaf);
+		
+		isLeaf = user.IsLeafCompany(allOfCompanys, 3);
+		Assert.assertFalse(isLeaf);
+		
 	}
 
 	@Test
@@ -126,7 +134,7 @@ public class UserTest {
 		Assert.assertTrue(newCompanyID > -1);
 
 		System.out.println(newCompanyID);
-		
+
 		user.RemoveCompany(newCompanyID, 1);
 	}
 

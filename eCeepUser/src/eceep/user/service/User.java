@@ -27,6 +27,8 @@ public interface User {
 
 	CompanyNode getAllOfCompanys() throws SQLException;
 
+	boolean IsLeafCompany(CompanyNode node, int companyID);
+	
 	UserCompany getUserCompany(int companyID) throws SQLException;
 
 	boolean updateCompanyInfo(UserCompany company) throws SQLException;

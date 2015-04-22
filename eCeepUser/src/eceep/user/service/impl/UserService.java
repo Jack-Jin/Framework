@@ -83,6 +83,11 @@ public class UserService implements User {
 	}
 
 	@Override
+	public boolean IsLeafCompany(CompanyNode node, int companyID) {
+		return userDao.IsLeafCompany(node, companyID);
+	}
+	
+	@Override
 	public UserCompany getUserCompany(int companyID) throws SQLException {
 		return userDao.getUserCompany(companyID);
 	}

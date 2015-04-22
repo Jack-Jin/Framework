@@ -146,11 +146,14 @@ public class UserCompanyManagement extends HttpServlet {
 			// If no company ID, set current company ID is the first one of
 			// company tree.
 			if (selectedCompanyID == null || selectedCompanyID.isEmpty())
-				selectedCompanyID = allOfCompanys.getChildren().get(0).getId() + "";
+				selectedCompanyID = allOfCompanys.getChildren().get(2).getId() + "";
 
 			// Selected Company Info.
 			UserCompany userCompany = user.getUserCompany(Integer.parseInt(selectedCompanyID));
 
+			// Determine selected company is leaf or not.
+			boolean isLeafCompany = user.IsLeafCompany(allOfCompanys, userCompany.getId());
+			
 			// User List of Current Company
 			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(selectedCompanyID));
 
@@ -177,6 +180,7 @@ public class UserCompanyManagement extends HttpServlet {
 
 			request.setAttribute("node", allOfCompanys);
 			request.setAttribute("usercompany", userCompany);
+			request.setAttribute("isLeafCompany", isLeafCompany);
 
 			request.setAttribute("users", users);
 			request.setAttribute("userdetail", userDetail);
@@ -237,4 +241,5 @@ public class UserCompanyManagement extends HttpServlet {
 
 		user.updatePolicy(menus, rules, companySelected, (companySelected ? selectedCompanyID : selectedUserID));
 	}
+	
 }
