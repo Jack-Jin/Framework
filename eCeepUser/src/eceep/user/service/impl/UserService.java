@@ -123,6 +123,16 @@ public class UserService implements User {
 	}
 
 	@Override
+	public int AddNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException {
+		return userDao.AddNewUser(parentCompanyID, createByID, createBy);
+	}
+	
+	@Override
+	public boolean RemoveUser(int userID, int byID, String byName) throws SQLException {
+		return userDao.RemoveUser(userID, byID, byName);
+	}
+	
+	@Override
 	public Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException {
 		return userDao.getPolicy(pTrueCompany_FalseUser, pID);
 	}

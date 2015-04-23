@@ -32,6 +32,10 @@ public interface UserDao {
 
 	boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException;
 
+	public int AddNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException;
+	
+	boolean RemoveUser(int userID, int byID, String byName) throws SQLException;
+	
 	// Return UserPolicy, UserMenu
 	Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException;
 

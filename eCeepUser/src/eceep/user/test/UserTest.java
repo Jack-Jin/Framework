@@ -100,10 +100,10 @@ public class UserTest {
 
 		boolean isLeaf = user.IsLeafCompany(allOfCompanys, 4);
 		Assert.assertTrue(isLeaf);
-		
+
 		isLeaf = user.IsLeafCompany(allOfCompanys, 3);
 		Assert.assertFalse(isLeaf);
-		
+
 	}
 
 	@Test
@@ -166,6 +166,17 @@ public class UserTest {
 		userDetail = user.getUserDetail(1);
 
 		Assert.assertEquals("Title test", userDetail.getTitle());
+	}
+
+	@Test
+	public void addUser() throws SQLException {
+		int userID = user.AddNewUser(3, 1, "admin");
+		Assert.assertTrue(userID > 0);
+
+		System.out.println(userID);
+		
+		boolean result = user.RemoveUser(userID, 1, "admin");
+		Assert.assertTrue(result);
 	}
 
 	@Test

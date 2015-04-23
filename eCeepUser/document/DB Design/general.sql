@@ -12,8 +12,13 @@ SELECT * FROM Users;
 SELECT * FROM UserLoginhistory;
 
 /***************************************************/
-CALL GetPolicy(TRUE,19);
-CALL RemoveCompany(19,1);
+
+select UserName,Password,CompanyID,Company,CurrencyID,Currency,UnitID=1,Unit,LanguageID,Language,IsNeverExpire,CreateByID,CreateBy FROM Users;
+
+
+
+#CALL GetPolicy(TRUE,19);
+#CALL RemoveCompany(19,1);
 
 SELECT RuleName, ValueType='Check' OR ValueType='Option' FROM PolicyRule;
 
