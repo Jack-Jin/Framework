@@ -8,6 +8,7 @@
 	<tr>
 	  <td class="SelectedTab" onclick="tabClick(this,'tab1');">User Info</td>
 	  <td class="Tab" onclick="tabClick(this,'tab2');">User Policy</td>
+	  <td class="Tab" onclick="tabClick(this,'tab3');">Password</td>
 	</tr>
 	</table>
 	<div class="TabBody">
@@ -105,6 +106,8 @@
 	  </div>
 	  <div id="tab2" style="display: none;">
 	  	<jsp:include page="/WEB-INF/useradmin/admin-right-policy.jsp"></jsp:include>
+	  </div>
+	  <div id="tab3" style="display: none;">
 	  </div>
 	</div>
 </div>
