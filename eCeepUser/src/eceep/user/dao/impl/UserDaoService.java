@@ -226,7 +226,7 @@ public class UserDaoService implements UserDao {
 		try {
 			conn = JdbcUtils.getConnection();
 			String sql = "SELECT ID,CompanyName,ParentID,IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' ";
-			sql += "FROM UserCompany";
+			sql += "FROM UserCompany WHERE IsDeleted=FALSE";
 			ps = conn.prepareStatement(sql);
 
 			rs = ps.executeQuery();
@@ -387,7 +387,7 @@ public class UserDaoService implements UserDao {
 			String sql = "SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode";
 			sql += ",Telephone,Fax,Email,WWW,Note,CurrencyID,UnitID,LanguageID,IsAdmin,CreateByID,CreateDate,LoginTime,LogoutTime,";
 			sql += "IFNULL(PolicyID,2)<=2 AS 'PolicyInherited' ";
-			sql += "FROM Users WHERE CompanyID=?";
+			sql += "FROM Users WHERE CompanyID=? AND IsDeleted=FALSE";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, companyID);
 

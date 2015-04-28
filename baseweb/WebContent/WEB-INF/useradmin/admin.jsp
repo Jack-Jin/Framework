@@ -37,7 +37,14 @@
 		<jsp:include page="/WEB-INF/useradmin/admin-left-top.jsp"/>
       </div>
       <div class="Admin-Left-BottomTitle">
-          <span class="CusButton" style="font-size: 0.75em;">+ User</span>
+      	<c:if test="${usercompany.id>2}">
+          <span class="CusButton" style="font-size: 0.75em;"
+                onclick='post("${pageContext.request.contextPath}/UserCompanyManagement",{ action: "Add User", companyID: ${usercompany.id} });'>+ User</span>
+          <c:if test="${!companyselected}">
+	          <span class="CusButton" style="font-size: 0.75em;"
+	                onclick='post("${pageContext.request.contextPath}/UserCompanyManagement",{ action: "Delete User", companyID: ${usercompany.id}, userID: ${userdetail.id} });'>Delete</span>
+          </c:if>
+      	</c:if>
       </div>
       <div class="Admin-Left-Bottom">
         <jsp:include page="/WEB-INF/useradmin/admin-left-bottom.jsp"/>

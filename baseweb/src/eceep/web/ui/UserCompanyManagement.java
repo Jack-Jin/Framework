@@ -74,39 +74,49 @@ public class UserCompanyManagement extends HttpServlet {
 
 			// Action: "Selected Company", "Company Update"
 			if (action.equalsIgnoreCase("Selected Company")) {
+
 				selectedCompanyID = request.getParameter("companyID");
 				companySelected = true;
+
 			} else if (action.equalsIgnoreCase("Company Update")) {
+
 				UserCompany company = WebUtils.request2Bean(request, UserCompany.class);
 				user.updateCompanyInfo(company);
 
 				selectedCompanyID = company.getId() + "";
 				companySelected = true;
 				resultMessage = "Company information updated.";
+
 			} else if (action.equalsIgnoreCase("Selected User")) {
+
 				int selectedUserID = Integer.parseInt(request.getParameter("userID"));
 				userDetail = user.getUserDetail(selectedUserID);
 
 				selectedCompanyID = request.getParameter("companyID");
 				companySelected = false;
+
 			} else if (action.equalsIgnoreCase("Add Company") || action.equalsIgnoreCase("Add Child Company")) {
+
 				boolean nearby = action.equalsIgnoreCase("Add Company");
-				
+
 				int nearCompanyID = Integer.parseInt(request.getParameter("companyID"));
 				int newCompanyID = user.AddNewCompany(nearby, nearCompanyID);
-				
+
 				selectedCompanyID = "" + newCompanyID;
 				companySelected = true;
 				resultMessage = "This is new company.";
-			} else if (action.equalsIgnoreCase("Delete Company")){
+
+			} else if (action.equalsIgnoreCase("Delete Company")) {
+
 				int deleteCompanyID = Integer.parseInt(request.getParameter("companyID"));
-				
+
 				user.RemoveCompany(deleteCompanyID, user.getUserDetail().getId());
-				
+
 				selectedCompanyID = "";
 				companySelected = true;
-				
-			}else if (action.equalsIgnoreCase("User Update")) {
+
+			} else if (action.equalsIgnoreCase("User Update")) {
+
 				selectedCompanyID = request.getParameter("companyID");
 
 				userDetail = WebUtils.request2Bean(request, UserDetail.class);
@@ -114,8 +124,31 @@ public class UserCompanyManagement extends HttpServlet {
 
 				companySelected = false;
 				resultMessage = "User information updated.";
+
+			} else if (action.equalsIgnoreCase("Add User")) {
+
+				selectedCompanyID = request.getParameter("companyID");
+
+				int newUserID = user.AddNewUser(Integer.parseInt(selectedCompanyID), user.getUserDetail().getId(), user
+						.getUserDetail().getUserName());
+
+				companySelected = false;
+				userDetail = user.getUserDetail(newUserID);
+				resultMessage = "New user is added.";
+
+			} else if (action.equalsIgnoreCase("Delete User")) {
+
+				int deletedUserID = Integer.parseInt(request.getParameter("userID"));
+				selectedCompanyID = request.getParameter("companyID");
+
+				user.RemoveUser(deletedUserID, user.getUserDetail().getId(), user.getUserDetail().getUserName());
+
+				companySelected = true;
+				resultMessage = "User is removed.";
+
 			} else if (action.equalsIgnoreCase("Company Policy Update")
 					|| action.equalsIgnoreCase("User Policy Update")) {
+
 				companySelected = action.equalsIgnoreCase("Company Policy Update");
 				int policyID = Integer.parseInt(request.getParameter("policyID"));
 				selectedCompanyID = request.getParameter("companyID");
@@ -128,15 +161,19 @@ public class UserCompanyManagement extends HttpServlet {
 				}
 
 				if (request.getParameter("btnUpdate").equals(caption_Button_PolicyUpdate)) {
+
 					updatePolicy(user, request, companySelected, Integer.parseInt(selectedCompanyID), selectedUserID);
 
 					resultMessage = "Policy updated.";
+
 				} else {
+
 					int id = companySelected ? Integer.parseInt(selectedCompanyID) : selectedUserID;
 
 					user.removePolicy(companySelected, id);
 
 					resultMessage = "Private policy removed.";
+
 				}
 			}
 
@@ -153,7 +190,7 @@ public class UserCompanyManagement extends HttpServlet {
 
 			// Determine selected company is leaf or not.
 			boolean isLeafCompany = user.IsLeafCompany(allOfCompanys, userCompany.getId());
-			
+
 			// User List of Current Company
 			List<UserDetail> users = user.getUsersByCompanyID(Integer.parseInt(selectedCompanyID));
 
@@ -241,5 +278,5 @@ public class UserCompanyManagement extends HttpServlet {
 
 		user.updatePolicy(menus, rules, companySelected, (companySelected ? selectedCompanyID : selectedUserID));
 	}
-	
+
 }
