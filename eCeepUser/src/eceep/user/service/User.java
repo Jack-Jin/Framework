@@ -47,6 +47,9 @@ public interface User {
 	
 	boolean RemoveUser(int userID, int byID, String byName) throws SQLException;
 	
+	boolean changePassword(int userID, boolean isValidateOld, String oldPassword, String newPassword)
+			throws SQLException;
+	
 	// Return UserPolicy, UserMenu
 	Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException;
 

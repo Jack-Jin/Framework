@@ -494,8 +494,10 @@ public class UserDaoService implements UserDao {
 
 		try {
 			conn = JdbcUtils.getConnection();
-			
-			//select UserName,Password,CompanyID,Company,CurrencyID,Currency,UnitID=1,Unit,LanguageID,Language,IsNeverExpire,CreateByID,CreateBy FROM Users;
+
+			// select
+			// UserName,Password,CompanyID,Company,CurrencyID,Currency,UnitID=1,Unit,LanguageID,Language,IsNeverExpire,CreateByID,CreateBy
+			// FROM Users;
 			String sql = "INSERT INTO Users(UserName,Password,CompanyID,Company,";
 			sql += "CurrencyID,Currency,UnitID,Unit,LanguageID,Language,IsNeverExpire,CreateByID,CreateBy) ";
 			sql += "VALUES('New User','&%)&)$$#%+(*@!',?,(SELECT CompanyName FROM UserCompany WHERE ID=?)";
@@ -505,14 +507,14 @@ public class UserDaoService implements UserDao {
 			ps.setInt(2, parentCompanyID);
 			ps.setInt(3, createByID);
 			ps.setString(4, createBy);
-			
+
 			ps.execute();
-			
+
 			rs = ps.getGeneratedKeys();
-			
-			if(rs.next())
+
+			if (rs.next())
 				userID = rs.getInt(1);
-			
+
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
@@ -523,30 +525,72 @@ public class UserDaoService implements UserDao {
 	@Override
 	public boolean RemoveUser(int userID, int byID, String byName) throws SQLException {
 		boolean result = false;
-		
+
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		try {
 			conn = JdbcUtils.getConnection();
-			
+
 			String sql = "UPDATE Users SET IsDeleted=TRUE,DeleteByID=?,DeletedBy=?,DeletedDate=NOW() WHERE ID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, byID);
 			ps.setString(2, byName);
 			ps.setInt(3, userID);
-			
+
 			ps.executeUpdate();
-			
+
 			result = true;
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
+
 		return result;
 	}
-	
+
+	@Override
+	public boolean changePassword(int userID, boolean isValidateOld, String oldPassword, String newPassword)
+			throws SQLException {
+		boolean result = false;
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			result = !isValidateOld;
+			if (isValidateOld && !oldPassword.isEmpty()) {
+				String sql = "SELECT COUNT(*) AS 'Count' FROM Users WHERE ID=? AND Password=?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, userID);
+				ps.setString(2, oldPassword);
+
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					if (rs.getInt("Count") > 0)
+						result = true;
+				}
+			}
+
+			if (result) {
+				String sql = "UPDATE Users SET Password=? WHERE ID=?";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, newPassword);
+				ps.setInt(2, userID);
+
+				if (ps.executeUpdate() > 0)
+					result = true;
+			}
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return result;
+	}
+
 	@Override
 	public int updatePolicy(Map<Integer, Boolean> pMenus, Map<Integer, String> pRules, boolean companySelected, int id)
 			throws SQLException {

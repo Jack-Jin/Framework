@@ -12,6 +12,7 @@ SELECT * FROM Users;
 SELECT * FROM UserLoginhistory;
 
 /***************************************************/
+SELECT count(*) FROM Users WHERE ID=99;
 
 select UserName,Password,CompanyID,Company,CurrencyID,Currency,UnitID=1,Unit,LanguageID,Language,IsNeverExpire,CreateByID,CreateBy FROM Users;
 

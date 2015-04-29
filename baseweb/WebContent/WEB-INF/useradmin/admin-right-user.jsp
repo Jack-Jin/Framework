@@ -2,6 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<style type="text/css">
+	#tab3 ul, #tab3 li { list-style-type: none; }
+	#tab3 ul>li { width: 160px; } 
+</style>
+
 <div class="ViewTitle">User: ${userdetail.userName}</div>
 <div>
 	<table class="Tabs" cellpadding=0 cellspacing=2>
@@ -108,6 +113,24 @@
 	  	<jsp:include page="/WEB-INF/useradmin/admin-right-policy.jsp"></jsp:include>
 	  </div>
 	  <div id="tab3" style="display: none;">
+	  	<form action="" method="post">
+	  	<ul>
+	  	  <li>New Password:</li>
+	  	  <li><input type="password" name="newPassword" ></li>
+	  	</ul>
+	  	<ul>
+	  	  <li>Confirm Password:</li>
+	  	  <li><input type="password" name="newPasswordConfirm" ></li>
+	  	</ul>
+	  	<ul>
+	  	  <li>
+	  	    <input type="submit" name="btnPasswordUpdate" value="Password Change" class="CusButton" />
+	  	  </li>
+	  	</ul>
+ 	    <input type="hidden" name="action" value="Password Change"/>
+ 	    <input type="hidden" name="companyID" value="${usercompany.id}"/>
+	  	<input type="hidden" name="userID" value="${userdetail.id}"/>
+	  	</form>
 	  </div>
 	</div>
 </div>

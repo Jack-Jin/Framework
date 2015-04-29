@@ -86,7 +86,7 @@ public class UserService implements User {
 	public boolean IsLeafCompany(CompanyNode node, int companyID) {
 		return userDao.IsLeafCompany(node, companyID);
 	}
-	
+
 	@Override
 	public UserCompany getUserCompany(int companyID) throws SQLException {
 		return userDao.getUserCompany(companyID);
@@ -96,17 +96,17 @@ public class UserService implements User {
 	public boolean updateCompanyInfo(UserCompany company) throws SQLException {
 		return userDao.updateCompanyInfo(company);
 	}
-	
+
 	@Override
 	public int AddNewCompany(boolean nearby, int companyID) throws SQLException {
 		return userDao.AddNewCompany(nearby, companyID);
 	}
-	
+
 	@Override
 	public boolean RemoveCompany(int companyID, int byUserID) throws SQLException {
 		return userDao.RemoveCompany(companyID, byUserID);
 	}
-	
+
 	@Override
 	public List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException {
 		return userDao.getUsersByCompanyID(companyID);
@@ -126,12 +126,18 @@ public class UserService implements User {
 	public int AddNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException {
 		return userDao.AddNewUser(parentCompanyID, createByID, createBy);
 	}
-	
+
 	@Override
 	public boolean RemoveUser(int userID, int byID, String byName) throws SQLException {
 		return userDao.RemoveUser(userID, byID, byName);
 	}
-	
+
+	@Override
+	public boolean changePassword(int userID, boolean isValidateOld, String oldPassword, String newPassword)
+			throws SQLException {
+		return userDao.changePassword(userID, isValidateOld, oldPassword, newPassword);
+	}
+
 	@Override
 	public Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException {
 		return userDao.getPolicy(pTrueCompany_FalseUser, pID);

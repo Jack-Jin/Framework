@@ -180,6 +180,15 @@ public class UserTest {
 	}
 
 	@Test
+	public void changePassword() throws SQLException {
+		boolean changePassword = user.changePassword(1, false, "", "abcd");
+		Assert.assertTrue(changePassword);
+
+		changePassword = user.changePassword(1, true, "abcd", "1");
+		Assert.assertTrue(changePassword);
+	}
+	
+	@Test
 	public void testGetPolicy() throws SQLException {
 		Object[] result = user.getPolicy(true, 1);
 		UserPolicy policy = (UserPolicy) result[0];

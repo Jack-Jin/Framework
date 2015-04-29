@@ -146,6 +146,22 @@ public class UserCompanyManagement extends HttpServlet {
 				companySelected = true;
 				resultMessage = "User is removed.";
 
+			} else if (action.equalsIgnoreCase("Password Change")) {
+				int userID = Integer.parseInt(request.getParameter("userID"));
+				selectedCompanyID = request.getParameter("companyID");
+				
+				String newPassword = request.getParameter("newPassword");
+				String newPasswordConfirm = request.getParameter("newPasswordConfirm");
+				
+				resultMessage = "Update password failed.";
+				if(newPassword.equals(newPasswordConfirm)) {
+					boolean change = user.changePassword(userID, false, "", newPassword);
+					if(change) resultMessage = "New password is updated.";
+				}
+					
+				companySelected = false;
+				userDetail = user.getUserDetail(userID);
+				
 			} else if (action.equalsIgnoreCase("Company Policy Update")
 					|| action.equalsIgnoreCase("User Policy Update")) {
 

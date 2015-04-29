@@ -17,15 +17,15 @@ public interface UserDao {
 	CompanyNode getAllOfCompanys() throws SQLException;
 
 	boolean IsLeafCompany(CompanyNode node, int companyID);
-	
+
 	UserCompany getUserCompany(int companyID) throws SQLException;
 
 	boolean updateCompanyInfo(UserCompany company) throws SQLException;
-	
+
 	int AddNewCompany(boolean nearby, int companyID) throws SQLException;
-	
+
 	boolean RemoveCompany(int companyID, int byUserID) throws SQLException;
-	
+
 	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
 
 	UserDetail getUserDetail(int userID) throws SQLException;
@@ -33,9 +33,12 @@ public interface UserDao {
 	boolean updateUserInfo(UserDetail userDetail, int companyID) throws SQLException;
 
 	public int AddNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException;
-	
+
 	boolean RemoveUser(int userID, int byID, String byName) throws SQLException;
-	
+
+	boolean changePassword(int userID, boolean isValidateOld, String oldPassword, String newPassword)
+			throws SQLException;
+
 	// Return UserPolicy, UserMenu
 	Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException;
 
