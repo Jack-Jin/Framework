@@ -1,9 +1,10 @@
-package eceep.user.service.impl;
+package eceep.user.impl;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import eceep.user.User;
 import eceep.user.dao.UserDao;
 import eceep.user.dao.impl.UserDaoFactoryMySql;
 import eceep.user.domain.CompanyNode;
@@ -11,7 +12,6 @@ import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
-import eceep.user.service.User;
 
 public class UserService implements User {
 	private UserDao userDao;

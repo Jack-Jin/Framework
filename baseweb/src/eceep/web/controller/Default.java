@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import eceep.user.service.User;
+import eceep.user.User;
 import eceep.web.repository.WebContext;
 
 /**

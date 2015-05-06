@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eceep.user.User;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
@@ -17,8 +18,7 @@ import eceep.user.domain.UserMenuGroup;
 import eceep.user.domain.UserMenuLeaf;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserPolicyOption;
-import eceep.user.service.User;
-import eceep.user.service.impl.UserFactoryImpl;
+import eceep.user.impl.UserFactoryImpl;
 
 public class UserTest {
 	private User user;

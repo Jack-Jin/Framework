@@ -1,4 +1,4 @@
-package eceep.user.service;
+package eceep.user;
 
 import java.sql.SQLException;
 import java.util.List;

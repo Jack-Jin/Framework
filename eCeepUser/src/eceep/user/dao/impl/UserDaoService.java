@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.map.LinkedMap;
-
+import eceep.mysql.*;
 import eceep.user.dao.UserDao;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserMenu;
@@ -237,6 +236,7 @@ public class UserDaoService implements UserDao {
 				companys.add(company);
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
+			node = null;
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}

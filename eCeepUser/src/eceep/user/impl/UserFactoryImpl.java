@@ -1,7 +1,7 @@
-package eceep.user.service.impl;
+package eceep.user.impl;
 
-import eceep.user.service.User;
-import eceep.user.service.UserFactory;
+import eceep.user.User;
+import eceep.user.UserFactory;
 
 public class UserFactoryImpl implements UserFactory {
 	private static UserFactory userFactory;

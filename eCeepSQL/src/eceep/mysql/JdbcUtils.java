@@ -1,4 +1,4 @@
-package eceep.user.dao.impl;
+package eceep.mysql;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;

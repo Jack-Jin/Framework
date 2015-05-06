@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%@ page import="eceep.web.repository.WebContext" %>
-<%@ page import="eceep.user.service.User"%>
+<%@ page import="eceep.user.User"%>
 <%@page import="eceep.user.domain.*"%>
 <%@page import="java.util.*"%>
 

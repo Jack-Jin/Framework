@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import eceep.user.User;
 import eceep.user.domain.CompanyNode;
 import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
@@ -23,7 +24,6 @@ import eceep.user.domain.UserMenu;
 import eceep.user.domain.UserPolicy;
 import eceep.user.domain.UserPolicyOption;
 import eceep.user.domain.UserPolicyRule;
-import eceep.user.service.User;
 import eceep.web.repository.WebContext;
 import eceep.web.repository.WebUtils;
 

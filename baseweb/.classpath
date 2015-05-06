@@ -19,5 +19,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="eCeepUser"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/eCeepCustomer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eCeepSQL"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

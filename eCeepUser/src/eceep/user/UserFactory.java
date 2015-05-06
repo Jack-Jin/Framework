@@ -1,4 +1,4 @@
-package eceep.user.service;
+package eceep.user;
 
 public interface UserFactory {
 	User getUser();

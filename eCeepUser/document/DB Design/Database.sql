@@ -65,7 +65,7 @@ INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(41,40,'Info Cent
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(42,40,'My Profile', 		TRUE,'042','UserAdmin/MyProfile.aspx');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(50,0, 'CRM', 				FALSE,'050',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51,50,'Customer', 			TRUE,'051','Customer/SearchCustomerNew.aspx');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51,50,'Customer', 			TRUE,'051','CustomerManagement');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(60,0, 'Management Report', 	FALSE,'060',NULL);
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61,60,'Deleted Quotes', 	TRUE,'061','~/Quotation/QuotationListDeleted.aspx');
@@ -259,3 +259,4 @@ CREATE TABLE UserLoginHistory (
 	
 	PRIMARY KEY(ID)
 );
+
