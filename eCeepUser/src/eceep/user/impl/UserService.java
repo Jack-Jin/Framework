@@ -84,7 +84,7 @@ public class UserService implements User {
 
 	@Override
 	public boolean IsLeafCompany(CompanyNode node, int companyID) {
-		return userDao.IsLeafCompany(node, companyID);
+		return userDao.isLeafCompany(node, companyID);
 	}
 
 	@Override
@@ -99,12 +99,12 @@ public class UserService implements User {
 
 	@Override
 	public int AddNewCompany(boolean nearby, int companyID) throws SQLException {
-		return userDao.AddNewCompany(nearby, companyID);
+		return userDao.addNewCompany(nearby, companyID);
 	}
 
 	@Override
 	public boolean RemoveCompany(int companyID, int byUserID) throws SQLException {
-		return userDao.RemoveCompany(companyID, byUserID);
+		return userDao.removeCompany(companyID, byUserID);
 	}
 
 	@Override
@@ -124,12 +124,12 @@ public class UserService implements User {
 
 	@Override
 	public int AddNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException {
-		return userDao.AddNewUser(parentCompanyID, createByID, createBy);
+		return userDao.addNewUser(parentCompanyID, createByID, createBy);
 	}
 
 	@Override
 	public boolean RemoveUser(int userID, int byID, String byName) throws SQLException {
-		return userDao.RemoveUser(userID, byID, byName);
+		return userDao.removeUser(userID, byID, byName);
 	}
 
 	@Override

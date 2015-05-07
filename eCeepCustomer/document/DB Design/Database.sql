@@ -43,9 +43,9 @@ CREATE TABLE Customers(
     
 	PRIMARY KEY(ID)
 );
-INSERT INTO Customers(ID,CustomerName,CreatedByID,CreatedByName) VALUES(1,'Customer1',1,'Admin');
-INSERT INTO Customers(ID,CustomerName,CreatedByID,CreatedByName) VALUES(2,'Customer2',1,'Admin');
-INSERT INTO Customers(ID,CustomerName,CreatedByID,CreatedByName) VALUES(3,'Customer3',1,'Admin');
+INSERT INTO Customers(ID,CustomerName,CreatedByID,CreatedByName,ModifiedByID,ModifiedByName) VALUES(1,'Customer1',1,'Admin',1,'Admin');
+INSERT INTO Customers(ID,CustomerName,CreatedByID,CreatedByName,ModifiedByID,ModifiedByName) VALUES(2,'Customer2',1,'Admin',1,'Admin');
+INSERT INTO Customers(ID,CustomerName,CreatedByID,CreatedByName,ModifiedByID,ModifiedByName) VALUES(3,'Customer3',1,'Admin',1,'Admin');
 
 /******************************
  *  Table - CustomerContacts

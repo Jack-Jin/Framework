@@ -11,6 +11,12 @@ public interface CustomerDao {
 	
 	List<CustomerDetail> getCustomers(int userID) throws SQLException;
 	
+	int newCustomer(int byUserID) throws SQLException;
+	
+	void removeCustomer(int customerID, int byUserID) throws SQLException;
+	
+	boolean updateCustomer(CustomerDetail customerDetail, int byUserID) throws SQLException;
+	
 	//CustomerDetail getCustomerDetail(int customerID) throws SQLException;
 	
 	//List<CustomerContact> getCustomerContacts(int customerID) throws SQLException;

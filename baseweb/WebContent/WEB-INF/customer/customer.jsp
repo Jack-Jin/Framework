@@ -7,22 +7,23 @@
 <div>
 	<table class="Tabs">
 	<tr>
-	  <td class="SelectedTab" onclick="tabClick(this,'tab1');">Customer List</td>
-	  <td class="Tab" onclick="tabClick(this,'tab2');">Detail Info</td>
-	  <td class="Tab" onclick="tabClick(this,'tab3');">Contact</td>
+	  <td onclick="tabClick(this,'tab1');" class='${tabindex==0? "SelectedTab": "Tab" }'>Customer List</td>
+	  <td onclick="tabClick(this,'tab2');" class='${tabindex==1? "SelectedTab": "Tab" }'>Detail Info</td>
+	  <td onclick="tabClick(this,'tab3');" class='${tabindex==2? "SelectedTab": "Tab" }'>Contact</td>
 	</tr>
 	</table>
 	<div class="TabBody">
-	  <div id="tab1">
-	    <jsp:include page="/WEB-INF/customer/customer-customers.jsp" />
+	  <div id="tab1" style='${tabindex==0? "": "display: none;" }'>
+	    <jsp:include page="/WEB-INF/customer/customer-list.jsp" />
 	  </div>
-	  <div id="tab2" style="display: none;">
-	    Customer Detail Info
+	  <div id="tab2" style='${tabindex==1? "": "display: none;" }'>
+	    <jsp:include page="/WEB-INF/customer/customer-detail.jsp" />
 	  </div>
-	  <div id="tab3" style="display: none;">
+	  <div id="tab3" style='${tabindex==2? "": "display: none;" }'>
 	    Contact
 	  </div>
 	</div>
+	<div style="color: red; text-align: left;">${message }</div>
 </div>
 
 </f:layout>

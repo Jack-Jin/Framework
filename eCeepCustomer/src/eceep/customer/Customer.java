@@ -15,4 +15,10 @@ public interface Customer {
 	
 	// ** For customer generic *****************************************
 	List<CustomerDetail> getCustomers() throws SQLException;
+	
+	int newCustomer(int byUserID) throws SQLException;
+	
+	void removeCustomer(int customerID, int byUserID) throws SQLException;
+	
+	boolean updateCustomer(CustomerDetail customerDetail, int byUserID) throws SQLException;
 }

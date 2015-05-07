@@ -43,4 +43,19 @@ public class CustomerService implements Customer {
 		return this.customerDao.getCustomers(this.policy_CustomersByUserID);
 	}
 
+	@Override
+	public int newCustomer(int byUserID) throws SQLException {
+		return this.customerDao.newCustomer(byUserID);
+	}
+	
+	@Override
+	public void removeCustomer(int customerID, int byUserID) throws SQLException {
+		this.customerDao.removeCustomer(customerID, byUserID);
+	}
+	
+	@Override
+	public boolean updateCustomer(CustomerDetail customerDetail, int byUserID) throws SQLException {
+		return this.customerDao.updateCustomer(customerDetail, byUserID);
+	}
+	
 }

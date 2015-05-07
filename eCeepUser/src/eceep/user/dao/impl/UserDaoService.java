@@ -248,7 +248,7 @@ public class UserDaoService implements UserDao {
 		return node;
 	}
 
-	public boolean IsLeafCompany(CompanyNode node, int companyID) {
+	public boolean isLeafCompany(CompanyNode node, int companyID) {
 		boolean result = false;
 
 		if (node.getId() == companyID && (node.getChildren() == null || node.getChildren().size() <= 0)) {
@@ -260,7 +260,7 @@ public class UserDaoService implements UserDao {
 		} else {
 			List<CompanyNode> children = node.getChildren();
 			for (CompanyNode child : children) {
-				result = IsLeafCompany(child, companyID);
+				result = isLeafCompany(child, companyID);
 				if (result)
 					break;
 			}
@@ -308,7 +308,7 @@ public class UserDaoService implements UserDao {
 	}
 
 	@Override
-	public int AddNewCompany(boolean nearby, int companyID) throws SQLException {
+	public int addNewCompany(boolean nearby, int companyID) throws SQLException {
 		// Super or Default company can not add child company.
 		if (!nearby && (companyID == 1 || companyID == 2))
 			return companyID;
@@ -348,7 +348,7 @@ public class UserDaoService implements UserDao {
 	}
 
 	@Override
-	public boolean RemoveCompany(int companyID, int byUserID) throws SQLException {
+	public boolean removeCompany(int companyID, int byUserID) throws SQLException {
 		Connection conn = null;
 		CallableStatement cs = null;
 		ResultSet rs = null;
@@ -485,7 +485,7 @@ public class UserDaoService implements UserDao {
 	}
 
 	@Override
-	public int AddNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException {
+	public int addNewUser(int parentCompanyID, int createByID, String createBy) throws SQLException {
 		int userID = -1;
 
 		Connection conn = null;
@@ -523,7 +523,7 @@ public class UserDaoService implements UserDao {
 	}
 
 	@Override
-	public boolean RemoveUser(int userID, int byID, String byName) throws SQLException {
+	public boolean removeUser(int userID, int byID, String byName) throws SQLException {
 		boolean result = false;
 
 		Connection conn = null;
