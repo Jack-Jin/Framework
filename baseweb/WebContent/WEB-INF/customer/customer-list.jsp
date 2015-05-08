@@ -2,17 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<style>
-  .TBL_CustomerList { width: 99%; background-color: #eee; margin-top: 2px; }
-  .TBL_CustomerList>tbody>tr { cursor: default; }
-  .TBL_CustomerList>thead>tr>th { text-align: left; color: #eee; background-color: #666; }
-  .TBL_CustomerList>tfoot { background-color: #ffe; }
-  
-  .TBL_CustomerList>tfoot td { padding-top: 10px; }
-  
-  .TBL_CustomerList .Selected { color: #ff0; background-color: #aaa; }
-</style>
-
 <%-- Variable: recordEnd --%>
 <c:set var="leftRecords" value="${ customers.size() - (customerspagenumber-1)*pagemax }" scope="request" />
 <c:set var="recordEnd" value="${ leftRecords>pagemax? pagemax : leftRecords }" scope="request" />
@@ -49,7 +38,7 @@
   </form>
 </div>
 
-<table class="TBL_CustomerList">
+<table class="TBL_List">
 <thead>
   <tr>
     <th>Customer Name</th>

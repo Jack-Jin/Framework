@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import eceep.customer.Customer;
+import eceep.customer.domain.CustomerContact;
 import eceep.customer.domain.CustomerDetail;
 import eceep.user.User;
 import eceep.web.repository.WebContext;
@@ -53,18 +54,31 @@ public class CustomerManagement extends HttpServlet {
 		// Get Customer
 		Customer customer = context.getCustomer();
 
-		// Variables for page.
+		// ** Variables for page. ***************************************
+		// Tab default List.
 		int tabIndex = 0;
-		List<CustomerDetail> customers = new ArrayList<CustomerDetail>(); // CustomerList.
-		int selectedCustomerID = -1; // Selected customer ID.
+		// CustomerList.
+		List<CustomerDetail> customers = new ArrayList<CustomerDetail>();
+		// Selected customer ID.
+		int selectedCustomerID = -1;
 		String searchByCondition = (session.getAttribute("CustomerManagement_SearchByCondition") == null) ? ""
 				: (String) session.getAttribute("CustomerManagement_SearchByCondition");
 		String message = "";
 
-		int pageMax = 15; // Page display customer record number.
-		int customersPageNumber = 1; // Current page number.
+		// Page display customer record number.
+		int pageMax = 15;
+		// Current page number.
+		int customersPageNumber = 1;
 
-		CustomerDetail customerDetail = null; // Selected customer detail
+		// Selected customer detail
+		CustomerDetail customerDetail = null;
+
+		// Contact List
+		int selectedContactID = -1;
+		List<CustomerContact> customerContacts = new ArrayList<CustomerContact>();
+		CustomerContact customerContact = null;
+
+		// ** Variables for page. End ***********************************
 
 		try {
 			// Refresh Customer List.
@@ -77,11 +91,11 @@ public class CustomerManagement extends HttpServlet {
 			}
 
 			// Actions
-			if (action.equalsIgnoreCase("Selected Customer")) { // Action - Selected Customer
+			if (action.equalsIgnoreCase("Selected Customer")) { // ------------------------- Action - Selected Customer
 
 				selectedCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
 
-			} else if (action.equalsIgnoreCase("Add Customer")) { // Action - Add Customer
+			} else if (action.equalsIgnoreCase("Add Customer")) { // ----------------------- Action - Add Customer
 
 				selectedCustomerID = customer.newCustomer(user.getUserDetail().getId());
 
@@ -95,7 +109,7 @@ public class CustomerManagement extends HttpServlet {
 				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
-			} else if (action.equalsIgnoreCase("Remove Customer")) { // Action - Remove Customer
+			} else if (action.equalsIgnoreCase("Remove Customer")) { // -------------------- Action - Remove Customer
 
 				int removeCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
 				customer.removeCustomer(removeCustomerID, user.getUserDetail().getId());
@@ -109,12 +123,13 @@ public class CustomerManagement extends HttpServlet {
 				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
-			} else if (action.equalsIgnoreCase("Customer Update")) { // Action - Customer Update
+			} else if (action.equalsIgnoreCase("Customer Update")) { // -------------------- Action - Customer Update
 
 				CustomerDetail updateCustomer = WebUtils.request2Bean(request, CustomerDetail.class);
 				customer.updateCustomer(updateCustomer, user.getUserDetail().getId());
 
 				selectedCustomerID = updateCustomer.getId();
+				// Tab: customer detail
 				tabIndex = 1;
 				message = "Customer info updated successfully.";
 
@@ -123,13 +138,14 @@ public class CustomerManagement extends HttpServlet {
 
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
-			} else if (action.equalsIgnoreCase("Change Page Number")) { // Action - Change Page Number
+			} else if (action.equalsIgnoreCase("Change Page Number")) { // ----------------- Action - Change Page Number
 
 				customersPageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 
 				selectedCustomerID = customers.get((customersPageNumber - 1) * pageMax).getId();
 
-			} else if (action.equalsIgnoreCase("Search By Condition")) { // Action - Search By Condition
+			} else if (action.equalsIgnoreCase("Search By Condition")) { // ---------------- Action - Search By
+																			// Condition
 				searchByCondition = request.getParameter("txtSearchCondition");
 
 				session.setAttribute("CustomerManagement_SearchByCondition", searchByCondition);
@@ -138,7 +154,15 @@ public class CustomerManagement extends HttpServlet {
 				customers = customer.getCustomers(searchByCondition);
 
 				session.setAttribute("CustomerManagement_CustomerList", customers);
+			} else if (action.equalsIgnoreCase("Selected Contact")) { // ------------------ Action - Selected Contact
+
+				selectedContactID = Integer.parseInt(request.getParameter("selectedContactID"));
+				selectedCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
+				
+				// Tab: Contact
+				tabIndex = 2;
 			}
+			
 
 			// Default selected customer ID.
 			if (selectedCustomerID < 0 && customers != null && customers.size() > 0) {
@@ -164,7 +188,24 @@ public class CustomerManagement extends HttpServlet {
 				}
 			}
 
-			// Variables for UI.
+			// Customer Contact List.
+			if (customerDetail != null) {
+				customerContacts = customerDetail.getCustomerContacts();
+			}
+
+			// Default selected contact ID.
+			if (selectedContactID < 0 && customerContacts != null && customerContacts.size() > 0) {
+				selectedContactID = customerContacts.get(0).getId();
+			}
+
+			// Contact Detail
+			int tmpContactID = selectedContactID;
+			List<CustomerContact> tmpContacts = customerContacts.stream().filter(A -> A.getId() == tmpContactID)
+					.collect(Collectors.toList());
+			if(tmpContacts !=null && tmpContacts.size() >0)
+				customerContact = tmpContacts.get(0);
+
+			// ** Variables for UI. **********************************************
 			request.setAttribute("tabindex", tabIndex);
 			request.setAttribute("customers", customers);
 			request.setAttribute("selectedcustomerID", selectedCustomerID);
@@ -172,7 +213,13 @@ public class CustomerManagement extends HttpServlet {
 			request.setAttribute("customerdetail", customerDetail);
 			request.setAttribute("customerspagenumber", customersPageNumber);
 			request.setAttribute("pagemax", pageMax);
+
+			request.setAttribute("customercontacts", customerContacts);
+			request.setAttribute("selectedcontactID", selectedContactID);
+			request.setAttribute("customercontact", customerContact);
+
 			request.setAttribute("message", message);
+			// ** Variables for UI. End ******************************************
 
 		} catch (SQLException e) {
 			e.printStackTrace();
