@@ -39,8 +39,8 @@ public class CustomerService implements Customer {
 	}
 	
 	@Override
-	public List<CustomerDetail> getCustomers() throws SQLException {
-		return this.customerDao.getCustomers(this.policy_CustomersByUserID);
+	public List<CustomerDetail> getCustomers(String byCustomerName) throws SQLException {
+		return this.customerDao.getCustomers(this.policy_CustomersByUserID, byCustomerName);
 	}
 
 	@Override

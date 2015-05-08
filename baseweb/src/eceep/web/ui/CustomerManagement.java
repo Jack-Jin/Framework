@@ -35,8 +35,7 @@ public class CustomerManagement extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
@@ -54,30 +53,35 @@ public class CustomerManagement extends HttpServlet {
 		// Get Customer
 		Customer customer = context.getCustomer();
 
+		// Variables for page.
 		int tabIndex = 0;
 		List<CustomerDetail> customers = new ArrayList<CustomerDetail>(); // CustomerList.
 		int selectedCustomerID = -1; // Selected customer ID.
-		int customersPageNumber = 1;
-		int pageMax = 5;
+		String searchByCondition = (session.getAttribute("CustomerManagement_SearchByCondition") == null) ? ""
+				: (String) session.getAttribute("CustomerManagement_SearchByCondition");
 		String message = "";
+
+		int pageMax = 15; // Page display customer record number.
+		int customersPageNumber = 1; // Current page number.
 
 		CustomerDetail customerDetail = null; // Selected customer detail
 
 		try {
 			// Refresh Customer List.
 			if (session.getAttribute("CustomerManagement_CustomerList") == null) {
-				customers = customer.getCustomers();
+				customers = customer.getCustomers(searchByCondition);
 
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 			} else {
 				customers = (List<CustomerDetail>) session.getAttribute("CustomerManagement_CustomerList");
 			}
 
-			if (action.equalsIgnoreCase("Selected Customer")) {
+			// Actions
+			if (action.equalsIgnoreCase("Selected Customer")) { // Action - Selected Customer
 
 				selectedCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
 
-			} else if (action.equalsIgnoreCase("Add Customer")) {
+			} else if (action.equalsIgnoreCase("Add Customer")) { // Action - Add Customer
 
 				selectedCustomerID = customer.newCustomer(user.getUserDetail().getId());
 
@@ -85,11 +89,13 @@ public class CustomerManagement extends HttpServlet {
 				tabIndex = 1;
 
 				// Refresh Customer List.
-				customers = customer.getCustomers();
+				searchByCondition = "";
+				session.setAttribute("CustomerManagement_SearchByCondition", searchByCondition);
 
+				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
-			} else if (action.equalsIgnoreCase("Remove Customer")) {
+			} else if (action.equalsIgnoreCase("Remove Customer")) { // Action - Remove Customer
 
 				int removeCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
 				customer.removeCustomer(removeCustomerID, user.getUserDetail().getId());
@@ -97,11 +103,13 @@ public class CustomerManagement extends HttpServlet {
 				selectedCustomerID = -1;
 
 				// Refresh Customer List.
-				customers = customer.getCustomers();
+				searchByCondition = "";
+				session.setAttribute("CustomerManagement_SearchByCondition", searchByCondition);
 
+				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
-			} else if (action.equalsIgnoreCase("Customer Update")) {
+			} else if (action.equalsIgnoreCase("Customer Update")) { // Action - Customer Update
 
 				CustomerDetail updateCustomer = WebUtils.request2Bean(request, CustomerDetail.class);
 				customer.updateCustomer(updateCustomer, user.getUserDetail().getId());
@@ -111,16 +119,25 @@ public class CustomerManagement extends HttpServlet {
 				message = "Customer info updated successfully.";
 
 				// Refresh Customer List.
-				customers = customer.getCustomers();
+				customers = customer.getCustomers(searchByCondition);
 
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
-			} else if (action.equalsIgnoreCase("Change Page Number")) {
+			} else if (action.equalsIgnoreCase("Change Page Number")) { // Action - Change Page Number
 
 				customersPageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 
 				selectedCustomerID = customers.get((customersPageNumber - 1) * pageMax).getId();
 
+			} else if (action.equalsIgnoreCase("Search By Condition")) { // Action - Search By Condition
+				searchByCondition = request.getParameter("txtSearchCondition");
+
+				session.setAttribute("CustomerManagement_SearchByCondition", searchByCondition);
+
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+
+				session.setAttribute("CustomerManagement_CustomerList", customers);
 			}
 
 			// Default selected customer ID.
@@ -135,26 +152,38 @@ public class CustomerManagement extends HttpServlet {
 			if (tmpList != null && tmpList.size() > 0)
 				customerDetail = tmpList.get(0);
 
+			// Set page number depends on selected customer ID.
+			if (selectedCustomerID > 0 && customers != null && customers.size() > 0) {
+				// customersPageNumber
+				for (int i = 0; customers != null && i < customers.size(); i++) {
+					if (customers.get(i).getId() == selectedCustomerID) {
+						customersPageNumber = i / pageMax + 1;
+
+						break;
+					}
+				}
+			}
+
 			// Variables for UI.
 			request.setAttribute("tabindex", tabIndex);
 			request.setAttribute("customers", customers);
 			request.setAttribute("selectedcustomerID", selectedCustomerID);
+			request.setAttribute("searchbycondition", searchByCondition);
 			request.setAttribute("customerdetail", customerDetail);
 			request.setAttribute("customerspagenumber", customersPageNumber);
 			request.setAttribute("pagemax", pageMax);
 			request.setAttribute("message", message);
 
-			// Go to Page.
-			request.getRequestDispatcher("/WEB-INF/customer/customer.jsp").forward(request, response);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+		// Go to Page.
+		request.getRequestDispatcher("/WEB-INF/customer/customer.jsp").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {

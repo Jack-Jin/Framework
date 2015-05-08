@@ -9,7 +9,7 @@ import eceep.customer.domain.CustomerDetail;
 public interface CustomerDao {
 	boolean initial(String jdbcDriver, String url, String userName, String password);
 	
-	List<CustomerDetail> getCustomers(int userID) throws SQLException;
+	List<CustomerDetail> getCustomers(int userID, String byCustomerName) throws SQLException;
 	
 	int newCustomer(int byUserID) throws SQLException;
 	

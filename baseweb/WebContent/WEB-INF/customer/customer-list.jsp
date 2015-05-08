@@ -3,27 +3,29 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <style>
-  .TBL_CustomerList { width: 99%; background-color: #eee; }
+  .TBL_CustomerList { width: 99%; background-color: #eee; margin-top: 2px; }
   .TBL_CustomerList>tbody>tr { cursor: default; }
   .TBL_CustomerList>thead>tr>th { text-align: left; color: #eee; background-color: #666; }
   .TBL_CustomerList>tfoot { background-color: #ffe; }
   
-  .TBL_CustomerList .Selected { color: #ff0; background-color: #33f; }
+  .TBL_CustomerList>tfoot td { padding-top: 10px; }
+  
+  .TBL_CustomerList .Selected { color: #ff0; background-color: #aaa; }
 </style>
 
 <%-- Variable: recordEnd --%>
-<c:set var="leftRecords" value="${ customers.size() - (customerspagenumber-1)*pagemax }" />
-<c:set var="recordEnd" value="${ leftRecords>5? pagemax : leftRecords }" />
+<c:set var="leftRecords" value="${ customers.size() - (customerspagenumber-1)*pagemax }" scope="request" />
+<c:set var="recordEnd" value="${ leftRecords>pagemax? pagemax : leftRecords }" scope="request" />
 
 <%-- Variable: totalpages --%>
-<c:set var="tmptotalrecords" value="${ customers.size()-1 }" />
-<c:set var="tmptotalpages" value="${ tmptotalrecords / pagemax + 1 }" />
-<fmt:parseNumber var="totalpages" value="${ tmptotalpages }" integerOnly="true" type="number" />
+<c:set var="tmptotalrecords" value="${ customers.size()-1 }" scope="request" />
+<c:set var="tmptotalpages" value="${ tmptotalrecords / pagemax + 1 }" scope="request" />
+<fmt:parseNumber var="totalpages" value="${ tmptotalpages }" integerOnly="true" type="number" scope="request" />
 
 <%-- Variable: groupMax, groupIndex, groupStart, groupEnd --%>
-<c:set var="groupMax" value="5" />
-<c:set var="groupStart" value="${ totalpages<=groupMax? 1 : (customerspagenumber>=(totalpages-groupMax+1)? totalpages-groupMax+1 : customerspagenumber) }" />
-<c:set var="groupEnd" value="${ (groupStart+groupMax)>totalpages? totalpages : groupStart+groupMax-1  }" />
+<c:set var="groupMax" value="5" scope="request" />
+<c:set var="groupStart" value="${ totalpages<=groupMax? 1 : (customerspagenumber>=(totalpages-groupMax+1)? totalpages-groupMax+1 : customerspagenumber) }" scope="request" />
+<c:set var="groupEnd" value="${ (groupStart+groupMax)>totalpages? totalpages : groupStart+groupMax-1  }" scope="request" />
 
 <%-- 
 <div>
@@ -34,16 +36,23 @@
 <div>
 	customerspagenumber: ${customerspagenumber };
 	totalpages: ${totalpages };
-	groupIndex: ${groupIndex }; 
 	groupStart: ${groupStart };
 	groupEnd: ${groupEnd };	
 </div>
 --%>
+<div style="margin-top: 5px;">
+  <form method="post">
+  	<span style="font-weight: bold;">Customer Name:&nbsp;</span>
+  	<input type="text" name="txtSearchCondition" value="${searchbycondition }" style="width: 200px;" />
+  	<input type="submit" value="Search" class="CusButton" style="width: 80px;" />
+  	<input type="hidden" name="action" value="Search By Condition" />
+  </form>
+</div>
 
 <table class="TBL_CustomerList">
 <thead>
   <tr>
-    <th>Company Name</th>
+    <th>Customer Name</th>
     <th>Contact</th>
     <th>Address</th>
     <th>City</th>
@@ -57,36 +66,55 @@
   </tr>
 </thead>
 <tbody>
-  <c:forEach var="recordIndex" begin="0" end="${recordEnd-1 }" >
-	<c:set var="customerIndex" value="${(customerspagenumber-1)*pagemax + recordIndex }" />
-    <c:set var="eachcustomerdetail" value="${customers.get(customerIndex) }" />
+  <c:choose>
+  <c:when test="${customers!=null && customers.size()>0 }">
+    <c:forEach var="recordIndex" begin="0" end="${recordEnd-1 }"  >
+	  <c:set var="customerIndex" value="${(customerspagenumber-1)*pagemax + recordIndex }" scope="request" />
+      <c:set var="eachcustomerdetail" value="${customers[customerIndex] }" scope="request" />
 
-    <tr ${eachcustomerdetail.id==selectedcustomerID? "class='Selected'": ""} 
-        onclick='post("${pageContext.request.contextPath}/CustomerManagement", {action: "Selected Customer", selectedCustomerID: ${eachcustomerdetail.id} });'>
-      <td>${eachcustomerdetail.customerName}</td>
-      <td>${eachcustomerdetail.customerPrimaryContact.contactName}</td>
-      <td>${eachcustomerdetail.street}</td>
-      <td>${eachcustomerdetail.city}</td>
-      <td>${eachcustomerdetail.state}</td>
-      <td>${eachcustomerdetail.postalCode}</td>
-      <td>${eachcustomerdetail.country}</td>
-      <td>${eachcustomerdetail.phoneNo}</td>
-      <td>${eachcustomerdetail.faxNo}</td>
-      <td>${eachcustomerdetail.modifiedByName}</td>
-      <td>
-        <span class="CusButton" style="width: 35px; font-size: 0.95em;"
-              onclick='post("${pageContext.request.contextPath}/CustomerManagement", {action: "Remove Customer", selectedCustomerID: ${eachcustomerdetail.id} });'>Delete</span>
-      </td>
+      <tr ${eachcustomerdetail.id==selectedcustomerID? "class='Selected'": ""}>
+        <td>
+          <a href='javascript: post("${pageContext.request.contextPath}/CustomerManagement", {action: "Selected Customer", selectedCustomerID: ${eachcustomerdetail.id} });'>
+            ${eachcustomerdetail.customerName}
+          </a>
+        </td>
+        <td>${eachcustomerdetail.customerPrimaryContact.contactName}</td>
+        <td>${eachcustomerdetail.street}</td>
+        <td>${eachcustomerdetail.city}</td>
+        <td>${eachcustomerdetail.state}</td>
+        <td>${eachcustomerdetail.postalCode}</td>
+        <td>${eachcustomerdetail.country}</td>
+        <td>${eachcustomerdetail.phoneNo}</td>
+        <td>${eachcustomerdetail.faxNo}</td>
+        <td>${eachcustomerdetail.modifiedByName}</td>
+        <td>
+          <span class="CusButton" style="width: 35px; font-size: 0.95em;"
+                onclick='if(confirm("Are you sure to delete this customer?")) post("${pageContext.request.contextPath}/CustomerManagement", {action: "Remove Customer", selectedCustomerID: ${eachcustomerdetail.id} });'>
+                Delete
+          </span>
+        </td>
+      </tr>
+    </c:forEach>
+  </c:when>
+  <c:otherwise>
+    <tr>
+      <td colspan="11">No record.</td>
     </tr>
-  </c:forEach>
+  </c:otherwise>
+  </c:choose>
 </tbody>
 <tfoot>
   <tr>
     <td>
       <span class="CusButton" style="width: 35px; font-size: 0.95em; text-align: center;"
-            onclick='post("${pageContext.request.contextPath}/CustomerManagement", {action: "Add Customer"});'>Add</span>
+            onclick='post("${pageContext.request.contextPath}/CustomerManagement", {action: "Add Customer"});'>
+            Add
+      </span>
     </td>
     <td colspan="10" style="text-align: right; padding-right: 20px;">
+    <c:if test="${customers!=null && customers.size()>0 }">
+
+      Pages:&nbsp;
       <a href='javascript: post("${pageContext.request.contextPath}/CustomerManagement",{ action: "Change Page Number", pageNumber: 1 })'>
         |&lt;
       </a>
@@ -108,6 +136,8 @@
       <a href='javascript: post("${pageContext.request.contextPath}/CustomerManagement",{ action: "Change Page Number", pageNumber: ${totalpages } })'>
         &gt;|
       </a>
+    
+    </c:if>
     </td>
   </tr>
 </tfoot>

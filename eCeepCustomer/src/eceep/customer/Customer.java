@@ -14,7 +14,7 @@ public interface Customer {
 	int getPolicy_CustomersByUserID();
 	
 	// ** For customer generic *****************************************
-	List<CustomerDetail> getCustomers() throws SQLException;
+	List<CustomerDetail> getCustomers(String byCustomerName) throws SQLException;
 	
 	int newCustomer(int byUserID) throws SQLException;
 	

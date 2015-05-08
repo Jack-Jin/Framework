@@ -29,7 +29,7 @@ public class CustomerDaoService implements CustomerDao {
 	}
 
 	@Override
-	public List<CustomerDetail> getCustomers(int userID) throws SQLException {
+	public List<CustomerDetail> getCustomers(int userID, String byCustomerName) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -43,10 +43,11 @@ public class CustomerDaoService implements CustomerDao {
 			String sql = "SELECT ID,CustomerName,Street,City,State,Country,PostalCode,PhoneNo,FaxNo,Notes,ParentID,AgentID";
 			sql += ",CreatedByID,CreatedByName,CreatedTime,ModifiedByID,ModifiedByName,ModifiedTime";
 			if (userID < 0) {
-				sql += " FROM Customers WHERE IsDeleted=FALSE";
+				sql += " FROM Customers WHERE IsDeleted=FALSE AND CustomerName LIKE '%" + byCustomerName + "%'";
 				ps = conn.prepareStatement(sql);
 			} else {
-				sql += " FROM Customers WHERE CreatedByID=? AND IsDeleted=FALSE";
+				sql += " FROM Customers WHERE IsDeleted=FALSE AND CreatedByID=? AND CustomerName LIKE '%"
+						+ byCustomerName + "%'";
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, userID);
 			}
@@ -205,7 +206,7 @@ public class CustomerDaoService implements CustomerDao {
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
+
 		return result;
 	}
 

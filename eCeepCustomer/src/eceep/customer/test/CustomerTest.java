@@ -28,7 +28,7 @@ public class CustomerTest {
 	
 	@Test
 	public void getCustomers() throws SQLException{
-		List<CustomerDetail> customers = customer.getCustomers();
+		List<CustomerDetail> customers = customer.getCustomers("");
 		
 		for(CustomerDetail eachCustomerDetail : customers){
 			System.out.println("======================================================================================================");
