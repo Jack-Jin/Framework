@@ -2,7 +2,6 @@ package eceep.customer.impl;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import eceep.customer.Customer;
 import eceep.customer.dao.CustomerDao;
@@ -14,10 +13,10 @@ public class CustomerService implements Customer {
 	private CustomerDao customerDao;
 
 	private int policy_CustomersByUserID;
-	
+
 	public CustomerService() {
-		this.policy_CustomersByUserID = -1;   //if -1, no policy.
-		
+		this.policy_CustomersByUserID = -1; // if -1, no policy.
+
 		this.customerDao = CustomerDaoFactoryMySql.getInstance();
 	}
 
@@ -32,12 +31,12 @@ public class CustomerService implements Customer {
 	public void setPolicy_CustomersByUserID(int userID) {
 		this.policy_CustomersByUserID = userID;
 	}
-	
+
 	@Override
 	public int getPolicy_CustomersByUserID() {
 		return this.policy_CustomersByUserID;
 	}
-	
+
 	@Override
 	public List<CustomerDetail> getCustomers(String byCustomerName) throws SQLException {
 		return this.customerDao.getCustomers(this.policy_CustomersByUserID, byCustomerName);
@@ -47,15 +46,29 @@ public class CustomerService implements Customer {
 	public int newCustomer(int byUserID) throws SQLException {
 		return this.customerDao.newCustomer(byUserID);
 	}
-	
+
 	@Override
 	public void removeCustomer(int customerID, int byUserID) throws SQLException {
 		this.customerDao.removeCustomer(customerID, byUserID);
 	}
-	
+
 	@Override
 	public boolean updateCustomer(CustomerDetail customerDetail, int byUserID) throws SQLException {
 		return this.customerDao.updateCustomer(customerDetail, byUserID);
 	}
-	
+
+	@Override
+	public boolean updateContact(CustomerContact contact) throws SQLException {
+		return this.customerDao.updateContact(contact);
+	}
+
+	@Override
+	public int newContact(int customerID, String customerName, int byUserID) throws SQLException {
+		return this.customerDao.newContact(customerID, customerName, byUserID);
+	}
+
+	@Override
+	public void removeContact(int contactID, int byUserID) throws SQLException {
+		this.customerDao.removeContact(contactID, byUserID);
+	}
 }

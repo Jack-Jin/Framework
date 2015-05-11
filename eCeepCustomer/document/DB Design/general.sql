@@ -11,4 +11,5 @@ UPDATE Customers SET IsDeleted=FALSE;
 UPDATE CustomerContacts SET IsDeleted=FALSE;
 SET SQL_SAFE_UPDATES=1;
 
+SELECT ContactName,IsPrimaryContact,ContactTitle,DirectPhoneNo,DirectFaxNo,EmailAddress,Note FROM CustomerContacts;
 

@@ -135,7 +135,6 @@ public class CustomerManagement extends HttpServlet {
 
 				// Refresh Customer List.
 				customers = customer.getCustomers(searchByCondition);
-
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 
 			} else if (action.equalsIgnoreCase("Change Page Number")) { // ----------------- Action - Change Page Number
@@ -152,8 +151,8 @@ public class CustomerManagement extends HttpServlet {
 
 				// Refresh Customer List.
 				customers = customer.getCustomers(searchByCondition);
-
 				session.setAttribute("CustomerManagement_CustomerList", customers);
+				
 			} else if (action.equalsIgnoreCase("Selected Contact")) { // ------------------ Action - Selected Contact
 
 				selectedContactID = Integer.parseInt(request.getParameter("selectedContactID"));
@@ -161,9 +160,53 @@ public class CustomerManagement extends HttpServlet {
 				
 				// Tab: Contact
 				tabIndex = 2;
+				
+			} else if (action.equalsIgnoreCase("Contact Update")) { // -------------------- Action - Contact Update
+				
+				CustomerContact updateContact = WebUtils.request2Bean(request, CustomerContact.class);
+				customer.updateContact(updateContact);
+
+				selectedContactID = updateContact.getId();
+				selectedCustomerID = updateContact.getCustomerID();
+				
+				// Tab: Contact
+				tabIndex = 2;
+				message = "Contact info updated successfully.";
+
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+				session.setAttribute("CustomerManagement_CustomerList", customers);
+				
+			} else if (action.equalsIgnoreCase("Add Contact")) { // ----------------------- Action - Add Contact
+				
+				selectedCustomerID = Integer.parseInt(request.getParameter("customerID"));
+				String tmpCustomerName = request.getParameter("customerName");
+				selectedContactID = customer.newContact(selectedCustomerID, tmpCustomerName, user.getUserDetail().getId());
+								
+				// Tab: Contact
+				tabIndex = 2;
+				
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+				session.setAttribute("CustomerManagement_CustomerList", customers);
+				
+			} else if (action.equalsIgnoreCase("Remove Contact")) { // -------------------- Action - Remove Contact
+				
+				selectedCustomerID = Integer.parseInt(request.getParameter("customerID"));
+				int tmpContactID = Integer.parseInt(request.getParameter("contactID"));
+				customer.removeContact(tmpContactID, user.getUserDetail().getId());
+				
+				selectedContactID = -1;
+				
+				// Tab: Contact
+				tabIndex = 2;
+				
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+				session.setAttribute("CustomerManagement_CustomerList", customers);
+				
 			}
 			
-
 			// Default selected customer ID.
 			if (selectedCustomerID < 0 && customers != null && customers.size() > 0) {
 				selectedCustomerID = customers.get(0).getId();

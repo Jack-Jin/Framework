@@ -21,4 +21,11 @@ public interface Customer {
 	void removeCustomer(int customerID, int byUserID) throws SQLException;
 	
 	boolean updateCustomer(CustomerDetail customerDetail, int byUserID) throws SQLException;
+
+	boolean updateContact(CustomerContact contact) throws SQLException;
+	
+	int newContact(int customerID, String customerName, int byUserID) throws SQLException;
+	
+	void removeContact(int contactID, int byUserID) throws SQLException;
+	
 }

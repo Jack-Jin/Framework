@@ -210,6 +210,93 @@ public class CustomerDaoService implements CustomerDao {
 		return result;
 	}
 
+	@Override
+	public boolean updateContact(CustomerContact contact) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		boolean result = false;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "UPDATE CustomerContacts SET";
+			sql += " ContactName=?,IsPrimaryContact=?,ContactTitle=?,DirectPhoneNo=?,DirectFaxNo=?,EmailAddress=?,Note=?";
+			sql += " WHERE ID=? ";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, contact.getContactName());
+			ps.setBoolean(2, contact.isIsPrimaryContact());
+			ps.setString(3, contact.getContactTitle());
+			ps.setString(4, contact.getDirectPhoneNo());
+			ps.setString(5, contact.getDirectFaxNo());
+			ps.setString(6, contact.getEmailAddress());
+			ps.setString(7, contact.getNote());
+			ps.setInt(8, contact.getId());
+
+			int updateCount = ps.executeUpdate();
+			if (updateCount > 0)
+				result = true;
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return result;
+	}
+
+	@Override
+	public int newContact(int customerID, String customerName, int byUserID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;		
+		
+		int contactID = -1;
+		try {
+			conn = JdbcUtils.getConnection();
+			
+			String sql = "INSERT INTO CustomerContacts(ContactName,CustomerID,CustomerName,CreatedByID,CreatedByName)";
+			sql += " SELECT 'New Contact' AS 'ContactName',? ,? ,ID AS 'CreatedByID', UserName AS 'CreatedByName' FROM Users WHERE ID=? ";
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, customerID);
+			ps.setString(2, customerName);
+			ps.setInt(3, byUserID);
+			
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if(rs.next())
+				contactID = rs.getInt(1);
+						
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+		
+		return contactID;
+	}
+	
+	@Override
+	public void removeContact(int contactID, int byUserID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = JdbcUtils.getConnection();
+			
+			String sql = "UPDATE CustomerContacts SET IsDeleted=TRUE, DeletedByID=?, DeletedByName=(SELECT UserName FROM Users WHERE ID=?) ";
+			sql += "WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, byUserID);
+			ps.setInt(2, byUserID);
+			ps.setInt(3, contactID);
+			
+			ps.executeUpdate();
+			
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+	}
+	
+	
 	// @Override
 	// public CustomerDetail getCustomerDetail(int customerID) throws
 	// SQLException {

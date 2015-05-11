@@ -3,7 +3,7 @@
 <style>
 .TBL_CustomerDetail { }
 .TBL_CustomerDetail>tbody>tr>td:first-child { text-align: right; font-weight: bold; }
-.TBL_CustomerDetail>tfoot>tr>td { padding-top: 20px; text-align: center; }
+.TBL_CustomerDetail>tfoot>tr>td { padding-top: 20px; }
 </style>
 
 <form action="" method="post">
@@ -44,12 +44,13 @@
   </tr>
   <tr>
     <td>Note</td>
-    <td><textarea name="notes" value="${customerdetail.notes }" rows="3" cols="40" style="width: 400px;"></textarea></td>
+    <td><textarea name="notes" rows="3" cols="40" style="width: 400px;">${customerdetail.notes }</textarea></td>
   </tr>
 </tbody>
 <tfoot>
   <tr>
-    <td colspan="2">
+    <td></td>
+    <td>
 	  <input type="submit" name="btnUpdate" value="Update" class="CusButton" style="width: 80px;"/>
 
 	  <input type="hidden" name="action" value="Customer Update"/>

@@ -94,7 +94,7 @@
 </tbody>
 <tfoot>
   <tr>
-    <td>
+    <td style="padding-top: 5px; padding-bottom: 5px;">
       <span class="CusButton" style="width: 35px; font-size: 0.95em; text-align: center;"
             onclick='post("${pageContext.request.contextPath}/CustomerManagement", {action: "Add Customer"});'>
             Add

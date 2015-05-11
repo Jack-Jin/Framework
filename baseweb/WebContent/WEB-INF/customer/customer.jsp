@@ -8,8 +8,6 @@
   .TBL_List>thead>tr>th { text-align: left; color: #eee; background-color: #666; }
   .TBL_List>tfoot { background-color: #ffe; }
   
-  .TBL_List>tfoot td { padding-top: 10px; }
-  
   .TBL_List .Selected { color: #ff0; background-color: #aaa; }
 </style>
 
