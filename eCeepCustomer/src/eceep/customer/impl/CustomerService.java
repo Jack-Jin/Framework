@@ -2,10 +2,12 @@ package eceep.customer.impl;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import eceep.customer.Customer;
 import eceep.customer.dao.CustomerDao;
 import eceep.customer.dao.impl.CustomerDaoFactoryMySql;
+import eceep.customer.domain.CustomerActivity;
 import eceep.customer.domain.CustomerContact;
 import eceep.customer.domain.CustomerDetail;
 
@@ -70,5 +72,25 @@ public class CustomerService implements Customer {
 	@Override
 	public void removeContact(int contactID, int byUserID) throws SQLException {
 		this.customerDao.removeContact(contactID, byUserID);
+	}
+
+	@Override
+	public boolean updateActivity(CustomerActivity activity) throws SQLException {
+		return this.customerDao.updateActivity(activity);
+	}
+
+	@Override
+	public int newActivity(int customerID, String customerName, int byUserID) throws SQLException {
+		return this.customerDao.newActivity(customerID, customerName, byUserID);
+	}
+
+	@Override
+	public void removeActivity(int activityID, int byUserID) throws SQLException {
+		this.customerDao.removeActivity(activityID, byUserID);
+	}
+	
+	@Override
+	public Map<Integer,String> getActivityTypeList() throws SQLException {
+		return this.customerDao.getActivityTypeList();
 	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -13,7 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.tribes.group.interceptors.TwoPhaseCommitInterceptor.MapEntry;
+
 import eceep.customer.Customer;
+import eceep.customer.domain.CustomerActivity;
 import eceep.customer.domain.CustomerContact;
 import eceep.customer.domain.CustomerDetail;
 import eceep.user.User;
@@ -77,6 +81,11 @@ public class CustomerManagement extends HttpServlet {
 		int selectedContactID = -1;
 		List<CustomerContact> customerContacts = new ArrayList<CustomerContact>();
 		CustomerContact customerContact = null;
+
+		// Activity List
+		int selectedActivityID = -1;
+		List<CustomerActivity> customerActivities = new ArrayList<CustomerActivity>();
+		CustomerActivity customerActivity = null;
 
 		// ** Variables for page. End ***********************************
 
@@ -152,23 +161,23 @@ public class CustomerManagement extends HttpServlet {
 				// Refresh Customer List.
 				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
-				
-			} else if (action.equalsIgnoreCase("Selected Contact")) { // ------------------ Action - Selected Contact
+
+			} else if (action.equalsIgnoreCase("Selected Contact")) { // ------------------ Action - Contact - Selected Contact
 
 				selectedContactID = Integer.parseInt(request.getParameter("selectedContactID"));
 				selectedCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
-				
+
 				// Tab: Contact
 				tabIndex = 2;
-				
-			} else if (action.equalsIgnoreCase("Contact Update")) { // -------------------- Action - Contact Update
-				
+
+			} else if (action.equalsIgnoreCase("Contact Update")) { // -------------------- Action - Contact - Contact Update
+
 				CustomerContact updateContact = WebUtils.request2Bean(request, CustomerContact.class);
 				customer.updateContact(updateContact);
 
 				selectedContactID = updateContact.getId();
 				selectedCustomerID = updateContact.getCustomerID();
-				
+
 				// Tab: Contact
 				tabIndex = 2;
 				message = "Contact info updated successfully.";
@@ -176,37 +185,91 @@ public class CustomerManagement extends HttpServlet {
 				// Refresh Customer List.
 				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
-				
-			} else if (action.equalsIgnoreCase("Add Contact")) { // ----------------------- Action - Add Contact
-				
+
+			} else if (action.equalsIgnoreCase("Add Contact")) { // ------------------------ Action - Contact - Add Contact
+
 				selectedCustomerID = Integer.parseInt(request.getParameter("customerID"));
 				String tmpCustomerName = request.getParameter("customerName");
-				selectedContactID = customer.newContact(selectedCustomerID, tmpCustomerName, user.getUserDetail().getId());
-								
+				selectedContactID = customer.newContact(selectedCustomerID, tmpCustomerName, user.getUserDetail()
+						.getId());
+
 				// Tab: Contact
 				tabIndex = 2;
+
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+				session.setAttribute("CustomerManagement_CustomerList", customers);
+
+			} else if (action.equalsIgnoreCase("Remove Contact")) { // --------------------- Action - Contact - Remove Contact
+
+				selectedCustomerID = Integer.parseInt(request.getParameter("customerID"));
+				int tmpContactID = Integer.parseInt(request.getParameter("contactID"));
+				customer.removeContact(tmpContactID, user.getUserDetail().getId());
+
+				selectedContactID = -1;
+
+				// Tab: Contact
+				tabIndex = 2;
+
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+				session.setAttribute("CustomerManagement_CustomerList", customers);
+
+			} else if (action.equalsIgnoreCase("Selected Activity")) { // ------------------ Action - Activity - Selected Activity
+				
+				selectedActivityID = Integer.parseInt(request.getParameter("selectedactivityID"));
+				selectedCustomerID = Integer.parseInt(request.getParameter("selectedCustomerID"));
+				
+				// Tab: Activity
+				tabIndex = 3;
+				
+			} else if (action.equalsIgnoreCase("Activity Update")) { // -------------------- Action - Activity - Activity Update
+				
+				CustomerActivity updateActivity = WebUtils.request2Bean(request, CustomerActivity.class);
+				customer.updateActivity(updateActivity);
+				
+				selectedActivityID = updateActivity.getId();
+				selectedCustomerID = updateActivity.getCustomerID();
+				
+				// Tab: Activity
+				tabIndex = 3;
+				message = "Activity info updated successfully.";
 				
 				// Refresh Customer List.
 				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 				
-			} else if (action.equalsIgnoreCase("Remove Contact")) { // -------------------- Action - Remove Contact
+			} else if (action.equalsIgnoreCase("Add Activity")) { // ----------------------- Action - Activity - Add Activity
 				
 				selectedCustomerID = Integer.parseInt(request.getParameter("customerID"));
-				int tmpContactID = Integer.parseInt(request.getParameter("contactID"));
-				customer.removeContact(tmpContactID, user.getUserDetail().getId());
+				String tmpCustomerName = request.getParameter("customerName");
+				selectedActivityID = customer.newActivity(selectedCustomerID, tmpCustomerName, user.getUserDetail()
+						.getId());
 				
-				selectedContactID = -1;
+				// Tab: Activity
+				tabIndex = 3;
 				
-				// Tab: Contact
-				tabIndex = 2;
+				// Refresh Customer List.
+				customers = customer.getCustomers(searchByCondition);
+				session.setAttribute("CustomerManagement_CustomerList", customers);
+				
+			} else if (action.equalsIgnoreCase("Remove Activity")) { // -------------------- Action - Activity - Remove Activity
+				
+				selectedCustomerID = Integer.parseInt(request.getParameter("customerID"));
+				int tmpActivityID = Integer.parseInt(request.getParameter("activityID"));
+				customer.removeActivity(tmpActivityID, user.getUserDetail().getId());
+				
+				selectedActivityID = -1;
+				
+				// Tab: Activity
+				tabIndex = 3;
 				
 				// Refresh Customer List.
 				customers = customer.getCustomers(searchByCondition);
 				session.setAttribute("CustomerManagement_CustomerList", customers);
 				
 			}
-			
+
 			// Default selected customer ID.
 			if (selectedCustomerID < 0 && customers != null && customers.size() > 0) {
 				selectedCustomerID = customers.get(0).getId();
@@ -235,18 +298,32 @@ public class CustomerManagement extends HttpServlet {
 			if (customerDetail != null) {
 				customerContacts = customerDetail.getCustomerContacts();
 			}
-
 			// Default selected contact ID.
 			if (selectedContactID < 0 && customerContacts != null && customerContacts.size() > 0) {
-				selectedContactID = customerContacts.get(0).getId();
+				selectedContactID = (customerDetail.getCustomerPrimaryContact() == null) ? customerDetail
+						.getCustomerContact().getId() : customerDetail.getCustomerPrimaryContact().getId();
 			}
-
 			// Contact Detail
 			int tmpContactID = selectedContactID;
 			List<CustomerContact> tmpContacts = customerContacts.stream().filter(A -> A.getId() == tmpContactID)
 					.collect(Collectors.toList());
-			if(tmpContacts !=null && tmpContacts.size() >0)
+			if (tmpContacts != null && tmpContacts.size() > 0)
 				customerContact = tmpContacts.get(0);
+
+			// Customer Activity List.
+			if (customerDetail != null) {
+				customerActivities = customerDetail.getCustomerActivities();
+			}
+			// Default selected activity ID.
+			if (selectedActivityID < 0 && customerActivities != null && customerActivities.size() > 0) {
+				selectedActivityID = customerDetail.getCustomerActivityID();
+			}
+			// Customer Detail
+			int tmpActivityID = selectedActivityID;
+			List<CustomerActivity> tmpActivities = customerActivities.stream().filter(A -> A.getId() == tmpActivityID)
+					.collect(Collectors.toList());
+			if (tmpActivities != null && tmpActivities.size() > 0)
+				customerActivity = tmpActivities.get(0);
 
 			// ** Variables for UI. **********************************************
 			request.setAttribute("tabindex", tabIndex);
@@ -261,6 +338,18 @@ public class CustomerManagement extends HttpServlet {
 			request.setAttribute("selectedcontactID", selectedContactID);
 			request.setAttribute("customercontact", customerContact);
 
+			request.setAttribute("customeractivities", customerActivities);
+			request.setAttribute("selectedactivityID", selectedActivityID);
+			request.setAttribute("customeractivity", customerActivity);
+			request.setAttribute("activitylist", customer.getActivityTypeList());
+			
+			/*
+			for(Map.Entry<Integer, String> en : customer.getActivityTypeList().entrySet()) {
+				en.getKey();
+				en.getValue();
+			}
+			*/
+			
 			request.setAttribute("message", message);
 			// ** Variables for UI. End ******************************************
 

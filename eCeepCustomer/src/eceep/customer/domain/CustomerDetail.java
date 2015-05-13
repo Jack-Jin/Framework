@@ -28,11 +28,18 @@ public class CustomerDetail {
 	private List<CustomerContact> customerContacts;
 	private int customerContactID;
 
+	private List<CustomerActivity> customerActivities;
+	private int customerActivityID;
+
 	private String parentID;
 	private String agentID;
 
 	public CustomerDetail() {
 		customerContacts = new ArrayList<CustomerContact>();
+		customerContactID = -1;
+
+		customerActivities = new ArrayList<CustomerActivity>();
+		customerActivityID = -1;
 	}
 
 	public int getId() {
@@ -183,20 +190,10 @@ public class CustomerDetail {
 		return this.customerContacts;
 	}
 
-	public CustomerContact getCustomerPrimaryContact() {
-		if (this.customerContacts == null || (this.customerContacts != null && this.customerContacts.size() < 1))
-			return null;
-
-		List<CustomerContact> contact = this.customerContacts.stream().filter(A -> A.isIsPrimaryContact())
-				.collect(Collectors.toList());
-		if (contact != null && contact.size() > 0) {
-			return contact.get(0);
-		}
-
-		return this.customerContacts.get(0);
-	}
-
 	public int getCustomerContactID() {
+		if (this.customerContactID < 0 && this.customerContacts != null && this.customerContacts.size() > 0)
+			this.customerContactID = this.customerContacts.get(0).getId();
+		
 		return customerContactID;
 	}
 
@@ -205,7 +202,7 @@ public class CustomerDetail {
 	}
 
 	public CustomerContact getCustomerContact() {
-		if (this.customerContactID < 0 || this.customerContacts == null
+		if (this.getCustomerContactID() < 0 || this.customerContacts == null
 				|| (this.customerContacts != null && this.customerContacts.size() < 1))
 			return null;
 
@@ -224,4 +221,42 @@ public class CustomerDetail {
 		return contact;
 	}
 
+	public CustomerContact getCustomerPrimaryContact() {
+		if (this.customerContacts == null || (this.customerContacts != null && this.customerContacts.size() < 1))
+			return null;
+
+		List<CustomerContact> contact = this.customerContacts.stream().filter(A -> A.isIsPrimaryContact())
+				.collect(Collectors.toList());
+		if (contact != null && contact.size() > 0) {
+			return contact.get(0);
+		}
+
+		return this.customerContacts.get(0);
+	}
+
+	public List<CustomerActivity> getCustomerActivities() {
+		return customerActivities;
+	}
+
+	public int getCustomerActivityID() {
+		if (customerActivityID < 0 && this.customerActivities != null && customerActivities.size() > 0)
+			customerActivityID = customerActivities.get(0).getId();
+
+		return customerActivityID;
+	}
+
+	public void setCustomerActivityID(int customerActivityID) {
+		this.customerActivityID = customerActivityID;
+	}
+
+	public CustomerActivity getCustomerActivity() {
+		if (this.getCustomerActivityID() < 0 || this.customerActivities == null
+				|| (this.customerActivities != null && this.customerActivities.size() < 1))
+			return null;
+
+		CustomerActivity activity = this.customerActivities.stream()
+				.filter(A -> A.getId() == this.getCustomerActivityID()).findAny().get();
+
+		return activity;
+	}
 }

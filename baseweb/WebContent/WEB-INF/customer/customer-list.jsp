@@ -76,7 +76,7 @@
         <td>${eachcustomerdetail.phoneNo}</td>
         <td>${eachcustomerdetail.faxNo}</td>
         <td>${eachcustomerdetail.modifiedByName}</td>
-        <td>
+        <td style="width: 38px;">
           <span class="CusButton" style="width: 35px; font-size: 0.95em;"
                 onclick='if(confirm("Are you sure to delete this customer?")) post("${pageContext.request.contextPath}/CustomerManagement", {action: "Remove Customer", selectedCustomerID: ${eachcustomerdetail.id} });'>
                 Delete

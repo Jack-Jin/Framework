@@ -2,7 +2,9 @@ package eceep.customer.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
+import eceep.customer.domain.CustomerActivity;
 import eceep.customer.domain.CustomerContact;
 import eceep.customer.domain.CustomerDetail;
 
@@ -23,6 +25,14 @@ public interface CustomerDao {
 	
 	void removeContact(int contactID, int byUserID) throws SQLException;
 
+	boolean updateActivity(CustomerActivity activity) throws SQLException;
+
+	int newActivity(int customerID, String customerName, int byUserID) throws SQLException;
+	
+	void removeActivity(int activityID, int byUserID) throws SQLException;
+
+	Map<Integer,String> getActivityTypeList() throws SQLException;
+	
 	//CustomerDetail getCustomerDetail(int customerID) throws SQLException;
 	
 	//List<CustomerContact> getCustomerContacts(int customerID) throws SQLException;

@@ -34,7 +34,7 @@
 	    <td>${eachContact.directFaxNo }</td>
 	    <td>${eachContact.emailAddress }</td>
 	    <td>${eachContact.isPrimaryContact? "Yes" : "" }</td>
-	    <td>
+	    <td style="width: 38px;">
           <span class="CusButton" style="width: 35px; font-size: 0.95em;"
                 onclick='if(confirm("Are you sure to delete this customer?")) post("${pageContext.request.contextPath}/CustomerManagement", {action: "Remove Contact", contactID: ${eachContact.id}, customerID: ${selectedcustomerID } });'>
                 Delete

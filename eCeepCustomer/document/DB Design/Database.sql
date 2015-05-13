@@ -13,6 +13,8 @@ USE eCeepFramework;
  *******************************/
 DROP TABLE IF EXISTS CustomerContacts;
 DROP TABLE IF EXISTS Customers;
+DROP TABLE IF EXISTS CustomerActivities;
+DROP TABLE IF EXISTS L_ActivityType;
 
 /******************************
  *  Table - Customers
@@ -79,3 +81,44 @@ INSERT INTO CustomerContacts(ID,CustomerID,CustomerName,ContactName,IsPrimaryCon
 
 INSERT INTO CustomerContacts(ID,CustomerID,CustomerName,ContactName,IsPrimaryContact,CreatedByID,CreatedByName) VALUES(5,3,'Customer3','Contact3',TRUE,1,'Admin');
 
+/******************************
+ *  Table - L_ActivityType
+ ******************************/
+CREATE TABLE L_ActivityType(
+	ID						int					NOT NULL	AUTO_INCREMENT,
+    ActivityType			NVARCHAR(255)		NULL,
+    PRIMARY KEY(ID)
+);
+INSERT INTO L_ActivityType(ID,ActivityType) VALUES(1,'Visit Customer');
+INSERT INTO L_ActivityType(ID,ActivityType) VALUES(2,'Customer Dropby');
+INSERT INTO L_ActivityType(ID,ActivityType) VALUES(3,'Telephone');
+INSERT INTO L_ActivityType(ID,ActivityType) VALUES(4,'eMail');
+INSERT INTO L_ActivityType(ID,ActivityType) VALUES(5,'Other Type');
+
+/******************************
+ *  Table - CustomerActivities
+ ******************************/
+CREATE TABLE CustomerActivities(
+	ID 						INT 				NOT NULL	AUTO_INCREMENT,
+	CustomerID 				INT 				NULL		REFERENCES Customers(ID),
+    CustomerName			NVARCHAR(255)		NULL,
+    Activity				NVARCHAR(255)		NULL,
+    ActivityTypeID			INT					NULL		REFERENCES L_ActivityType(ID),
+    ActivityType			NVARCHAR(255)		NULL,    
+	Detail 					NVARCHAR(255) 		NULL,
+    StartTime				DATETIME			NULL		DEFAULT NOW(),
+    EndTime					DATETIME			NULL		DEFAULT NOW(),    
+	ClosedByID				INT					NULL,
+	ClosedByName			NVARCHAR(255)		NULL,
+	ClosedTime				DATETIME			NULL		DEFAULT NOW(),
+	CreatedByID				INT					NULL,
+	CreatedByName			NVARCHAR(255)		NULL,
+	CreatedTime				DATETIME			NULL		DEFAULT NOW(),
+	IsDeleted 				BIT 				NOT NULL 	DEFAULT FALSE,
+    DeletedByID				INT					NULL,
+    DeletedByName			NVARCHAR(255)		NULL,
+    DetetedTime				DateTime			NULL,
+	
+ 	PRIMARY KEY(ID)
+);
+INSERT INTO CustomerActivities(ID,CustomerID,CustomerName,Activity,ActivityTypeID,ActivityType,Detail) VALUES(1,1,'Customer1','Activity1',1,'Visit Customer','Detail1');

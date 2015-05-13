@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import eceep.customer.dao.CustomerDao;
+import eceep.customer.domain.CustomerActivity;
 import eceep.customer.domain.CustomerContact;
 import eceep.customer.domain.CustomerDetail;
 import eceep.mysql.JdbcUtils;
@@ -60,8 +63,9 @@ public class CustomerDaoService implements CustomerDao {
 				customers.add(cusDetail);
 			}
 
-			// Get All contact list.
+			// Get All contact list, All activity list.
 			List<CustomerContact> cusContacts = new ArrayList<CustomerContact>();
+			List<CustomerActivity> cusActivities = new ArrayList<CustomerActivity>();
 			if (customers.size() > 0) {
 				// CreatedByID,CreatedByName,CreatedTime,IsDeleted,DeletedByID,DeletedByName,DetetedTime
 				sql = "SELECT ID,CustomerID,CustomerName,ContactName,IsPrimaryContact,ContactTitle,DirectPhoneNo,DirectFaxNo,EmailAddress,Note";
@@ -76,12 +80,28 @@ public class CustomerDaoService implements CustomerDao {
 
 					cusContacts.add(cusContact);
 				}
+
+				// SELECT ID,CustomerID,CustomerName,Activity,ActivityTypeID,ActivityType,Detail
+				// ,StartTime,EndTime,ClosedByID,ClosedByName,ClosedTime,CreatedByID,CreatedByName,CreatedTime
+				// FROM CustomerActivities;
+				sql = "SELECT ID,CustomerID,CustomerName,Activity,ActivityTypeID,ActivityType,Detail";
+				sql += ",StartTime,EndTime,ClosedByID,ClosedByName,ClosedTime,CreatedByID,CreatedByName,CreatedTime";
+				sql += " FROM CustomerActivities WHERE IsDeleted=FALSE";
+				ps = conn.prepareStatement(sql);
+
+				rs = ps.executeQuery();
+
+				while (rs.next()) {
+					CustomerActivity cusActivity = JdbcUtils.ResultSet2Object(rs, CustomerActivity.class);
+
+					cusActivities.add(cusActivity);
+				}
 			}
 
 			// Combine contact list into customer list.
 			if (customers.size() > 0 && cusContacts.size() > 0) {
 				for (CustomerDetail eachCustomerDetail : customers) {
-
+					// Contacts
 					List<CustomerContact> tmpContacts = cusContacts.stream()
 							.filter(A -> A.getCustomerID() == eachCustomerDetail.getId()).collect(Collectors.toList());
 
@@ -90,9 +110,20 @@ public class CustomerDaoService implements CustomerDao {
 					}
 
 					eachCustomerDetail.setCustomerContactID(-1);
-					if (eachCustomerDetail.getCustomerContacts().size() > 0) {
+					if (eachCustomerDetail.getCustomerContacts().size() > 0
+							&& eachCustomerDetail.getCustomerPrimaryContact() != null) {
 						eachCustomerDetail.setCustomerContactID(eachCustomerDetail.getCustomerPrimaryContact().getId());
 					}
+
+					// Activities
+					List<CustomerActivity> tmpActivities = cusActivities.stream()
+							.filter(A -> A.getCustomerID() == eachCustomerDetail.getId()).collect(Collectors.toList());
+
+					for (CustomerActivity eachCustomerActivity : tmpActivities) {
+						eachCustomerDetail.getCustomerActivities().add(eachCustomerActivity);
+					}
+
+					eachCustomerDetail.setCustomerActivityID(-1);
 				}
 			}
 
@@ -148,7 +179,8 @@ public class CustomerDaoService implements CustomerDao {
 			conn = JdbcUtils.getConnection();
 
 			// Customers table
-			String sql = "UPDATE Customers SET IsDeleted=TRUE,DetetedTime=NOW(),DeletedByID=?,DeletedByName=(SELECT UserName FROM Users WHERE ID=?) WHERE ID=?";
+			String sql = "UPDATE Customers SET IsDeleted=TRUE,DetetedTime=NOW(),DeletedByID=?";
+			sql += ",DeletedByName=(SELECT UserName FROM Users WHERE ID=?) WHERE ID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, byUserID);
 			ps.setInt(2, byUserID);
@@ -157,7 +189,19 @@ public class CustomerDaoService implements CustomerDao {
 			ps.executeUpdate();
 
 			// Customer contacts table
-			sql = " UPDATE CustomerContacts SET IsDeleted=TRUE,DetetedTime=NOW(),DeletedByID=?,DeletedByName=(SELECT UserName FROM Users WHERE ID=?) WHERE CustomerID=?";
+			sql = " UPDATE CustomerContacts SET IsDeleted=TRUE,DetetedTime=NOW(),DeletedByID=?";
+			sql += ",DeletedByName=(SELECT UserName FROM Users WHERE ID=?) WHERE CustomerID=?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, byUserID);
+			ps.setInt(2, byUserID);
+			ps.setInt(3, customerID);
+
+			ps.executeUpdate();
+
+			// Customer activities
+			sql = " UPDATE CustomerActivities SET IsDeleted=TRUE,DetetedTime=NOW(),DeletedByID=?";
+			sql += ",DeletedByName=(SELECT UserName FROM Users WHERE ID=?) WHERE CustomerID=?";
 
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, byUserID);
@@ -248,54 +292,166 @@ public class CustomerDaoService implements CustomerDao {
 	public int newContact(int customerID, String customerName, int byUserID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;		
-		
+		ResultSet rs = null;
+
 		int contactID = -1;
 		try {
 			conn = JdbcUtils.getConnection();
-			
+
 			String sql = "INSERT INTO CustomerContacts(ContactName,CustomerID,CustomerName,CreatedByID,CreatedByName)";
 			sql += " SELECT 'New Contact' AS 'ContactName',? ,? ,ID AS 'CreatedByID', UserName AS 'CreatedByName' FROM Users WHERE ID=? ";
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, customerID);
 			ps.setString(2, customerName);
 			ps.setInt(3, byUserID);
-			
+
 			ps.executeUpdate();
 			rs = ps.getGeneratedKeys();
-			if(rs.next())
+			if (rs.next())
 				contactID = rs.getInt(1);
-						
+
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
+
 		return contactID;
 	}
-	
+
 	@Override
 	public void removeContact(int contactID, int byUserID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		try {
 			conn = JdbcUtils.getConnection();
-			
+
 			String sql = "UPDATE CustomerContacts SET IsDeleted=TRUE, DeletedByID=?, DeletedByName=(SELECT UserName FROM Users WHERE ID=?) ";
 			sql += "WHERE ID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, byUserID);
 			ps.setInt(2, byUserID);
 			ps.setInt(3, contactID);
-			
+
 			ps.executeUpdate();
-			
+
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
 	}
-	
+
+	@Override
+	public boolean updateActivity(CustomerActivity activity) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		boolean result = false;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			// SELECT ID,CustomerID,CustomerName,Activity,ActivityTypeID,ActivityType,Detail
+			// ,StartTime,EndTime,ClosedByID,ClosedByName,ClosedTime,CreatedByID,CreatedByName,CreatedTime
+			// FROM CustomerActivities;
+			String sql = "UPDATE CustomerActivities SET Activity=?, ActivityTypeID=?, ActivityType=(SELECT ActivityType FROM L_ActivityType WHERE ID=?), Detail=?";
+			sql += " WHERE ID=? ";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, activity.getActivity());
+			ps.setInt(2, activity.getActivityTypeID());
+			ps.setInt(3, activity.getActivityTypeID());
+			ps.setString(4, activity.getDetail());
+			ps.setInt(5, activity.getId());
+
+			int updateCount = ps.executeUpdate();
+			if (updateCount > 0)
+				result = true;
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return result;
+	}
+
+	@Override
+	public int newActivity(int customerID, String customerName, int byUserID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		int contactID = -1;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "INSERT INTO CustomerActivities(CustomerID,CustomerName,Activity,ActivityTypeID,ActivityType,CreatedByID,CreatedByName)";
+			sql += " SELECT ?, ? ,'New Activity' AS 'Activity' ";
+			sql += ",1 AS 'ActivityTypeID' ,'Visit Customer' AS 'ActivityType' ";
+			sql += ",ID AS 'CreatedByID' , UserName AS 'CreatedByName' FROM Users WHERE ID=? ";
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, customerID);
+			ps.setString(2, customerName);
+			ps.setInt(3, byUserID);
+
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			if (rs.next())
+				contactID = rs.getInt(1);
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return contactID;
+	}
+
+	@Override
+	public void removeActivity(int activityID, int byUserID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "UPDATE CustomerActivities SET IsDeleted=TRUE, DeletedByID=?, DeletedByName=(SELECT UserName FROM Users WHERE ID=?) ";
+			sql += "WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, byUserID);
+			ps.setInt(2, byUserID);
+			ps.setInt(3, activityID);
+
+			ps.executeUpdate();
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+	}
+
+	@Override
+	public Map<Integer,String> getActivityTypeList() throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		Map<Integer,String> activityTypeList = new HashMap<Integer, String>();
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "SELECT ID,ActivityType FROM L_ActivityType";
+			ps = conn.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			
+			while(rs.next()){
+				activityTypeList.put(rs.getInt("ID"), rs.getString("ActivityType"));
+			}
+
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+		
+		return activityTypeList;
+	}
 	
 	// @Override
 	// public CustomerDetail getCustomerDetail(int customerID) throws

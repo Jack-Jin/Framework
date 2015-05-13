@@ -19,6 +19,7 @@
 	  <td onclick="tabClick(this,'tab1');" class='${tabindex==0? "SelectedTab": "Tab" }'>Customer List</td>
 	  <td onclick="tabClick(this,'tab2');" class='${tabindex==1? "SelectedTab": "Tab" }'>Detail Info</td>
 	  <td onclick="tabClick(this,'tab3');" class='${tabindex==2? "SelectedTab": "Tab" }'>Contact</td>
+	  <td onclick="tabClick(this,'tab4');" class='${tabindex==3? "SelectedTab": "Tab" }'>Activity</td>
 	</tr>
 	</table>
 	<div class="TabBody">
@@ -30,6 +31,9 @@
 	  </div>
 	  <div id="tab3" style='${tabindex==2? "": "display: none;" }'>
 	    <jsp:include page="/WEB-INF/customer/customer-contactlist.jsp" />
+	  </div>
+	  <div id="tab4" style='${tabindex==3? "": "display: none;" }'>
+	    <jsp:include page="/WEB-INF/customer/customer-activitylist.jsp" />
 	  </div>
 	</div>
 	<div style="color: red; text-align: left;">${message }</div>
