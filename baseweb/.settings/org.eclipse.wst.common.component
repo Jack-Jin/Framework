@@ -3,13 +3,13 @@
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
-        <dependent-module archiveName="eCeepCustomer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepCustomer/eCeepCustomer">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="eCeepSQL.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepSQL/eCeepSQL">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="eCeepUser.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepUser/eCeepUser">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="eCeepCustomer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepCustomer/eCeepCustomer">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="baseweb"/>
