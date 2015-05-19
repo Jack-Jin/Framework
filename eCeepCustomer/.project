@@ -3,6 +3,7 @@
 	<name>eCeepCustomer</name>
 	<comment></comment>
 	<projects>
+		<project>eCeepSQL</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

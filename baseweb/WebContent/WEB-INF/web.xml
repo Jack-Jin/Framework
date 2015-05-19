@@ -8,9 +8,8 @@
     <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
     <param-value>text</param-value>
   </context-param>
-  
   <error-page>
-	<exception-type>java.lang.Throwable</exception-type>
-	<location>/ShowError.jsp</location>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/ShowError.jsp</location>
   </error-page>
 </web-app>

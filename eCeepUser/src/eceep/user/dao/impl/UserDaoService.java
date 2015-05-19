@@ -450,7 +450,7 @@ public class UserDaoService implements UserDao {
 			String sql = "UPDATE Users SET UserName=?,FirstName=?,LastName=?,Title=?,Address=?";
 			sql += ",Address1=?,City=?,State=?,Country=?,PostalCode=?";
 			sql += ",Telephone=?,Fax=?,Email=?,WWW=?,Note=?";
-			sql += ",IsAdmin=?,IsNeverExpire=?,ExpiryDate=?,CompanyID=?,Company=(SELECT CompanyName FROM UserCompany WHERE ID=?) ";
+			sql += ",IsAdmin=?,CompanyID=?,Company=(SELECT CompanyName FROM UserCompany WHERE ID=?),IsNeverExpire=?,ExpiryDate=? ";
 			sql += "WHERE ID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, userDetail.getUserName());
@@ -469,11 +469,15 @@ public class UserDaoService implements UserDao {
 			ps.setString(14, userDetail.getWww());
 			ps.setString(15, userDetail.getNote());
 			ps.setBoolean(16, userDetail.isIsAdmin());
-			ps.setBoolean(17, userDetail.isIsNeverExpire());
-			ps.setDate(18, new Date(userDetail.getExpiryDate().getTime()));
-			ps.setInt(19, companyID);
-			ps.setInt(20, companyID);
-			ps.setInt(21, userDetail.getId());
+			ps.setInt(17, companyID);
+			ps.setInt(18, companyID);
+			ps.setInt(19, userDetail.getId());
+			ps.setBoolean(20, userDetail.isIsNeverExpire());
+			if(userDetail.isIsNeverExpire()) {
+				ps.setDate(21, new Date((new java.util.Date()).getTime()));
+			} else {
+				ps.setDate(21, new Date(userDetail.getExpiryDate().getTime()));
+			}
 
 			updateCount = ps.executeUpdate();
 

@@ -3,8 +3,8 @@
 	<name>baseweb</name>
 	<comment></comment>
 	<projects>
-		<project>eCeepSQL</project>
 		<project>eCeepCustomer</project>
+		<project>eCeepSQL</project>
 		<project>eCeepUser</project>
 	</projects>
 	<buildSpec>
