@@ -33,7 +33,8 @@ BEGIN
 	    # 1. User Info Detail.
 	    SELECT ID,UserName,FirstName,LastName,Title,Address,Address1,City,State,Country,PostalCode,Telephone,Fax,Email,WWW,Note
 		      ,CurrencyID,UnitID,LanguageID
-		      ,IsAdmin,CreateByID,CreateDate
+		      ,IsAdmin,IsNeverExpire,ExpiryDate
+              ,CreateByID,CreateDate
 		      ,LoginTime,LogoutTime
 		FROM Users
 		WHERE ID=UserID;

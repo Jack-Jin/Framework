@@ -9,11 +9,14 @@ import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
 
 public interface UserDao {
+	// Initial
 	boolean initial(String jdbcDriver, String url, String userName, String password);
 
+	// Log on
 	Object[] logon(String userName, String password, String sessionID, String ip, String osInfo, int sessionTimeoutInMin)
 			throws SQLException;
 
+	// -- Customer manager -----------------------------------------------------------
 	CompanyNode getAllOfCompanys() throws SQLException;
 
 	boolean isLeafCompany(CompanyNode node, int companyID);
@@ -26,6 +29,7 @@ public interface UserDao {
 
 	boolean removeCompany(int companyID, int byUserID) throws SQLException;
 
+	// -- User manager ----------------------------------------------------------------
 	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
 
 	UserDetail getUserDetail(int userID) throws SQLException;
@@ -39,6 +43,7 @@ public interface UserDao {
 	boolean changePassword(int userID, boolean isValidateOld, String oldPassword, String newPassword)
 			throws SQLException;
 
+	// -- Policy manager ---------------------------------------------------------------
 	// Return UserPolicy, UserMenu
 	Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException;
 

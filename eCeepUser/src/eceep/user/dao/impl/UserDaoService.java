@@ -471,13 +471,13 @@ public class UserDaoService implements UserDao {
 			ps.setBoolean(16, userDetail.isIsAdmin());
 			ps.setInt(17, companyID);
 			ps.setInt(18, companyID);
-			ps.setInt(19, userDetail.getId());
-			ps.setBoolean(20, userDetail.isIsNeverExpire());
+			ps.setBoolean(19, userDetail.isIsNeverExpire());
 			if(userDetail.isIsNeverExpire()) {
-				ps.setDate(21, new Date((new java.util.Date()).getTime()));
+				ps.setDate(20, new Date((new java.util.Date()).getTime()));
 			} else {
-				ps.setDate(21, new Date(userDetail.getExpiryDate().getTime()));
+				ps.setDate(20, new Date(userDetail.getExpiryDate().getTime()));
 			}
+			ps.setInt(21, userDetail.getId());
 
 			updateCount = ps.executeUpdate();
 

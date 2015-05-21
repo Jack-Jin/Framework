@@ -11,6 +11,7 @@ import eceep.user.domain.UserCompany;
 import eceep.user.domain.UserDetail;
 
 public interface User {
+	// Initial
 	boolean initial(String jdbcDriver, String url, String userName, String password);
 
 	boolean logon(String userName, String password) throws SQLException;
@@ -25,6 +26,9 @@ public interface User {
 
 	UserMenu getUserMenu();
 
+	boolean refreshFromDB() throws SQLException;
+	
+	// -- Company manager -----------------------------------------------------------
 	CompanyNode getAllOfCompanys() throws SQLException;
 
 	boolean IsLeafCompany(CompanyNode node, int companyID);
@@ -37,6 +41,7 @@ public interface User {
 	
 	boolean RemoveCompany(int companyID, int byUserID) throws SQLException;
 	
+	// -- User manager --------------------------------------------------------------
 	List<UserDetail> getUsersByCompanyID(int companyID) throws SQLException;
 
 	UserDetail getUserDetail(int userID) throws SQLException;
@@ -50,6 +55,7 @@ public interface User {
 	boolean changePassword(int userID, boolean isValidateOld, String oldPassword, String newPassword)
 			throws SQLException;
 	
+	// -- Policy manager ------------------------------------------------------------
 	// Return UserPolicy, UserMenu
 	Object[] getPolicy(boolean pTrueCompany_FalseUser, int pID) throws SQLException;
 

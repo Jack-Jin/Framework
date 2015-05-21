@@ -78,6 +78,21 @@ public class UserService implements User {
 	}
 
 	@Override
+	public boolean refreshFromDB() throws SQLException {
+		int companyID = this.userCompany.getId();
+		int userID = this.userDetail.getId();
+
+		this.userDetail = this.getUserDetail(userID);
+		this.userCompany = this.getUserCompany(companyID);
+
+		Object[] tmp = this.getPolicy(false, userID);
+		this.userPolicy = (UserPolicy) tmp[0];
+		this.userMenu = (UserMenu) tmp[1];
+
+		return this.userDetail != null && this.userCompany != null && this.userPolicy != null && this.userMenu != null;
+	}
+
+	@Override
 	public CompanyNode getAllOfCompanys() throws SQLException {
 		return userDao.getAllOfCompanys();
 	}

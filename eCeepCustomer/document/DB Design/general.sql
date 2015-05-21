@@ -1,4 +1,4 @@
-Show TABLES;
+SHOW TABLES;
 
 SELECT * FROM Customers;
 SELECT * FROM Customers WHERE IsDeleted=FALSE;
@@ -17,4 +17,3 @@ SET SQL_SAFE_UPDATES=1;
 SELECT ContactName,IsPrimaryContact,ContactTitle,DirectPhoneNo,DirectFaxNo,EmailAddress,Note FROM CustomerContacts;
 
 SELECT ID, CustomerID, CustomerName, Activity, ActivityTypeID, ActivityType, Detail, StartTime, EndTime, ClosedByID, ClosedByName, ClosedTime, CreatedByID, CreatedByName, CreatedTime, IsDeleted, DeletedByID, DeletedByName, DetetedTime FROM CustomerActivities;
-
