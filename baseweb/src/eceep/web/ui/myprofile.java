@@ -19,14 +19,14 @@ import eceep.web.repository.WebUtils;
 /**
  * Servlet implementation class myprofile
  */
-@WebServlet("/myprofile")
-public class myprofile extends HttpServlet {
+@WebServlet("/MyProfile")
+public class MyProfile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public myprofile() {
+	public MyProfile() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

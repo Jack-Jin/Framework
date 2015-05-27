@@ -9,6 +9,8 @@ import javax.servlet.http.HttpSession;
 
 import eceep.customer.Customer;
 import eceep.customer.impl.CustomerFactoryImpl;
+import eceep.news.News;
+import eceep.news.impl.NewsFactoryImpl;
 import eceep.user.User;
 import eceep.user.impl.UserFactoryImpl;
 import eceep.web.domain.JdbcConnectionStr;
@@ -36,6 +38,8 @@ public class WebContext {
 
 	private User user;
 	private Customer customer;
+	
+	private News news;
 
 	/* Methods */
 	/* --------------------------- */
@@ -57,6 +61,7 @@ public class WebContext {
 
 	public Customer getCustomer() {
 		if (this.customer == null) {
+			// New Customer
 			this.customer = CustomerFactoryImpl.getInstance();
 
 			this.customer.initial(connWebBase.getJdbcDriver(), connWebBase.getJdbcURL(), connWebBase.getJdbcUserName(),
@@ -73,6 +78,18 @@ public class WebContext {
 		return this.customer;
 	}
 
+	public News getNews() {
+		if(this.news == null){
+			// New News
+			this.news = NewsFactoryImpl.getInstance();
+			
+			this.news.initial(connWebBase.getJdbcDriver(), connWebBase.getJdbcURL(), connWebBase.getJdbcUserName(),
+					connWebBase.getJdbcPassword());
+		}
+		
+		return this.news;
+	}
+	
 	public JdbcConnectionStr getConnWebBase() {
 		return connWebBase;
 	}

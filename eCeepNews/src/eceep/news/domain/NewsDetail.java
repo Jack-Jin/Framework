@@ -2,10 +2,10 @@ package eceep.news.domain;
 
 import java.util.Date;
 
-public class News {
+public class NewsDetail {
 	private int id;
 	private String title;
-	private String Content;
+	private String content;
 
 	private boolean active;
 
@@ -34,11 +34,11 @@ public class News {
 	}
 
 	public String getContent() {
-		return Content;
+		return content;
 	}
 
 	public void setContent(String content) {
-		Content = content;
+		this.content = content;
 	}
 
 	public boolean isActive() {

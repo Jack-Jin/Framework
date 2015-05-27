@@ -6,6 +6,7 @@
 		<project>eCeepSQL</project>
 		<project>eCeepUser</project>
 		<project>eCeepCustomer</project>
+		<project>eCeepNews</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

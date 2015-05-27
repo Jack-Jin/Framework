@@ -61,8 +61,8 @@ INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31,30,'Data Upda
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(32,30,'Post News', 			TRUE,'032','News/NewsDetail.aspx?id=0');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(40,0, 'User Support', 		FALSE,'040',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(41,40,'Info Center', 		TRUE,'041','Main/InfoCenter');
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(42,40,'My Profile', 		TRUE,'042','myprofile');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(41,40,'Info Center', 		TRUE,'041','InfoCenter');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(42,40,'My Profile', 		TRUE,'042','MyProfile');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(50,0, 'CRM', 				FALSE,'050',NULL);
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51,50,'Customer', 			TRUE,'051','CustomerManagement');
