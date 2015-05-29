@@ -30,3 +30,4 @@ CREATE TABLE News(
 	PRIMARY KEY(ID)
 );
 INSERT INTO News(ID,Title,Content,CreatedByID,CreatedByName,ModifiedByID,ModifiedByName) VALUES(1,'Test News','Test News content.',1,'Admin',1,'Admin');
+INSERT INTO News(ID,Title,Content,CreatedByID,CreatedByName,ModifiedByID,ModifiedByName) VALUES(2,'Test News1','Test News content1.',1,'Admin',1,'Admin');
