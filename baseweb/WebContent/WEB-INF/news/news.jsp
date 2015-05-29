@@ -10,7 +10,8 @@
 </style>
 
 <c:forEach var="eachnews" items="${newslist }">
-<div>
-  <div class="SubTitle">${eachnews.title }&nbsp;(${eachnews.modifiedTime })</div>
-  <div class="Main_News_Content wordwrap">${eachnews.content }</div>
-</div></c:forEach>
+  <div>
+    <div class="SubTitle">${eachnews.title }&nbsp;(${eachnews.modifiedTime })</div>
+    <div class="Main_News_Content wordwrap">${eachnews.content }</div>
+  </div>
+</c:forEach>

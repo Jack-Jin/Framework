@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import eceep.news.News;
+import eceep.news.domain.NewsDetail;
 import eceep.user.User;
 import eceep.web.repository.WebContext;
 
@@ -57,29 +60,44 @@ public class Default extends HttpServlet {
 		}
 		webContext.setLocale(local);
 
-		// Get user instance.
+		// Read jdbc connection file
 		InputStream resourceAsStream = this.getServletContext().getResourceAsStream("/WEB-INF/jdbc.properties");
 		webContext.setConnWebBase(resourceAsStream);
 
+		// Get user instance.
 		User user = webContext.getUser();
+
 		try {
+			// Log on.
 			user.logon(userName, pwd);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		if (!user.isLogin()) {
 			request.setAttribute("logon_message", "Login failed.");
-			// request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request,
-			// response);
 
 			String logonMsg = URLEncoder.encode("Login failed.", java.nio.charset.StandardCharsets.UTF_8.toString());
 			response.sendRedirect("index.html?language=" + language + "&logonmessage=" + logonMsg);
+
 			return;
 		}
 
+		// Get news
+		News news = webContext.getNews();
+		try {
+			List<NewsDetail> newsList = news.getNewsList();
+			
+			request.setAttribute("newslist", newsList);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		// Page body
 		request.getRequestDispatcher("/WEB-INF/main.jsp").include(request, response);
+		return;
 	}
 
 	/**
