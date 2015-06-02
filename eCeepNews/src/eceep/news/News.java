@@ -12,5 +12,5 @@ public interface News {
 	
 	boolean newNews(NewsDetail detail);
 	
-	boolean updateNews(NewsDetail detail);
+	boolean updateNews(NewsDetail newsDetail, int byUserID) throws SQLException;
 }

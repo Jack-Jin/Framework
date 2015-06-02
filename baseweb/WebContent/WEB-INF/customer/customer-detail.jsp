@@ -12,7 +12,7 @@
 <tbody>
   <tr>
     <td>Customer Name *</td>
-    <td><input type="text" name="customerName" value="${customerdetail.customerName }"/ style="width: 200px;"></td>
+    <td><input type="text" name="customerName" value="${customerdetail.customerName }" style="width: 200px;"></td>
   </tr>
   <tr>
     <td>Street</td>

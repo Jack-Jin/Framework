@@ -26,14 +26,12 @@ public class NewsService implements News {
 
 	@Override
 	public boolean newNews(NewsDetail detail) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean updateNews(NewsDetail detail) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updateNews(NewsDetail newsDetail, int byUserID) throws SQLException {
+		return this.newsDao.updateNews(newsDetail, byUserID);
 	}
 
 }

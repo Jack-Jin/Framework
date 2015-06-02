@@ -1,27 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="f" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <f:layout>
 
-<table>
-<thead>
-<tr>
-  <th>Date</th>
-  <th>Title</th>
-  <th>Active</th>
-</tr>
-</thead>
-<tbody>
-<c:forEach var="eachnews" items="${newslist }">
-<tr>
-  <td>${eachnews.modifiedTime }</td>
-  <td>${eachnews.title }</td>
-  <td>${eachnews.active? "Active" : "Inactive" }</td>
-</tr>
+<style>
+  .TBL_List { width: 99%; background-color: #eee; margin-top: 2px; }
+  .TBL_List>tbody>tr { cursor: default; }
+  .TBL_List>thead>tr>th { text-align: left; color: #eee; background-color: #666; }
+  .TBL_List>tfoot { background-color: #ffe; }
+  
+  .TBL_List .Selected { color: #ff0; background-color: #aaa; }
+</style>
 
-</c:forEach>
-</tbody>
-</table>
+<jsp:include page="/WEB-INF/common/control_TAB.jsp" />
+
+<div>
+	<table class="Tabs">
+	<tr>
+	  <td onclick="tabClick(this,'tab1');" class='${tabindex==0? "SelectedTab": "Tab" }'>News List</td>
+	  <td onclick="tabClick(this,'tab2');" class='${tabindex==1? "SelectedTab": "Tab" }'>Detail Info</td>
+	</tr>
+	</table>
+	<div class="TabBody">
+	  <div id="tab1" style='${tabindex==0? "": "display: none;" }'>
+	    <jsp:include page="/WEB-INF/news/news-list.jsp" />
+	  </div>
+	  <div id="tab2" style='${tabindex==1? "": "display: none;" }'>
+	    <jsp:include page="/WEB-INF/news/news-detail.jsp" />
+	  </div>
+	</div>
+	<div style="color: red; text-align: left;">${message }</div>
+</div>
 
 </f:layout>

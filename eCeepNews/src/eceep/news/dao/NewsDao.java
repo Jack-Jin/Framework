@@ -40,12 +40,43 @@ public class NewsDao {
 
 			while (rs.next()) {
 				NewsDetail detail = JdbcUtils.ResultSet2Object(rs, NewsDetail.class);
-				
+
 				result.add(detail);
 			}
 
 		} catch (InstantiationException | IllegalAccessException e) {
 			result = new ArrayList<NewsDetail>();
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return result;
+	}
+
+	public boolean updateNews(NewsDetail newsDetail, int byUserID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		boolean result = false;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "UPDATE News SET Title=?, Content=?, Active=?";
+			sql += ",ModifiedByID=?,ModifiedByName=(SELECT UserName FROM Users WHERE ID=?), ModifiedTime=NOW()";
+			sql += " WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, newsDetail.getTitle());
+			ps.setString(2, newsDetail.getContent());
+			ps.setBoolean(3, newsDetail.isActive());
+			ps.setInt(4, byUserID);
+			ps.setInt(5, byUserID);
+			ps.setInt(6, newsDetail.getId());
+
+			int count = ps.executeUpdate();
+
+			if (count > 0)
+				result = true;
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
