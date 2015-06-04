@@ -47,17 +47,17 @@ CREATE TABLE Menu (
 );
 -- 10,11,12,13,14,15,  20,21,  30,31,32,  40,41,42,  50,51,  60,61
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(10,0, 'Quotations',     	FALSE,'010',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11,10,'New Quote', 			TRUE, '011','Main/NewQuote');
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(12,10,'Quote List', 		TRUE, '012','Main/QuotationList');
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(13,10,'Save', 				TRUE, '013','javascript: saveQuote();');
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14,10,'Save as New Quote', 	TRUE, '014','SaveAsNewQuote');
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(15,10,'Save as New Rev', 	TRUE, '015','SaveAsRev');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11,10,'New Quote', 			TRUE, '011','#');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(12,10,'Quote List', 		TRUE, '012','#');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(13,10,'Save', 				TRUE, '013','#');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14,10,'Save as New Quote', 	TRUE, '014','#');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(15,10,'Save as New Rev', 	TRUE, '015','#');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(20,0, 'User Admin', 		FALSE,'020',NULL);
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(21,20,'Company Admin', 		TRUE,'021','UserCompanyManagement');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(30,0, 'Data Control', 		FALSE,'030',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31,30,'Data Update',		TRUE,'031','Main/DataUpdate');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(31,30,'Data Update',		TRUE,'031','#');
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(32,30,'Post News', 			TRUE,'032','PostNews');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(40,0, 'User Support', 		FALSE,'040',NULL);
@@ -68,7 +68,7 @@ INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(50,0, 'CRM', 			
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(51,50,'Customer', 			TRUE,'051','CustomerManagement');
 
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(60,0, 'Management Report', 	FALSE,'060',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61,60,'Deleted Quotes', 	TRUE,'061','~/Quotation/QuotationListDeleted.aspx');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(61,60,'Deleted Quotes', 	TRUE,'061','#');
 
 /******************************
  *  Table - PolicyRule
