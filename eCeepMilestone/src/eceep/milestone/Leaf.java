@@ -15,6 +15,7 @@ public class Leaf<T extends Step> {
 		this.children = new ArrayList<Leaf<T>>();
 	}
 
+	@SuppressWarnings("unused")
 	private Leaf() {
 	}
 	
