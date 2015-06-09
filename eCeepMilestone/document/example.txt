@@ -1,0 +1,154 @@
+    public class HomeController : Controller
+    {
+
+        public ActionResult Index()
+        {
+            ViewBag.Message = "Modify this template to kick-start your ASP.NET MVC application.";
+            Models.MilestoneModel retModel = new Models.MilestoneModel();
+
+            MilestoneWeb milestone = eCeepMilestone.CreateMilestoneWeb();
+
+            //Step ss = Step.Create(null, "", "", "");
+            
+            //    public static EnumMilestone Step00 { get { return new EnumMilestone("Step00", "Step0 path", "Step0 title"); } }
+            //    public static EnumMilestone Step01 { get { return new EnumMilestone("Step01", "Step1 path", "Step1 title"); } }
+            //    public static EnumMilestone Step02 { get { return new EnumMilestone("Step02", "Step2 path", "Step2 title"); } }
+            //    public static EnumMilestone Step03 { get { return new EnumMilestone("Step03", "Step3 path", "Step3 title"); } }
+            //    public static EnumMilestone Step04 { get { return new EnumMilestone("Step04", "Step4 path", "Step4 title"); } }
+            //    public static EnumMilestone Step05 { get { return new EnumMilestone("Step05", "Step5 path", "Step5 title"); } }
+            //    public static EnumMilestone Step06 { get { return new EnumMilestone("Step06", "Step6 path", "Step6 title"); } }
+            //    public static EnumMilestone Step07 { get { return new EnumMilestone("Step07", "Step7 path", "Step7 title"); } }
+            //    public static EnumMilestone Step08 { get { return new EnumMilestone("Step08", "Step8 path", "Step8 title"); } }
+            //    public static EnumMilestone Step09 { get { return new EnumMilestone("Step09", "Step9 path", "Step9 title"); } }
+            
+
+            milestone.AddFirst(EnumStep.Step00);
+
+            milestone.AddChild(EnumStep.Step00,EnumStep.Step01)
+                     .AddChild(EnumStep.Step01, EnumStep.Step02)
+                     .AddChild(EnumStep.Step02, EnumStep.Step03);
+
+            milestone.AddChild(EnumStep.Step00, EnumStep.Step04)
+                     .AddChild(EnumStep.Step04, EnumStep.Step05);
+
+            milestone.AddChild(EnumStep.Step04, EnumStep.Step06)
+                     .AddChild(EnumStep.Step06, EnumStep.Step07);
+
+            milestone.AddChild(EnumStep.Step00, EnumStep.Step08)
+                     .AddChild(EnumStep.Step08, EnumStep.Step09);
+
+            milestone.GoTop();
+
+            //IList<string> dd = milestone.GetMile("Step01");
+            //dd = milestone.GetMile("Step06");
+            //dd = milestone.GetMile("Step03");
+
+            eCeep.Milestone.EnumWebStep ret = null;
+            IList<string> outSteps = new List<string>();
+
+            ret = milestone.Next(EnumStep.Step00);
+            outSteps.Add(String.Format("<tr><td>Next(\"Step0{0}\", \"Step{0} path\", \"Step{0} title\")</td><td>==> {1}</td></tr>", "0", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step01);
+            outSteps.Add(String.Format("<tr><td>Next(\"Step0{0}\", \"Step{0} path\", \"Step{0} title\")</td><td>==> {1}</td></tr>", "1", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step02);
+            outSteps.Add(String.Format("<tr><td>Next(\"Step0{0}\", \"Step{0} path\", \"Step{0} title\")</td><td>==> {1}</td></tr>", "2", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step03);
+            outSteps.Add(String.Format("<tr><td>Next(\"Step0{0}\", \"Step{0} path\", \"Step{0} title\")</td><td>==> {1}</td></tr>", "3", ret.Uri));
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step04);
+            outSteps.Add(String.Format("<tr><td>Next(\"Step0{0}\", \"Step{0} path\", \"Step{0} title\")</td><td>==> {1}</td></tr>", "4", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step05);
+            outSteps.Add(String.Format("<tr><td>Next(\"Step0{0}\", \"Step{0} path\", \"Step{0} title\")</td><td>==> {1}</td></tr>", "5", ret.Uri));
+
+            //milestone.AddChild("Step04", "Step06", "Step6 path", "Step6 title");
+            //milestone.AddChild("Step06", "Step07", "Step7 path", "Step7 title");
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step01);
+            outSteps.Add(String.Format("<tr><td>Step0{0}</td><td>==> {1}</td></tr>", "1", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step02);
+            outSteps.Add(String.Format("<tr><td>Step0{0}</td><td>==> {1}</td></tr>", "2", ret.Uri));
+
+            ret = milestone.Next(EnumStep.Step03);
+            outSteps.Add(String.Format("<tr><td>Step0{0}</td><td>==> {1}</td></tr>", "3", ret.Uri));
+
+            //milestone.AddChild("Step08", "Step08", "Step8 path", "Step8 title");
+            //milestone.AddChild("Step09", "Step09", "Step9 path", "Step9 title");
+
+            //Step00 --- Step01 --- Step02 --- Step03
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            ret = milestone.Prev();
+            outSteps.Add(String.Format("<tr><td>Prev()</td><td>==> {0}</td></tr>", ret.Uri));
+
+            //Step00 --- Step04 --- Step06 --- Step07
+            milestone.Index = 0;
+            milestone.Next(EnumStep.Step04);
+            milestone.ActiveCurrent();
+            //milestone.Next("Step06");
+            //milestone.ActiveCurrent();
+            //milestone.Next("Step07");
+
+            //milestone.GoTop();
+            milestone.Go(EnumStep.Step02);
+
+            milestone.Go(EnumStep.Step06);
+
+            milestone.RemoveChild(EnumStep.Step06);
+
+            //byte[] data = milestone.Serialize();
+            //eCeep.Milestone.IMilestoneWeb mile = milestone.Deserialize(data);
+
+            //milestone = mile;
+
+            //Display steps
+            retModel.Steps = "<table style='width:800px;border:solid 1px black;'>";
+            foreach (var item in outSteps)
+            {
+                retModel.Steps += item;
+            }
+            retModel.Steps += "</table>";
+
+            //Display milestone
+            retModel.Milestone = milestone.GetMilestoneHyperlinks("");
+
+            return View(retModel);
+        }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your app description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+    }

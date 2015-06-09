@@ -1,7 +1,7 @@
 package eceep.milestone;
 
 public interface Step {
-	int getID();
+	int getId();
 	
 	String getName();
 	
