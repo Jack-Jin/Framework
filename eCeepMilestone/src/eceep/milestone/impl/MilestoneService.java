@@ -1,7 +1,14 @@
 package eceep.milestone.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eceep.milestone.Leaf;
 import eceep.milestone.Milestone;
@@ -16,451 +23,449 @@ import eceep.milestone.Step;
  *                    +- Step6
  * --------------------------------------------------------------------------                                      
  */
-public class MilestoneService<T extends Step> implements Milestone<T> {
+public class MilestoneService<T extends Step> implements Milestone<T>, Serializable {
+	// Get instance.
 	public static <G extends Step> Milestone<G> getInstance() {
 		MilestoneService<G> result = new MilestoneService<G>();
-		
+
 		return result;
 	}
-		
+
+	private static final long serialVersionUID = 1L;
+
+	/* Fields */
+	/* ----------------------------------------------------------- */
 	protected Leaf<T> theFirstLeaf;
-	
+
 	private List<T> milestones;
 	private int index;
-	
+
 	private List<T> steps;
-	
-	public MilestoneService(){
+
+	/* Constructor */
+	/* ----------------------------------------------------------- */
+	public MilestoneService() {
 		this.steps = new ArrayList<T>();
+
+		this.milestones = new ArrayList<T>();
 	}
-	
+
 	/* Get properties -------------------------------------------- */
 	@Override
-	public Leaf<T> getTheFirstLeaf() {
-		return this.theFirstLeaf;
+	public T getTheFirstStep() {
+		return this.theFirstLeaf.getStep();
 	}
-	
+
 	@Override
-	public Leaf<T> getCurrentLeaf() {
+	public T getCurrentStep() {
 		Leaf<T> ret = null;
-		
-		if (this.index >= 0 && this.index < milestones.size())
-			ret = find(theFirstLeaf, milestones.get(this.index));
-		
-		return ret;
+
+		if (this.index >= 0 && this.index < this.milestones.size())
+			ret = find(this.theFirstLeaf, this.milestones.get(this.index));
+
+		return (ret != null) ? ret.getStep() : null;
 	}
-	
+
 	@Override
 	public List<T> getSteps() {
 		return this.steps;
 	}
-	
+
 	@Override
 	public List<T> getMilestones() {
 		return this.milestones;
 	}
-	
+
 	@Override
 	public boolean isActive() {
-		return this.index>=0 && this.index < this.milestones.size() && this.getCurrentLeaf().getStep().isActive();
+		return this.index >= 0 && this.index < this.milestones.size() && this.getCurrentStep().isActive();
 	}
+
 	/* ------------------------------------------------------------ */
-	
+
 	/* Manipulate methods ----------------------------------------- */
 	@Override
-    public Milestone<T> addFirst(T step)
-    {
-        Milestone<T> ret = this;
+	public Milestone<T> addFirst(T step) {
+		Milestone<T> ret = this;
 
-        this.theFirstLeaf = new Leaf<T>(null, step);
+		this.theFirstLeaf = new Leaf<T>(null, step);
 
-        if (this.theFirstLeaf != null)
-        {
-            this.milestones = new ArrayList<T>();
-            this.milestones.add(this.theFirstLeaf.getStep());
+		if (this.theFirstLeaf != null) {
+			this.milestones = new ArrayList<T>();
+			this.milestones.add(this.theFirstLeaf.getStep());
 
-            this.steps = new ArrayList<T>();
-            this.steps.add(step);
+			this.steps = new ArrayList<T>();
+			this.steps.add(step);
 
-            this.index = -1;
-        }
+			this.index = -1;
+		}
 
-        return ret;
-    }
+		return ret;
+	}
 
 	@Override
 	public Milestone<T> addChild(T parent, T child) {
-        Milestone<T> ret = null;
+		Milestone<T> ret = null;
 
-        if (this.theFirstLeaf == null || parent == null) return ret;
+		if (this.theFirstLeaf == null || parent == null)
+			return ret;
 
-        Leaf<T> leaf = this.find(theFirstLeaf, parent);
-        if (leaf != null)
-        {
-            Leaf<T> s = new Leaf<T>(leaf, child);
-            if (s != null)
-            {
-                leaf.getChildren().add(s);
+		Leaf<T> leaf = this.find(this.theFirstLeaf, parent);
+		if (leaf != null) {
+			Leaf<T> s = new Leaf<T>(leaf, child);
+			if (s != null) {
+				leaf.getChildren().add(s);
 
-                if (this.steps.stream().filter(A -> A.getId()==child.getId()).findFirst() == null)
-                    this.steps.add(child);
+				List<T> findSteps = this.steps.stream().filter(A -> A.getName().equals(child.getName()))
+						.collect(Collectors.toList());
 
-                ret = this;
-            }
-        }
+				if (findSteps == null || findSteps.size() <= 0)
+					this.steps.add(child);
 
-        return ret;
+				ret = this;
+			}
+		}
+
+		return ret;
 	}
 
 	@Override
-    public boolean activeCurrent()
-    {
-        boolean ret = false;
+	public boolean activeCurrent() {
+		boolean ret = false;
 
-        if (this.index >= 0 && this.index < this.milestones.size())
-        {
-            //inactive(CurrentLeaf);
-            getCurrentLeaf().getStep().setActive(true);
-        }
+		if (this.index >= 0 && this.index < this.milestones.size()) {
+			//inactive(CurrentLeaf);
+			getCurrentStep().setActive(true);
+		}
 
-        return ret;
-    }
+		return ret;
+	}
 
 	@Override
-    public boolean inactiveCurrent()
-    {
-        boolean ret = false;
+	public boolean inactiveCurrent() {
+		boolean ret = false;
 
-        if (this.index >= 0 && this.index < this.milestones.size())
-        {
-            inactive(getCurrentLeaf());
-            ret = true;
-        }
+		if (this.index >= 0 && this.index < this.milestones.size()) {
+			inactive(getCurrentLeaf());
+			ret = true;
+		}
 
-        return ret;
-    }
+		return ret;
+	}
 
 	@Override
-    public boolean reloadMilestone(T step)
-    {
-        boolean result = false;
+	public boolean reloadMilestone(T step) {
+		boolean result = false;
 
-        // Find step by name
-        Leaf<T> s = find(this.theFirstLeaf, step);
-        if (s == null) return result;
+		// Find step by name
+		Leaf<T> s = find(this.theFirstLeaf, step);
+		if (s == null)
+			return result;
 
-        // Find this branch's last one of someone step by step
-        Leaf<T> last = getLastStep(s);
-        if (last == null) return result;
+		// Find this branch's last one of someone step by step
+		Leaf<T> last = getLastStep(s);
+		if (last == null)
+			return result;
 
-        // Generate milestone
-        List<T> milestone = new ArrayList<T>();
-        result = getMilestone(last, milestone);
-        if (result && (milestone != null && milestone.size() > 0))
-        {
-            this.milestones = new ArrayList<T>();
-            for (int i = milestone.size() - 1; i >= 0; i--)
-            {
-                this.milestones.add(milestone.get(i));
-            }
-        }
+		// Generate milestone
+		List<T> milestone = new ArrayList<T>();
+		result = rebuildMilestone(last, milestone);
+		if (result && (milestone != null && milestone.size() > 0)) {
+			this.milestones = new ArrayList<T>();
+			for (int i = milestone.size() - 1; i >= 0; i--) {
+				this.milestones.add(milestone.get(i));
+			}
+		}
 
-        return result;
-    }
-
-	@Override
-    public byte[] serialize()
-    {
-        byte[] binaryMilestone = null;
-//        try
-//        {
-//            using (MemoryStream mStream = new MemoryStream())
-//            {
-//                BinaryFormatter bFormatter = new BinaryFormatter();
-//                bFormatter.Serialize(mStream, this);
-//                binaryMilestone = mStream.ToArray();
-//            }
-//        }
-//        catch (Exception ex)
-//        {
-//        }
-
-        return binaryMilestone;
-    }
+		return result;
+	}
 
 	@Override
-    public Milestone<T> deserialize(byte[] binary)
-    {
-        Milestone<T> result = null;
+	public byte[] serialize() throws IOException {
+		byte[] binaryMilestone = null;
+		
+		try {
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-//        if (binary != null && binary.size() > 0)
-//        {
-//            try
-//            {
-//                using (MemoryStream mStream = new MemoryStream())
-//                {
-//                    mStream.Write(binary, 0, binary.Length);
-//
-//                    BinaryFormatter bFormatter = new BinaryFormatter();
-//                    mStream.Position = 0;
-//                    result = (IMilestone<T>)bFormatter.Deserialize(mStream);
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                result = null;
-//            }
-//        }
+			ObjectOutputStream out = new ObjectOutputStream(stream);
+			
+			out.writeObject(this);
+			out.close();
+			
+			stream.close();
+			
+			binaryMilestone = stream.toByteArray();
+		} catch (IOException e) {
+			throw e;
+		}
+		
+		return binaryMilestone;
+	}
 
-        return result;
-    }
+	@Override
+	public Milestone<T> deserialize(byte[] binary) throws IOException, ClassNotFoundException {
+		Milestone<T> result = null;
+		
+		try {
+			ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+
+			ObjectInputStream in = new ObjectInputStream(stream);
+			
+			result = (Milestone<T>)in.readObject();
+			
+			in.close();
+			stream.close();
+			
+		} catch (IOException | ClassNotFoundException e) {
+			throw e;
+		}
+
+		return result;
+	}
 
 	/* ------------------------------------------------------------ */
-	
-    /* Navigation methods ----------------------------------------- */
+
+	/* Navigation methods ----------------------------------------- */
 	@Override
-    public Leaf<T> find(Leaf<T> currentLeaf, T step)
-    {
-        Leaf<T> ret = null;
+	public Leaf<T> find(Leaf<T> currentLeaf, T step) {
+		Leaf<T> ret = null;
 
-        if (this.theFirstLeaf == null || currentLeaf == null) return null;
+		if (this.theFirstLeaf == null || currentLeaf == null)
+			return null;
 
-        if (currentLeaf.getStep().getId() == step.getId())
-        {
-            ret = currentLeaf;
-        }
-        else
-        {
-            for (Leaf<T> item : currentLeaf.getChildren())
-            {
-                Leaf<T> s = find(item, step);
-                if (s != null)
-                {
-                    ret = s;
-                    break;
-                }
-            }
-        }
+		if (currentLeaf.getStep().getName().equals(step.getName())) {
+			ret = currentLeaf;
+		} else {
+			for (Leaf<T> item : currentLeaf.getChildren()) {
+				Leaf<T> s = find(item, step);
+				if (s != null) {
+					ret = s;
+					break;
+				}
+			}
+		}
 
-        return ret;
-    }
-
-	@Override
-    public T goTop()
-    {
-        T ret = null;
-
-        if (this.theFirstLeaf == null) return ret;
-
-        boolean result = this.reloadMilestone(this.theFirstLeaf.getStep());
-        if (result)
-        {
-            this.index = 0;
-
-            ret = getCurrentLeaf().getStep();
-        }
-
-        return ret;
-    }
-
-	@Override
-    public T go(T step)
-    {
-        T ret = null;
-
-        boolean result = this.reloadMilestone(step);
-        if (result)
-        {
-            this.index = this.milestones.indexOf(step);
-
-            ret = this.getCurrentLeaf().getStep();
-        }
-
-        return ret;
-    }
-    
-    @Override
-	public T next() {
-    	return this.Next(null);
+		return ret;
 	}
 
-    @Override
-    public T prev()
-    {
-        if (this.theFirstLeaf == null) return null;
+	@Override
+	public T goTop() {
+		T ret = null;
 
-        if (this.index >= 0) this.index--;
+		if (this.theFirstLeaf == null)
+			return ret;
 
-        return (this.getCurrentLeaf() != null) ? this.getCurrentLeaf().getStep() : null;
-    }
-    /* ------------------------------------------------------------ */
+		if (this.milestones.size() <= 0) {
+			this.reloadMilestone(this.theFirstLeaf.getStep());
+		}
+
+		this.index = (this.milestones.size() <= 0) ? -1 : 0;
+
+		ret = getCurrentStep();
+
+		return ret;
+	}
+
+	@Override
+	public T go(T step) {
+		T ret = null;
+
+		boolean result = this.reloadMilestone(step);
+		if (result) {
+			this.index = this.milestones.indexOf(step);
+
+			ret = this.getCurrentStep();
+		}
+
+		return ret;
+	}
+
+	@Override
+	public T next() {
+		return this.next(null);
+	}
+
+	@Override
+	public T next(T step) {
+		T ret = null;
+
+		if (this.theFirstLeaf == null)
+			return ret;
+
+		if (this.milestones == null || this.milestones.size() <= 0)
+			return ret;
+
+		// Find next step
+		Leaf<T> leaf = null;
+		if (step == null) {
+			if (this.index + 1 < this.milestones.size() && this.milestones.get(this.index + 1) != null) {
+				this.index++;
+
+				return this.getCurrentStep();
+			} else {
+				if (this.getCurrentLeaf() != null && this.getCurrentLeaf().getChildren() != null
+						&& this.getCurrentLeaf().getChildren().size() > 0) {
+
+					leaf = this.getCurrentLeaf().getChildren().get(0);
+				}
+			}
+		} else if (this.getCurrentStep().getName().equals(step.getName())) {
+			leaf = this.getCurrentLeaf();
+		} else if (this.getCurrentLeaf() != null && this.getCurrentLeaf().getChildren() != null) {
+			for (int i = 0; i < this.getCurrentLeaf().getChildren().size(); i++) {
+				if (this.getCurrentLeaf().getChildren().get(i).getStep().getName().equals(step.getName())) {
+					leaf = this.getCurrentLeaf().getChildren().get(i);
+
+					break;
+				}
+			}
+		}
+
+		// if found, reload milestone & set index
+		if (leaf != null && reloadMilestone(leaf.getStep())) {
+			ret = leaf.getStep();
+
+			this.index = this.milestones.indexOf(leaf.getStep());
+		}
+
+		return ret;
+	}
+
+	@Override
+	public T prev() {
+		if (this.theFirstLeaf == null)
+			return null;
+
+		if (this.index >= 0)
+			this.index--;
+
+		return (this.getCurrentLeaf() != null) ? this.getCurrentStep() : null;
+	}
+
+	/* ------------------------------------------------------------ */
+
+	/* Functions */
+	/* ------------------------------------------------------------ */
+	protected Leaf<T> getCurrentLeaf() {
+		Leaf<T> ret = null;
+
+		if (this.index >= 0 && this.index < this.milestones.size())
+			ret = find(this.theFirstLeaf, this.milestones.get(this.index));
+
+		return ret;
+	}
+
+	protected boolean rebuildMilestone(Leaf<T> leaf, List<T> milestone) {
+		if (this.milestones == null || leaf == null)
+			return false;
+
+		milestone.add(leaf.getStep());
+
+		if (leaf.getParent() != null) {
+			return rebuildMilestone(leaf.getParent(), milestone);
+		}
+
+		return true;
+	}
+
+	protected Leaf<T> getLastStep(Leaf<T> midLeaf) {
+		if (this.milestones == null || midLeaf == null)
+			return null;
+
+		Leaf<T> result = null;
+
+		if (midLeaf.getChildren() == null || midLeaf.getChildren().size() <= 0) {
+			result = midLeaf;
+		} else {
+			for (int i = 0; i < midLeaf.getChildren().size(); i++) {
+				Leaf<T> s = getLastStep(midLeaf.getChildren().get(i));
+				if (s != null) {
+					result = s;
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	protected boolean inactive(Leaf<T> leaf) {
+		if (this.milestones == null || leaf == null)
+			return false;
+
+		leaf.getStep().setActive(false);
+
+		for (int i = 0; leaf.getChildren() != null && i < leaf.getChildren().size(); i++) {
+			inactive(leaf.getChildren().get(i));
+		}
+
+		return true;
+	}
+
+	/*
+	public int getIndex() { 
+		 return this.index;
+	}
 	
-    protected boolean getMilestone(Leaf<T> leaf, List<T> milestone)
-    {
-        if (this.milestones == null || leaf == null) return false;
+	public void setIndex(int index) {
+		if (index >= 0 && index < this.milestones.size()) this.index = index;
+	}
+	
+	public T getCurrentStep() { 
+		return this.milestones.get(this.index); 
+	}
 
-        milestone.add(leaf.getStep());
+	public boolean RemoveChild(T step)
+	{
+	    if (this.theFirstLeaf == null) return false;
 
-        if (leaf.getParent() != null)
-        {
-            return getMilestone(leaf.getParent(), milestone);
-        }
+	    if (this.theFirstLeaf.getStep().getID() == step.getID())
+	    {
+	        this.theFirstLeaf = null;
+	        this.index = -1;
 
-        return true;
-    }
+	        return true;
+	    }
 
-    private T Next(T step)
-    {
-        T ret = null;
+	    boolean result = false;
+	    Leaf<T> leaf = find(this.theFirstLeaf, step);
+	    if (leaf != null)
+	    {
+	        Leaf<T> parent = leaf.getParent();
+	        parent.getChildren().remove(leaf);
 
-        if (this.theFirstLeaf == null) return ret;
+	        reloadMilestone(parent.getStep());
+	        this.index = this.milestones.indexOf(parent.getStep());
 
-        if (this.milestones == null || this.milestones.size() <= 0) return ret;
+	        result = true;
+	    }
 
-        // Find next step
-        Leaf<T> leaf = null;
-        if (step == null)
-        {
-            if (this.getCurrentLeaf() != null && this.getCurrentLeaf().getChildren() != null && this.getCurrentLeaf().getChildren().size() > 0)
-            {
-                leaf = this.getCurrentLeaf().getChildren().get(0);
-            }
-        }
-        else if (this.getCurrentLeaf().getStep().getId() == step.getId())
-        {
-            leaf = this.getCurrentLeaf();
-        }
-        else
-        {
-            for (int i = 0; this.getCurrentLeaf() != null && this.getCurrentLeaf().getChildren() != null && i < this.getCurrentLeaf().getChildren().size(); i++)
-            {
-                if (this.getCurrentLeaf().getChildren().get(i).getStep().getId() == step.getId())
-                {
-                    leaf = this.getCurrentLeaf().getChildren().get(i);
+	    return result;
+	}
 
-                    break;
-                }
-            }
-        }
+	public T GetPrev()
+	{
+	    if (this.milestones == null || this.milestones.size() <= 0) return null;
 
-        // if found, reload milestone & set index
-        if (leaf != null && reloadMilestone(leaf.getStep()))
-        {
-            ret = leaf.getStep();
+	    int i = 0;
+	    if (this.index > 0)
+	        i = this.index - 1;
 
-            this.index = this.milestones.indexOf(leaf.getStep());
-        }
+	    return this.milestones.get(i);
+	}
 
-        return ret;
-    }
+	public T GetNext()
+	{
+	    if (this.milestones == null || this.milestones.size() <= 0) return null;
 
-    protected Leaf<T> getLastStep(Leaf<T> midLeaf)
-    {
-        if (this.milestones == null || midLeaf == null) return null;
+	    int i = 0;
+	    i = this.index + 1;
 
-        Leaf<T> result = null;
+	    if (i >= this.milestones.size())
+	        return null;
 
-        if (midLeaf.getChildren() == null || midLeaf.getChildren().size() <= 0)
-        {
-            result = midLeaf;
-        }
-        else
-        {
-            for (int i = 0; i < midLeaf.getChildren().size(); i++)
-            {
-                Leaf<T> s = getLastStep(midLeaf.getChildren().get(i));
-                if (s != null)
-                {
-                    result = s;
-                    break;
-                }
-            }
-        }
+	    return this.milestones.get(i);
+	}
 
-        return result;
-    }
-
-    protected boolean inactive(Leaf<T> leaf)
-    {
-        if (this.milestones == null || leaf == null) return false;
-
-        leaf.getStep().setActive(false);
-
-        for (int i = 0; leaf.getChildren() != null && i < leaf.getChildren().size(); i++)
-        {
-            inactive(leaf.getChildren().get(i));
-        }
-
-        return true;
-    }
-
-
-    
-    
-    /*
-    public int getIndex() { 
-    	 return this.index;
-    }
-    
-    public void setIndex(int index) {
-    	if (index >= 0 && index < this.milestones.size()) this.index = index;
-    }
-    
-    public T getCurrentStep() { 
-    	return this.milestones.get(this.index); 
-    }
-
-    public boolean RemoveChild(T step)
-    {
-        if (this.theFirstLeaf == null) return false;
-
-        if (this.theFirstLeaf.getStep().getID() == step.getID())
-        {
-            this.theFirstLeaf = null;
-            this.index = -1;
-
-            return true;
-        }
-
-        boolean result = false;
-        Leaf<T> leaf = find(this.theFirstLeaf, step);
-        if (leaf != null)
-        {
-            Leaf<T> parent = leaf.getParent();
-            parent.getChildren().remove(leaf);
-
-            reloadMilestone(parent.getStep());
-            this.index = this.milestones.indexOf(parent.getStep());
-
-            result = true;
-        }
-
-        return result;
-    }
-
-    public T GetPrev()
-    {
-        if (this.milestones == null || this.milestones.size() <= 0) return null;
-
-        int i = 0;
-        if (this.index > 0)
-            i = this.index - 1;
-
-        return this.milestones.get(i);
-    }
-
-    public T GetNext()
-    {
-        if (this.milestones == null || this.milestones.size() <= 0) return null;
-
-        int i = 0;
-        i = this.index + 1;
-
-        if (i >= this.milestones.size())
-            return null;
-
-        return this.milestones.get(i);
-    }
-
-    */	
+	*/
 }

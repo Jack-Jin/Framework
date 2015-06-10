@@ -1,13 +1,14 @@
 package eceep.milestone;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface Milestone<T extends Step> {
 
 	/* Get properties -------------------------------------------- */
-	Leaf<T> getTheFirstLeaf();
+	T getTheFirstStep();
 
-	Leaf<T> getCurrentLeaf();
+	T getCurrentStep();
 
 	List<T> getSteps();
 
@@ -27,9 +28,9 @@ public interface Milestone<T extends Step> {
 	
 	boolean reloadMilestone(T step);
 	
-	byte[] serialize();
+	byte[] serialize() throws IOException;
 	
-	Milestone<T> deserialize(byte[] binary);
+	Milestone<T> deserialize(byte[] binary) throws IOException, ClassNotFoundException;
 	/* ------------------------------------------------------------ */
 	
 	/* Navigation methods ----------------------------------------- */
@@ -41,6 +42,8 @@ public interface Milestone<T extends Step> {
 	
 	T next();
 
+	T next(T step);
+	
 	T prev();
 	/* ------------------------------------------------------------ */
 

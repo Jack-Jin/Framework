@@ -1,8 +1,6 @@
 package eceep.milestone;
 
 public interface Step {
-	int getId();
-	
 	String getName();
 	
 	String getTitle();
@@ -12,4 +10,8 @@ public interface Step {
 	boolean isActive();
 	
 	void setActive(boolean active);
+	
+	int hashCode();
+	
+	boolean equals(Object obj);
 }

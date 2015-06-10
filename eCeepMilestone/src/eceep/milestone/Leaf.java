@@ -1,9 +1,12 @@
 package eceep.milestone;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Leaf<T extends Step> {
+public class Leaf<T extends Step> implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private T step;
 
 	private Leaf<T> parent;
