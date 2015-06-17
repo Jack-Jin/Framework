@@ -1,9 +1,13 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS GetPolicy $$
-CREATE PROCEDURE GetPolicy(IN pTrueCompany_FalseUser BIT
-						  ,IN pID INTEGER)
+DROP PROCEDURE IF EXISTS GetQuotationNumber $$
+CREATE PROCEDURE GetQuotationNumber()
 BEGIN
+
+
+
+
+
 	DECLARE UserPolicyID INTEGER;
 	DECLARE UserCompanyID INTEGER;
 	DECLARE UserParentCompanyID INTEGER;
