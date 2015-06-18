@@ -7,11 +7,11 @@ import java.util.List;
 
 public class QuotationHeaderDetail {
 	private int id;
-	private String no;
-	private String projectName;
-	private String reference;
-	private String note;
-	private String location;
+	private String quotationNo;
+	private String quotationProjectName;
+	private String quotationReference;
+	private String quotationNote;
+	private String quotationLocation;
 
 	// Customer Info
 	private int customerID;
@@ -62,9 +62,22 @@ public class QuotationHeaderDetail {
 	private List<QuotationLog> logs; //time ~ status ~ user ID ~ user name
 
 	public QuotationHeaderDetail() {
+		this.id = -1;
+
+		this.customerID = -1;
+		this.contactID = -1;
+		this.unitID = -1;
+		this.currencyID = -1;
+		this.agentID = -1;
+		this.siteID = -1;
+		this.siteContactID = -1;
+
+		this.createdByID = -1;
+		this.modifiedByID = -1;
+
 		this.logs = new ArrayList<QuotationLog>();
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -73,44 +86,44 @@ public class QuotationHeaderDetail {
 		this.id = id;
 	}
 
-	public String getNo() {
-		return no;
+	public String getQuotationNo() {
+		return quotationNo;
 	}
 
-	public void setNo(String no) {
-		this.no = no;
+	public void setQuotationNo(String quotationNo) {
+		this.quotationNo = quotationNo;
 	}
 
-	public String getProjectName() {
-		return projectName;
+	public String getQuotationProjectName() {
+		return quotationProjectName;
 	}
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
+	public void setQuotationProjectName(String quotationProjectName) {
+		this.quotationProjectName = quotationProjectName;
 	}
 
-	public String getReference() {
-		return reference;
+	public String getQuotationReference() {
+		return quotationReference;
 	}
 
-	public void setReference(String reference) {
-		this.reference = reference;
+	public void setQuotationReference(String quotationReference) {
+		this.quotationReference = quotationReference;
 	}
 
-	public String getNote() {
-		return note;
+	public String getQuotationNote() {
+		return quotationNote;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setQuotationNote(String quotationNote) {
+		this.quotationNote = quotationNote;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getQuotationLocation() {
+		return quotationLocation;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setQuotationLocation(String quotationLocation) {
+		this.quotationLocation = quotationLocation;
 	}
 
 	public int getCustomerID() {

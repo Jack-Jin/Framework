@@ -1,17 +1,17 @@
 package eceep.quotation.domain;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import eceep.quotation.*;
 
 public class QuotationItemDetail {
 	private String id;
-	private String name;
-	private String revision;
 
 	private int sequence;
-	
+
+	private String itemName;
+	private String itemRevision;
+
 	private EnumProductType productType;
 	private EnumProductApplicationType productApplicationType;
 	private EnumIndustryType industryType;
@@ -23,13 +23,12 @@ public class QuotationItemDetail {
 
 	private Product product;
 
-	private int createdByID;
-	private String createdByName;
-	private Date createdTime;
-
-	private int modifiedByID;
-	private String modifiedByName;
-	private Date modifiedTime;
+	QuotationItemDetail() {
+		this.id = "";
+		this.sequence = -1;
+		this.unitID = -1;
+		this.currencyID = -1;
+	}
 
 	public String getId() {
 		return id;
@@ -39,20 +38,28 @@ public class QuotationItemDetail {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public int getSequence() {
+		return sequence;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 
-	public String getRevision() {
-		return revision;
+	public String getItemName() {
+		return itemName;
 	}
 
-	public void setRevision(String revision) {
-		this.revision = revision;
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public String getItemRevision() {
+		return itemRevision;
+	}
+
+	public void setItemRevision(String itemRevision) {
+		this.itemRevision = itemRevision;
 	}
 
 	public EnumProductType getProductType() {
@@ -117,62 +124,6 @@ public class QuotationItemDetail {
 
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-
-	public int getCreatedByID() {
-		return createdByID;
-	}
-
-	public void setCreatedByID(int createdByID) {
-		this.createdByID = createdByID;
-	}
-
-	public String getCreatedByName() {
-		return createdByName;
-	}
-
-	public void setCreatedByName(String createdByName) {
-		this.createdByName = createdByName;
-	}
-
-	public Date getCreatedTime() {
-		return createdTime;
-	}
-
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
-	}
-
-	public int getModifiedByID() {
-		return modifiedByID;
-	}
-
-	public void setModifiedByID(int modifiedByID) {
-		this.modifiedByID = modifiedByID;
-	}
-
-	public String getModifiedByName() {
-		return modifiedByName;
-	}
-
-	public void setModifiedByName(String modifiedByName) {
-		this.modifiedByName = modifiedByName;
-	}
-
-	public Date getModifiedTime() {
-		return modifiedTime;
-	}
-
-	public void setModifiedTime(Date modifiedTime) {
-		this.modifiedTime = modifiedTime;
-	}
-
-	public int getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(int sequence) {
-		this.sequence = sequence;
 	}
 
 }
