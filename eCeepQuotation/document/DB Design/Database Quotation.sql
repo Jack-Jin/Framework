@@ -19,59 +19,71 @@ DROP TABLE IF EXISTS QuotationNumber;
  ******************************/
 CREATE TABLE Quotation
 (
-#============================= Quotation INFO =================================
+	#============================= Quotation INFO =================================
 	ID					        INT				NOT NULL	AUTO_INCREMENT,
 	QuotationNo					NVARCHAR(100)	NULL,
 	QuotationProjectName		NVARCHAR(100)	NULL,
 	QuotationReference			NVARCHAR(100)	NULL,
 	QuotationNote				NVARCHAR(2000)	NULL,
 	QuotationLocation			NVARCHAR(200)	NULL,
-	QuotationUnit				INT				NULL        DEFAULT 0,
-	QuotationCurrency			INT				NULL        DEFAULT 0,
-#============================= Cost & Pricing =================================
-	QuotationCost				DECIMAL(13,2)	NULL,
-	QuotationPrice				DECIMAL(13,2)	NULL,
-#============================= Quote Status, Type & SalesType =================
-	QuotationStatus				NVARCHAR(50)	NULL,
-	QuotationType				NVARCHAR(20)	NULL,
-	QuotationSalesType			NVARCHAR(50)	NULL,
-	QuotationExtension          LONGBLOB        NULL,
+    
+	UnitID						INT				NULL        DEFAULT 0,
+	CurrencyID					INT				NULL        DEFAULT 0,
+
+	QuotationBinary          	LONGBLOB        NULL,
 	MilestoneBinary             LONGBLOB        NULL,
-	QuotationCurrentItemID      NVARCHAR(255)   NULL        DEFAULT '',
-#============================= Datetime & UserID ==============================
-	QuotationByUserID			INT				NULL,
-	QuotationByUserName         NVARCHAR(255)   NULL,
-	QuotationDate				DATETIME		NULL		DEFAULT NOW(),
-	QuotationModifiedByUserID	INT				NULL,
-	QuotationModifiedByUserName NVARCHAR(255)   NULL,
-	QuotationModifiedDate		DATETIME		NULL		DEFAULT NOW(),
-	QuotationDeletedByUserID	INT				NULL,
-	QuotationDeletedByUserName  NVARCHAR(255)   NULL,
-	QuotationDeletedDate		DATETIME		NULL,
+	QuotationItemsCurrentD      NVARCHAR(255)   NULL        DEFAULT '',
+
+	Cost						DECIMAL(13,2)	NULL,
+	Price						DECIMAL(13,2)	NULL,
+	`Status`					NVARCHAR(50)	NULL,
+	`Type`						NVARCHAR(20)	NULL,
+	SalesType					NVARCHAR(50)	NULL,
+    
+	#============================= Datetime & UserID ==============================
+	CreatedByID					INT				NULL,
+	CreatedByName				NVARCHAR(255)	NULL,
+	CreatedTime					DATETIME		NULL		DEFAULT NOW(),
+
+	ModifiedByID				INT				NULL,
+	ModifiedByName				NVARCHAR(255)	NULL,
+	ModifiedTime				DATETIME		NULL		DEFAULT NOW(),
+
 	IsDeleted					BIT				NOT NULL	DEFAULT FALSE,
+    DeletedByID					INT				NULL,
+    DeletedByName				NVARCHAR(255)	NULL,
+    DetetedTime					DateTime		NULL,
 
 	PRIMARY KEY(ID)
 );
 
-create table QuotationItem
+CREATE TABLE QuotationItem
 (
 	ID					        NVARCHAR(255)	NOT NULL,
 	QuotationID					INT				NOT NULL,
 	Sequence                    INT             NOT NULL    DEFAULT 0,
-	Item				        NVARCHAR(255)	NOT NULL	DEFAULT '',
+	ItemName			        NVARCHAR(255)	NOT NULL	DEFAULT '',
 	ItemRevision				NVARCHAR(50)    NULL,
-	ItemUnitSystem				INT				NULL		DEFAULT 0,
-	ItemCurrency                INT             NULL        DEFAULT 0,
-	ItemProductType				INT				NOT NULL    DEFAULT 1,
-	ItemIndustryType            INT             NULL        DEFAULT 1,
-	ItemProductApplicationType	INT				NULL		DEFAULT 0,
-	ItemCost			        DECIMAL(13,2)	NULL,
-	ItemPrice			        DECIMAL(13,2)	NULL,
-	ItemExtension               LONGBLOB        NULL,
-	SerializationType           NVARCHAR(255)   NOT NULL,
-	SerializationBinary			LONGBLOB		NULL,
-	ItemDate                    DATETIME        NULL        DEFAULT NOW(),
-	ItemModifiedDate            DATETIME        NULL        DEFAULT NOW(),
+	
+    UnitID						INT				NULL		DEFAULT 0,
+	CurrencyID                	INT             NULL        DEFAULT 0,
+	ProductTypeID				INT				NOT NULL    DEFAULT 1,
+	IndustryTypeID            	INT             NULL        DEFAULT 1,
+	ProductApplicationTypeID	INT				NULL		DEFAULT 0,
+    
+	Cost			        	DECIMAL(13,2)	NULL,
+	Price			        	DECIMAL(13,2)	NULL,
+    
+	ItemBinaryType           	NVARCHAR(255)   NOT NULL,
+	ItemBinary					LONGBLOB		NULL,
+
+	CreatedByID					INT				NULL,
+	CreatedByName				NVARCHAR(255)	NULL,
+	CreatedTime					DATETIME		NULL		DEFAULT NOW(),
+
+	ModifiedByID				INT				NULL,
+	ModifiedByName				NVARCHAR(255)	NULL,
+	ModifiedTime				DATETIME		NULL		DEFAULT NOW(),
 
 	PRIMARY KEY(ID),
 	FOREIGN KEY(QuotationID) REFERENCES Quotation(ID)
@@ -79,6 +91,8 @@ create table QuotationItem
 
 CREATE TABLE QuotationNumber
 (
-	CurrentNumber               INT         	NOT NULL  	DEFAULT 1
+	ID							INT 			NOT NULL,
+	CurrentNumber               INT         	NOT NULL  	DEFAULT 0,
+    PRIMARY KEY(ID)
 );
-
+INSERT INTO QuotationNumber(ID) VALUES(1);
