@@ -99,23 +99,53 @@ public class QuotationDao {
 		try {
 			conn = JdbcUtils.getConnection();
 
-			String sql = "SELECT COUNT(*) AS 'FoundCount' FROM Quotation WHERE ID=?";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, quotationHeader.getId());
-			rs = ps.executeQuery();
-			boolean quotationFound = rs.getInt("FoundCount") > 0;
+			//String sql = "SELECT COUNT(*) AS 'FoundCount' FROM Quotation WHERE ID=?";
+			//ps = conn.prepareStatement(sql);
+			//ps.setInt(1, quotationHeader.getId());
+			//rs = ps.executeQuery();
+			//boolean quotationFound = rs.getInt("FoundCount") > 0;
 
-			if (quotationFound) {
+			// Update or Insert quotation header.
+			String sql = "";
+			if (quotationHeader.getId()>0) {
 				sql = "UPDATE Quotation SET";
 				sql += " QuotationNo=?,QuotationProjectName=?,QuotationReference=?,QuotationNote=?,QuotationLocation=?";
-				sql += ",UnitID=?,CurrencyID=?,QuotationBinary=?,MilestoneBinary=?,QuotationItemsCurrentD=?";
+				sql += ",UnitID=?,CurrencyID=?,QuotationBinary=?,MilestoneBinary=?,QuotationItemsCurrentID=?";
 				sql += ",Cost=?,Price=?,Status=?,Type=?,SalesType=?";
+				sql += " WHERE ID=?";
 			} else {
 				sql = "INSERT INTO Quotation";
 				sql += "(QuotationNo,QuotationProjectName,QuotationReference,QuotationNote,QuotationLocation";
-				sql += ",UnitID,CurrencyID,QuotationBinary,MilestoneBinary,QuotationItemsCurrentD";
+				sql += ",UnitID,CurrencyID,QuotationBinary,MilestoneBinary,QuotationItemsCurrentID";
 				sql += ",Cost,Price,Status,Type,SalesType)";
-				sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			}
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, quotationHeader.getQuotationNo());
+			ps.setString(2, quotationHeader.getQuotationProjectName());
+			ps.setString(3, quotationHeader.getQuotationReference());
+			ps.setString(4, quotationHeader.getQuotationNote());
+			ps.setString(5, quotationHeader.getQuotationLocation());
+			ps.setInt(6, quotationHeader.getUnitID());
+			ps.setInt(7, quotationHeader.getCurrencyID());
+			ps.setBytes(8, binary_QuotationHeader);
+			ps.setBytes(9, binary_Milestone);
+			ps.setString(10, quotationItemsCurrentID);
+			ps.setBigDecimal(11, quotationHeader.getCost());
+			ps.setBigDecimal(12, quotationHeader.getPrice());
+			ps.setInt(13, quotationHeader.getStatus());
+			ps.setString(14, quotationHeader.getType());
+			ps.setString(15, quotationHeader.getSalesType());
+			if (quotationHeader.getId()>0) {
+				ps.setInt(16, quotationHeader.getId());
+			}
+
+			ps.executeUpdate();
+
+			if (quotationHeader.getId()<=0) {
+				rs = ps.getGeneratedKeys();
+				if (rs.next())
+					quotationHeader.setId(rs.getInt(1));
 			}
 
 		} finally {

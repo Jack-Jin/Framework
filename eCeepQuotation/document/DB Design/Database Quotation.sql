@@ -32,11 +32,11 @@ CREATE TABLE Quotation
 
 	QuotationBinary          	LONGBLOB        NULL,
 	MilestoneBinary             LONGBLOB        NULL,
-	QuotationItemsCurrentD      NVARCHAR(255)   NULL        DEFAULT '',
+	QuotationItemsCurrentID		NVARCHAR(255)   NULL        DEFAULT '',
 
 	Cost						DECIMAL(13,2)	NULL,
 	Price						DECIMAL(13,2)	NULL,
-	`Status`					NVARCHAR(50)	NULL,
+	`Status`					INT				NULL,
 	`Type`						NVARCHAR(20)	NULL,
 	SalesType					NVARCHAR(50)	NULL,
     
