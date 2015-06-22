@@ -19,15 +19,19 @@ public interface Quotation {
 
 	boolean initial(String jdbcDriver, String url, String userName, String password);
 
-	boolean newQuotation(boolean hasQuoteNumber, QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException;
-
-	boolean newQuotation(boolean hasQuoteNumber, QuotationHeaderDetail quotationHeader) throws SQLException;
-
-	boolean newQuotation(boolean hasQuoteNumber) throws SQLException;
+	boolean newQuotation(boolean generateQuoteNumber, QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException;
 	
-	boolean newQuotation() throws SQLException;
+	boolean newQuotation(QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException;
+
+	QuotationItemDetail newQuotationItem(Class<? extends QuotationItemDetail> clazz, Product product) throws InstantiationException, IllegalAccessException;
 	
+    boolean saveQuotation(boolean generateQuoteNumber, int byUserID) throws SQLException, IOException;
+
     boolean saveQuotation(int byUserID) throws SQLException, IOException;
-
-    boolean restoreQuotation(int quotationID) throws SQLException;
+    
+    boolean restoreQuotation(int quotationID) throws SQLException, IOException, ClassNotFoundException;
+    
+    boolean removeQuotation(int quotationID, int byUserID) throws SQLException;
+    
+    void removeQuotationItem(String quotationItemID) throws SQLException;
 }

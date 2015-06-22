@@ -1,6 +1,7 @@
 package eceep.quotation.domain;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import eceep.quotation.*;
 
@@ -23,8 +24,8 @@ public class QuotationItemDetail {
 
 	private Product product;
 
-	QuotationItemDetail() {
-		this.id = "";
+	public QuotationItemDetail() {
+		this.id = "" + UUID.randomUUID();
 		this.sequence = -1;
 		this.unitID = -1;
 		this.currencyID = -1;

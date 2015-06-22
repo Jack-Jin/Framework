@@ -8,6 +8,7 @@ import java.util.List;
 import eceep.milestone.Milestone;
 import eceep.milestone.Step;
 import eceep.milestone.impl.MilestoneService;
+import eceep.quotation.Product;
 import eceep.quotation.Quotation;
 import eceep.quotation.dao.QuotationDao;
 import eceep.quotation.domain.QuotationHeaderDetail;
@@ -24,6 +25,8 @@ public class QuotationService implements Quotation {
 
 	private List<QuotationItemDetail> quotationItems;
 	private String quotationItemsCurrentID;
+
+	private final int quotationNumberLength = 5;
 
 	/* Methods */
 	/* ----------------------------------------------------------------- */
@@ -58,16 +61,14 @@ public class QuotationService implements Quotation {
 	}
 
 	@Override
-	public boolean newQuotation(boolean hasQuoteNumber, QuotationHeaderDetail quotationHeader, Milestone<Step> milestone)
-			throws SQLException {
-		final int quotationNumberLength = 5;
-
+	public boolean newQuotation(boolean generateQuoteNumber, QuotationHeaderDetail quotationHeader,
+			Milestone<Step> milestone) throws SQLException {
 		this.quotationHeader = quotationHeader;
 
 		this.milestone = milestone;
 
-		if (hasQuoteNumber) {
-			String number = generateQuoteNumber(quotationNumberLength);
+		if (generateQuoteNumber) {
+			String number = generateQuoteNumber();
 			this.quotationHeader.setQuotationNo(number);
 		}
 
@@ -75,52 +76,99 @@ public class QuotationService implements Quotation {
 	}
 
 	@Override
-	public boolean newQuotation(boolean hasQuoteNumber, QuotationHeaderDetail quotationHeader) throws SQLException {
-		Milestone<Step> milestone = MilestoneService.getInstance();
-
-		return newQuotation(hasQuoteNumber, quotationHeader, milestone);
-	}
-
-	@Override
-	public boolean newQuotation(boolean hasQuoteNumber) throws SQLException {
-		QuotationHeaderDetail quotationHeader = new QuotationHeaderDetail();
-
-		Milestone<Step> milestone = MilestoneService.getInstance();
-
-		return newQuotation(hasQuoteNumber, quotationHeader, milestone);
-	}
-
-	@Override
-	public boolean newQuotation() throws SQLException {
-		QuotationHeaderDetail quotationHeader = new QuotationHeaderDetail();
-
-		Milestone<Step> milestone = MilestoneService.getInstance();
-
+	public boolean newQuotation(QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException {
 		return newQuotation(true, quotationHeader, milestone);
 	}
 
-	/* Methods */
-	/* ----------------------------------------------------------------- */
-	private String generateQuoteNumber(int length) throws SQLException {
-		return this.dao.generateQuoteNumber(length);
+	@Override
+	public QuotationItemDetail newQuotationItem(Class<? extends QuotationItemDetail> clazz, Product product)
+			throws InstantiationException, IllegalAccessException {
+		if (this.quotationHeader == null)
+			return null;
+
+		// Create quotation item.
+		QuotationItemDetail item = clazz.newInstance();
+		item.setSequence(this.quotationItems.size());
+
+		// Set product
+		item.setProduct(product);
+		item.setUnitID(this.quotationHeader.getUnitID());
+		item.setCurrencyID(this.quotationHeader.getCurrencyID());
+
+		// Insert item
+		this.quotationItems.add(item);
+
+		// Set new item as current.
+		this.quotationItemsCurrentID = item.getId();
+
+		return item;
+	}
+
+	@Override
+	public boolean saveQuotation(boolean generateQuoteNumber, int byUserID) throws SQLException, IOException {
+		if (generateQuoteNumber) {
+			String number = generateQuoteNumber();
+			this.quotationHeader.setQuotationNo(number);
+		}
+
+		return this.dao.saveQuotation(byUserID, this.quotationHeader, this.milestone, this.quotationItems,
+				this.quotationItemsCurrentID);
 	}
 
 	@Override
 	public boolean saveQuotation(int byUserID) throws SQLException, IOException {
-		return this.dao.saveQuotation(byUserID, this.quotationHeader, this.milestone, this.quotationItems, this.quotationItemsCurrentID);
+		return saveQuotation(false, byUserID);
 	}
 
 	@Override
-	public boolean restoreQuotation(int quotationID) throws SQLException {
-		this.quotationHeader = this.dao.getQuotationHeader(quotationID);
-		
-		this.milestone = this.dao.getMilestone(quotationID);
-		
-		this.quotationItems = this.dao.getQuotationItems(quotationID);
-		
-		this.quotationItemsCurrentID = this.dao.getQuotationItemsCurrentID(quotationID);
-		
+	public boolean restoreQuotation(int quotationID) throws SQLException, IOException, ClassNotFoundException {
+		boolean ok = false;
+
+		Object[] result = this.dao.restoreQuotation(quotationID);
+
+		if (result[0] != null) {
+			this.quotationHeader = (QuotationHeaderDetail) result[0];
+			ok = true;
+		}
+
+		if (result[1] != null) {
+			this.milestone = (Milestone) result[1];
+			ok &= true;
+		}
+
+		this.quotationItems = (List<QuotationItemDetail>) result[2];
+		ok &= true;
+
+		if (result[1] != null) {
+			this.quotationItemsCurrentID = (String) result[3];
+			ok &= true;
+		}
+
 		return true;
+	}
+
+	@Override
+	public boolean removeQuotation(int quotationID, int byUserID) throws SQLException {
+		return this.dao.removeQuotation(quotationID, byUserID);
+	}
+
+	@Override
+	public void removeQuotationItem(String quotationItemID) throws SQLException {
+		this.quotationItems.removeIf(A -> A.getId().equalsIgnoreCase(quotationItemID));
+
+		for (int i = 0; i < this.quotationItems.size(); i++) {
+			this.quotationItems.get(i).setSequence(i);
+		}
+		
+		this.quotationItemsCurrentID ="";
+		if(this.quotationItems.size()>0)
+			this.quotationItemsCurrentID = this.quotationItems.get(0).getId();
+	}
+
+	/* Methods */
+	/* ----------------------------------------------------------------- */
+	private String generateQuoteNumber() throws SQLException {
+		return this.dao.generateQuoteNumber(this.quotationNumberLength);
 	}
 
 }

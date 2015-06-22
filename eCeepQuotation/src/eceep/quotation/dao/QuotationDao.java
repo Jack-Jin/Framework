@@ -1,13 +1,16 @@
 package eceep.quotation.dao;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import eceep.milestone.Milestone;
@@ -91,7 +94,7 @@ public class QuotationDao {
 				sql += ",UnitID=?,CurrencyID=?,QuotationBinary=?,MilestoneBinary=?,QuotationItemsCurrentID=?";
 				sql += ",Cost=?,Price=?,Status=?,Type=?,SalesType=?";
 				sql += ",ModifiedByID=?,ModifiedByName=(SELECT UserName FROM Users WHERE ID=?)";
-				sql += " WHERE ID=?";
+				sql += " WHERE IsDeleted=FALSE AND ID=?";
 			} else {
 				sql = "INSERT INTO Quotation";
 				sql += "(QuotationNo,QuotationProjectName,QuotationReference,QuotationNote,QuotationLocation";
@@ -133,31 +136,29 @@ public class QuotationDao {
 				if (rs.next())
 					quotationHeader.setId(rs.getInt(1));
 			}
-			
+
 			ps.close();
 
 			// Delete quotation items.
 			sql = "DELETE FROM QuotationItem WHERE QuotationID=?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, quotationHeader.getId());
-			
+
 			ps.executeUpdate();
-			
+
 			// Insert quotation items
-			for(QuotationItemDetail item : quotationItems) {
+			for (QuotationItemDetail item : quotationItems) {
 				// Product serialize.
 				Product product = item.getProduct();
-				if (product == null)
-					continue;
-
-				product.saveBeforeSerialized();
+				if (product != null)
+					product.saveBeforeSerialized();
 
 				stream = new ByteArrayOutputStream();
 				out = new ObjectOutputStream(stream);
-				out.writeObject(product);
+				out.writeObject(item);
 				out.close();
 				stream.close();
-				byte[] binary_product = stream.toByteArray();
+				byte[] binary_item = stream.toByteArray();
 
 				sql = "INSERT INTO QuotationItem";
 				sql += "(ID,QuotationID,Sequence,ItemName,ItemRevision";
@@ -166,7 +167,7 @@ public class QuotationDao {
 				sql += ",CreatedByID,CreatedByName,ModifiedByID,ModifiedByName)";
 				sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?";
 				sql += ",?,(SELECT UserName FROM Users WHERE ID=?),?,(SELECT UserName FROM Users WHERE ID=?))";
-				
+
 				ps = conn.prepareStatement(sql);
 				ps.setString(1, item.getId());
 				ps.setInt(2, quotationHeader.getId());
@@ -181,12 +182,12 @@ public class QuotationDao {
 				ps.setBigDecimal(11, item.getCost());
 				ps.setBigDecimal(12, item.getPrice());
 				ps.setString(13, item.getProduct().getClass().getTypeName());
-				ps.setBytes(14, binary_product);
+				ps.setBytes(14, binary_item);
 				ps.setInt(15, byUserID);
 				ps.setInt(16, byUserID);
 				ps.setInt(17, byUserID);
 				ps.setInt(18, byUserID);
-				
+
 				ps.executeUpdate();
 			}
 		} finally {
@@ -196,24 +197,111 @@ public class QuotationDao {
 		return true;
 	}
 
-	public QuotationHeaderDetail getQuotationHeader(int quotationID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object[] restoreQuotation(int quotationID) throws SQLException, IOException, ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		ByteArrayInputStream stream = null;
+		ObjectInputStream in = null;
+
+		// 0: quotationHeader; 1: milestone; 2: List<QuotationItemDetail>; 3: quotationItemsCurrentID;
+		Object[] result = new Object[4];		
+
+		try {
+			conn = JdbcUtils.getConnection();
+			
+			// Quotation Header
+			String sql = "SELECT QuotationBinary,MilestoneBinary,QuotationItemsCurrentID FROM Quotation WHERE IsDeleted=FALSE AND ID=?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, quotationID);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				byte[] binary_QuotationHeader = rs.getBytes("QuotationBinary");
+				byte[] binary_Milestone = rs.getBytes("MilestoneBinary");
+				String quotationItemsCurrentID = rs.getString("QuotationItemsCurrentID");
+
+				// Quotation header deserialize
+				stream = new ByteArrayInputStream(binary_QuotationHeader);
+				in = new ObjectInputStream(stream);
+				QuotationHeaderDetail header = (QuotationHeaderDetail) in.readObject();
+				in.close();
+				stream.close();
+
+				header.setId(quotationID);
+				result[0] = header;
+
+				// Milestone deserialize
+				stream = new ByteArrayInputStream(binary_Milestone);
+				in = new ObjectInputStream(stream);
+				Milestone<Step> milestone = (Milestone<Step>) in.readObject();
+				in.close();
+				stream.close();
+
+				result[1] = milestone;
+
+				result[3] = quotationItemsCurrentID;
+			}
+
+			rs.close();
+			ps.close();
+
+			// Quotation Items
+			List<QuotationItemDetail> quotationItems = new ArrayList<QuotationItemDetail>();
+			sql = "SELECT ItemBinaryType,ItemBinary FROM QuotationItem WHERE QuotationID=?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, quotationID);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				byte[] binary_Item = rs.getBytes("ItemBinary");
+
+				// Quotation item descrialize
+				stream = new ByteArrayInputStream(binary_Item);
+				in = new ObjectInputStream(stream);
+				QuotationItemDetail quotationItem = (QuotationItemDetail) in.readObject();
+				in.close();
+				stream.close();
+
+				quotationItem.getProduct().restoreAfterDeserialized();
+				
+				quotationItems.add(quotationItem);
+			}
+
+			result[2] = quotationItems;
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return result;
 	}
 
-	public Milestone<Step> getMilestone(int quotationID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<QuotationItemDetail> getQuotationItems(int quotationID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getQuotationItemsCurrentID(int quotationID) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean removeQuotation(int quotationID, int byUserID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = JdbcUtils.getConnection();
+			
+			String sql = "UPDATE Quotation SET IsDeleted=TRUE,DeletedByID=?,DeletedByName=(SELECT UserName FROM Users WHERE ID=?),DetetedTime=NOW() WHERE ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, byUserID);
+			ps.setInt(2, byUserID);
+			ps.setInt(3, quotationID);
+			
+			ps.executeUpdate();
+			
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+		
+		return true;
 	}
 
 }
