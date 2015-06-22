@@ -106,8 +106,8 @@ public class QuotationService implements Quotation {
 	}
 
 	@Override
-	public boolean saveQuotation() throws SQLException, IOException {
-		return this.dao.saveQuotation(this.quotationHeader, this.milestone, this.quotationItems, this.quotationItemsCurrentID);
+	public boolean saveQuotation(int byUserID) throws SQLException, IOException {
+		return this.dao.saveQuotation(byUserID, this.quotationHeader, this.milestone, this.quotationItems, this.quotationItemsCurrentID);
 	}
 
 	@Override

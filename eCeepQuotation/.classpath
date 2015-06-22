@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/eCeepCustomer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/eCeepMilestone"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/eCeepUser"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

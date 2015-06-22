@@ -27,7 +27,7 @@ public interface Quotation {
 	
 	boolean newQuotation() throws SQLException;
 	
-    boolean saveQuotation() throws SQLException, IOException;
+    boolean saveQuotation(int byUserID) throws SQLException, IOException;
 
     boolean restoreQuotation(int quotationID) throws SQLException;
 }

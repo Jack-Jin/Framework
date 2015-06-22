@@ -29,3 +29,7 @@ CALL UserLogon('test user','peter__123','1234','1.1.1.1','win7',120,@IsLogon);
 SELECT @IsLogon;
 
 SELECT ID,CompanyName,ParentID,IFNULL(PolicyID,2)<=2 AS 'PolicyInherited'  FROM UserCompany;
+
+
+
+

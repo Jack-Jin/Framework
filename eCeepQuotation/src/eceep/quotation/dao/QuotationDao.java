@@ -31,7 +31,7 @@ public class QuotationDao {
 	}
 
 	public String generateQuoteNumber(int length) throws SQLException {
-		//GetQuotationNumber
+		// GetQuotationNumber
 		Connection conn = null;
 		CallableStatement cs = null;
 		ResultSet rs = null;
@@ -59,7 +59,7 @@ public class QuotationDao {
 		return quotationNumber;
 	}
 
-	public boolean saveQuotation(QuotationHeaderDetail quotationHeader, Milestone<Step> milestone,
+	public boolean saveQuotation(int byUserID, QuotationHeaderDetail quotationHeader, Milestone<Step> milestone,
 			List<QuotationItemDetail> quotationItems, String quotationItemsCurrentID) throws SQLException, IOException {
 		if (quotationHeader == null || milestone == null) {
 			return false;
@@ -80,45 +80,24 @@ public class QuotationDao {
 		// Milestone serialize
 		byte[] binary_Milestone = milestone.serialize();
 
-		// Quotation items serialize
-		for (QuotationItemDetail item : quotationItems) {
-			Product product = item.getProduct();
-			if (product == null)
-				continue;
-
-			product.saveBeforeSerialized();
-
-			stream = new ByteArrayOutputStream();
-			out = new ObjectOutputStream(stream);
-			out.writeObject(product);
-			out.close();
-			stream.close();
-			byte[] binary_product = stream.toByteArray();
-		}
-
 		try {
 			conn = JdbcUtils.getConnection();
 
-			//String sql = "SELECT COUNT(*) AS 'FoundCount' FROM Quotation WHERE ID=?";
-			//ps = conn.prepareStatement(sql);
-			//ps.setInt(1, quotationHeader.getId());
-			//rs = ps.executeQuery();
-			//boolean quotationFound = rs.getInt("FoundCount") > 0;
-
 			// Update or Insert quotation header.
 			String sql = "";
-			if (quotationHeader.getId()>0) {
+			if (quotationHeader.getId() > 0) {
 				sql = "UPDATE Quotation SET";
 				sql += " QuotationNo=?,QuotationProjectName=?,QuotationReference=?,QuotationNote=?,QuotationLocation=?";
 				sql += ",UnitID=?,CurrencyID=?,QuotationBinary=?,MilestoneBinary=?,QuotationItemsCurrentID=?";
 				sql += ",Cost=?,Price=?,Status=?,Type=?,SalesType=?";
+				sql += ",ModifiedByID=?,ModifiedByName=(SELECT UserName FROM Users WHERE ID=?)";
 				sql += " WHERE ID=?";
 			} else {
 				sql = "INSERT INTO Quotation";
 				sql += "(QuotationNo,QuotationProjectName,QuotationReference,QuotationNote,QuotationLocation";
 				sql += ",UnitID,CurrencyID,QuotationBinary,MilestoneBinary,QuotationItemsCurrentID";
-				sql += ",Cost,Price,Status,Type,SalesType)";
-				sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				sql += ",Cost,Price,Status,Type,SalesType,CreatedByID,CreatedByName,ModifiedByID,ModifiedByName)";
+				sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT UserName FROM Users WHERE ID=?),?,(SELECT UserName FROM Users WHERE ID=?))";
 			}
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, quotationHeader.getQuotationNo());
@@ -136,23 +115,85 @@ public class QuotationDao {
 			ps.setInt(13, quotationHeader.getStatus());
 			ps.setString(14, quotationHeader.getType());
 			ps.setString(15, quotationHeader.getSalesType());
-			if (quotationHeader.getId()>0) {
-				ps.setInt(16, quotationHeader.getId());
+			if (quotationHeader.getId() > 0) {
+				ps.setInt(16, byUserID);
+				ps.setInt(17, byUserID);
+				ps.setInt(18, quotationHeader.getId());
+			} else {
+				ps.setInt(16, byUserID);
+				ps.setInt(17, byUserID);
+				ps.setInt(18, byUserID);
+				ps.setInt(19, byUserID);
 			}
 
 			ps.executeUpdate();
 
-			if (quotationHeader.getId()<=0) {
+			if (quotationHeader.getId() <= 0) {
 				rs = ps.getGeneratedKeys();
 				if (rs.next())
 					quotationHeader.setId(rs.getInt(1));
 			}
+			
+			ps.close();
 
+			// Delete quotation items.
+			sql = "DELETE FROM QuotationItem WHERE QuotationID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, quotationHeader.getId());
+			
+			ps.executeUpdate();
+			
+			// Insert quotation items
+			for(QuotationItemDetail item : quotationItems) {
+				// Product serialize.
+				Product product = item.getProduct();
+				if (product == null)
+					continue;
+
+				product.saveBeforeSerialized();
+
+				stream = new ByteArrayOutputStream();
+				out = new ObjectOutputStream(stream);
+				out.writeObject(product);
+				out.close();
+				stream.close();
+				byte[] binary_product = stream.toByteArray();
+
+				sql = "INSERT INTO QuotationItem";
+				sql += "(ID,QuotationID,Sequence,ItemName,ItemRevision";
+				sql += ",UnitID,CurrencyID,ProductTypeID,IndustryTypeID,ProductApplicationTypeID";
+				sql += ",Cost,Price,ItemBinaryType,ItemBinary";
+				sql += ",CreatedByID,CreatedByName,ModifiedByID,ModifiedByName)";
+				sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+				sql += ",?,(SELECT UserName FROM Users WHERE ID=?),?,(SELECT UserName FROM Users WHERE ID=?))";
+				
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, item.getId());
+				ps.setInt(2, quotationHeader.getId());
+				ps.setInt(3, item.getSequence());
+				ps.setString(4, item.getItemName());
+				ps.setString(5, item.getItemRevision());
+				ps.setInt(6, item.getUnitID());
+				ps.setInt(7, item.getCurrencyID());
+				ps.setInt(8, item.getProductType().getId());
+				ps.setInt(9, item.getIndustryType().getId());
+				ps.setInt(10, item.getProductApplicationType().getId());
+				ps.setBigDecimal(11, item.getCost());
+				ps.setBigDecimal(12, item.getPrice());
+				ps.setString(13, item.getProduct().getClass().getTypeName());
+				ps.setBytes(14, binary_product);
+				ps.setInt(15, byUserID);
+				ps.setInt(16, byUserID);
+				ps.setInt(17, byUserID);
+				ps.setInt(18, byUserID);
+				
+				ps.executeUpdate();
+			}
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
 
-		return false;
+		return true;
 	}
 
 	public QuotationHeaderDetail getQuotationHeader(int quotationID) {
