@@ -7,6 +7,8 @@
 		<project>eCeepUser</project>
 		<project>eCeepCustomer</project>
 		<project>eCeepNews</project>
+		<project>eCeepMilestone</project>
+		<project>eCeepQuotation</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

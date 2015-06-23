@@ -4,13 +4,13 @@ import eceep.quotation.Quotation;
 import eceep.quotation.QuotationFactory;
 
 public class QuotationFactoryImpl implements QuotationFactory {
-	private static Quotation quotation;
+	private static QuotationFactory quotationFactory;
 
 	public static Quotation getInstance() {
-		if (quotation == null)
-			quotation = new QuotationService();
+		if (quotationFactory == null)
+			quotationFactory = new QuotationFactoryImpl();
 
-		return quotation;
+		return quotationFactory.getQuotation();
 	}
 
 	@Override

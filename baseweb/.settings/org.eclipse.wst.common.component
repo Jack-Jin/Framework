@@ -15,6 +15,12 @@
         <dependent-module archiveName="eCeepNews.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepNews/eCeepNews">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="eCeepMilestone.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepMilestone/eCeepMilestone">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="eCeepQuotation.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eCeepQuotation/eCeepQuotation">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="baseweb"/>
         <property name="java-output-path" value="/baseweb/build/classes"/>
     </wb-module>

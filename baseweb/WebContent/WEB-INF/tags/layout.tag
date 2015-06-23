@@ -1,4 +1,5 @@
 <%@ tag description="Page freamework" language="java" pageEncoding="UTF-8" %>
+<%@ attribute name="withMilestone" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,9 +32,10 @@
             </div>
             <div id="id_page_body_right" class="page_body_right">
                 <div class="page_body_right_top">
+                  <jsp:include page='${withMilestone=="true"? "/WEB-INF/quotation/milestone.jsp": "" }' />
                 </div>
                 <div id="id_page_body_right_content" class="page_body_right_content">
-				  <jsp:doBody />
+				  <jsp:doBody />				  
                 </div>
             </div>
             <div style="clear:both;"></div>

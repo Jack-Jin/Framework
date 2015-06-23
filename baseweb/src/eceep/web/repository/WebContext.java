@@ -11,6 +11,8 @@ import eceep.customer.Customer;
 import eceep.customer.impl.CustomerFactoryImpl;
 import eceep.news.News;
 import eceep.news.impl.NewsFactoryImpl;
+import eceep.quotation.Quotation;
+import eceep.quotation.impl.QuotationFactoryImpl;
 import eceep.user.User;
 import eceep.user.impl.UserFactoryImpl;
 import eceep.web.domain.JdbcConnectionStr;
@@ -41,6 +43,8 @@ public class WebContext {
 	
 	private News news;
 
+	private Quotation quotation;
+	
 	/* Methods */
 	/* --------------------------- */
 	public boolean getPolicy_IsCustomersByUserID(){
@@ -88,6 +92,17 @@ public class WebContext {
 		}
 		
 		return this.news;
+	}
+	
+	public Quotation getQuotation() {
+		if(this.quotation == null){
+			this.quotation = QuotationFactoryImpl.getInstance();
+			
+			this.quotation.initial(connWebBase.getJdbcDriver(), connWebBase.getJdbcURL(), connWebBase.getJdbcUserName(),
+					connWebBase.getJdbcPassword());
+		}
+		
+		return this.quotation;
 	}
 	
 	public JdbcConnectionStr getConnWebBase() {

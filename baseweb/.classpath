@@ -22,5 +22,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/eCeepCustomer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/eCeepSQL"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/eCeepNews"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eCeepMilestone"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eCeepQuotation"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

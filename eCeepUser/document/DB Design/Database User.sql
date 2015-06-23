@@ -47,7 +47,7 @@ CREATE TABLE Menu (
 );
 -- 10,11,12,13,14,15,  20,21,  30,31,32,  40,41,42,  50,51,  60,61
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(10,0, 'Quotations',     	FALSE,'010',NULL);
-INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11,10,'New Quote', 			TRUE, '011','#');
+INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(11,10,'New Quote', 			TRUE, '011','QuotationInfo');
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(12,10,'Quote List', 		TRUE, '012','#');
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(13,10,'Save', 				TRUE, '013','#');
 INSERT INTO Menu(ID,ParentID,MenuText,IsLeaf,MenuNo,URL) VALUES(14,10,'Save as New Quote', 	TRUE, '014','#');
