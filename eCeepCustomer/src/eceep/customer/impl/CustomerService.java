@@ -15,6 +15,7 @@ public class CustomerService implements Customer {
 	private CustomerDao customerDao;
 
 	private int policy_CustomersByUserID;
+	private CustomerDetail customerDetail;
 
 	public CustomerService() {
 		this.policy_CustomersByUserID = -1; // if -1, no policy.
@@ -37,6 +38,18 @@ public class CustomerService implements Customer {
 	@Override
 	public int getPolicy_CustomersByUserID() {
 		return this.policy_CustomersByUserID;
+	}
+
+	@Override
+	public boolean loadCustomer(int byCustomerID) throws SQLException, InstantiationException, IllegalAccessException {
+		this.customerDetail = this.customerDao.getCustomer(byCustomerID);
+
+		return (this.customerDetail != null);
+	}
+
+	@Override
+	public CustomerDetail getCustomerDetail() {
+		return this.customerDetail;
 	}
 
 	@Override
@@ -88,9 +101,9 @@ public class CustomerService implements Customer {
 	public void removeActivity(int activityID, int byUserID) throws SQLException {
 		this.customerDao.removeActivity(activityID, byUserID);
 	}
-	
+
 	@Override
-	public Map<Integer,String> getActivityTypeList() throws SQLException {
+	public Map<Integer, String> getActivityTypeList() throws SQLException {
 		return this.customerDao.getActivityTypeList();
 	}
 }

@@ -43,12 +43,10 @@ public class QuotationDao {
 		try {
 			conn = JdbcUtils.getConnection();
 
-			cs = conn.prepareCall("GetQuotationNumber");
-			boolean hadResult = cs.execute();
-
-			if (hadResult) {
-				rs = cs.getResultSet();
-
+			cs = conn.prepareCall("{ CALL GetQuotationNumber() }");
+			rs = cs.executeQuery();
+			
+			if(rs.next()) {
 				quotationNumber = "" + rs.getInt("NewQuoteNumber");
 
 				for (int i = 0; i < length - quotationNumber.length(); i++) {

@@ -190,11 +190,15 @@ public class CustomerDetail {
 		return this.customerContacts;
 	}
 
+	public void setCustomerContacts(List<CustomerContact> customerContacts) {
+		this.customerContacts = customerContacts;
+	}
+	
 	public int getCustomerContactID() {
 		if (this.customerContactID < 0 && this.customerContacts != null && this.customerContacts.size() > 0)
 			this.customerContactID = this.customerContacts.get(0).getId();
 		
-		return customerContactID;
+		return this.customerContactID;
 	}
 
 	public void setCustomerContactID(int customerContactID) {
@@ -235,9 +239,12 @@ public class CustomerDetail {
 	}
 
 	public List<CustomerActivity> getCustomerActivities() {
-		return customerActivities;
+		return this.customerActivities;
 	}
 
+	public void setCustomerActivities(List<CustomerActivity> customerActivities) {
+		this.customerActivities = customerActivities;
+	}
 	public int getCustomerActivityID() {
 		if (customerActivityID < 0 && this.customerActivities != null && customerActivities.size() > 0)
 			customerActivityID = customerActivities.get(0).getId();

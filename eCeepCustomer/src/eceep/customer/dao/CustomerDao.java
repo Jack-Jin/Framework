@@ -11,6 +11,9 @@ import eceep.customer.domain.CustomerDetail;
 public interface CustomerDao {
 	boolean initial(String jdbcDriver, String url, String userName, String password);
 	
+	// Customer
+	CustomerDetail getCustomer(int byCustomerID) throws SQLException, InstantiationException, IllegalAccessException;
+	
 	List<CustomerDetail> getCustomers(int userID, String byCustomerName) throws SQLException;
 	
 	int newCustomer(int byUserID) throws SQLException;
@@ -19,12 +22,14 @@ public interface CustomerDao {
 	
 	boolean updateCustomer(CustomerDetail customerDetail, int byUserID) throws SQLException;
 
+	// Contact
 	boolean updateContact(CustomerContact contact) throws SQLException;
 
 	int newContact(int customerID, String customerName, int byUserID) throws SQLException;
 	
 	void removeContact(int contactID, int byUserID) throws SQLException;
 
+	// Activity
 	boolean updateActivity(CustomerActivity activity) throws SQLException;
 
 	int newActivity(int customerID, String customerName, int byUserID) throws SQLException;

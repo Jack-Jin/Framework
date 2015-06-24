@@ -32,6 +32,77 @@ public class CustomerDaoService implements CustomerDao {
 	}
 
 	@Override
+	public CustomerDetail getCustomer(int byCustomerID) throws SQLException, InstantiationException,
+			IllegalAccessException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		CustomerDetail customerDetail = null;
+		try {
+			conn = JdbcUtils.getConnection();
+
+			String sql = "SELECT ID,CustomerName,Street,City,State,Country,PostalCode,PhoneNo,FaxNo,Notes,ParentID,AgentID";
+			sql += ",CreatedByID,CreatedByName,CreatedTime,ModifiedByID,ModifiedByName,ModifiedTime";
+			sql += " FROM Customers WHERE IsDeleted=FALSE AND ID=?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, byCustomerID);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				customerDetail = JdbcUtils.ResultSet2Object(rs, CustomerDetail.class);
+			}
+			rs.close();
+			ps.close();
+
+			// Get All contact list, All activity list.
+			List<CustomerContact> cusContacts = new ArrayList<CustomerContact>();
+			List<CustomerActivity> cusActivities = new ArrayList<CustomerActivity>();
+			if (customerDetail != null) {
+				// Contact List
+				sql = "SELECT ID,CustomerID,CustomerName,ContactName,IsPrimaryContact,ContactTitle,DirectPhoneNo,DirectFaxNo,EmailAddress,Note";
+				sql += ",CreatedByID,CreatedByName,CreatedTime";
+				sql += " FROM CustomerContacts WHERE IsDeleted=FALSE AND CustomerID=?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, byCustomerID);
+
+				rs = ps.executeQuery();
+
+				while (rs.next()) {
+					CustomerContact cusContact = JdbcUtils.ResultSet2Object(rs, CustomerContact.class);
+
+					cusContacts.add(cusContact);
+				}
+				rs.close();
+				ps.close();
+				customerDetail.setCustomerContacts(cusContacts);
+				
+				// Activity List
+				sql = "SELECT ID,CustomerID,CustomerName,Activity,ActivityTypeID,ActivityType,Detail";
+				sql += ",StartTime,EndTime,ClosedByID,ClosedByName,ClosedTime,CreatedByID,CreatedByName,CreatedTime";
+				sql += " FROM CustomerActivities WHERE IsDeleted=FALSE";
+				ps = conn.prepareStatement(sql);
+
+				rs = ps.executeQuery();
+
+				while (rs.next()) {
+					CustomerActivity cusActivity = JdbcUtils.ResultSet2Object(rs, CustomerActivity.class);
+
+					cusActivities.add(cusActivity);
+				}				
+				rs.close();
+				ps.close();
+				customerDetail.setCustomerActivities(cusActivities);
+			}
+		} finally {
+			JdbcUtils.free(rs, ps, conn);
+		}
+
+		return customerDetail;
+	}
+
+	@Override
 	public List<CustomerDetail> getCustomers(int userID, String byCustomerName) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -428,12 +499,12 @@ public class CustomerDaoService implements CustomerDao {
 	}
 
 	@Override
-	public Map<Integer,String> getActivityTypeList() throws SQLException {
+	public Map<Integer, String> getActivityTypeList() throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		Map<Integer,String> activityTypeList = new HashMap<Integer, String>();
+		Map<Integer, String> activityTypeList = new HashMap<Integer, String>();
 		try {
 			conn = JdbcUtils.getConnection();
 
@@ -441,18 +512,18 @@ public class CustomerDaoService implements CustomerDao {
 			ps = conn.prepareStatement(sql);
 
 			rs = ps.executeQuery();
-			
-			while(rs.next()){
+
+			while (rs.next()) {
 				activityTypeList.put(rs.getInt("ID"), rs.getString("ActivityType"));
 			}
 
 		} finally {
 			JdbcUtils.free(rs, ps, conn);
 		}
-		
+
 		return activityTypeList;
 	}
-	
+
 	// @Override
 	// public CustomerDetail getCustomerDetail(int customerID) throws
 	// SQLException {

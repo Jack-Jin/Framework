@@ -3,9 +3,9 @@
 <div class="SubTitle">Quote Information</div>
 <div>
     <span>Project Name</span>
-    <input id="QuotationProjectName" name="QuotationProjectName" type="text" value="" />
+    <input type="text" name="quotationProjectName" value="${quotationheader.quotationProjectName }" />
 </div>
 <div>
     <span>Quotation Number</span>
-    <input id="QuotationNo" name="QuotationNo" type="text" value="01302" />
+    <input type="text" name="quotationNo" value="${quotationheader.quotationNo }" />
 </div>

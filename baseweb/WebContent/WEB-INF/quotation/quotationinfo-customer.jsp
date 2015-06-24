@@ -1,42 +1,46 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div class="SubTitle">Customer Information</div>
 <div>
     <span>Customer Search</span>
     <span>
         <input id="CustomerSearch" type="text" />
-        <img id="SearchCustomer" title="Search Customer" alt="Search Customer" src="/base/base/css/images/Start-Menu-Search-icon.png" />
-        <img id="NewCustomer" title="New Customer" alt="New Customer" src="/base/base/css/images/new-file-icon.png" />
+        <img id="SearchCustomer" title="Search Customer" alt="Search Customer" src="${pageContext.request.contextPath }/base/css/images/Start-Menu-Search-icon.png" />
+        <img id="NewCustomer" title="New Customer" alt="New Customer" src="${pageContext.request.contextPath }/base/css/images/new-file-icon.png" />
     </span>
 </div>
 <div>
     <span>Customer Name:</span>
-    <input id="CustomerName" name="CustomerName" type="text" value="" />
-    <input data-val="true" data-val-number="The field CustomerID must be a number." data-val-required="The CustomerID field is required." id="CustomerID" name="CustomerID" type="hidden" value="-1" />
+    <input type="text" name="customerName" value="${quotationheader.customerName }" />
 </div>
 <div>
     <span>Customer Address:</span>
-    <input id="CustomerAddress" name="CustomerAddress" type="text" value="" />
+    <input type="text" name="customerAddress" value="${quotationheader.customerAddress }" />
 </div>
 <div>
     <span>Customer Phone:</span>
-    <input id="CustomerPhone" name="CustomerPhone" type="text" value="" />
+    <input type="text" name="customerPhone" value="${quotationheader.customerPhone }" />
 </div>
 <div>
     <span>Customer Fax:</span>
-    <input id="CustomerFax" name="CustomerFax" type="text" value="" />
+    <input type="text" name="customerFax" value="${quotationheader.customerFax }" />
 </div>
 <div>
     <span>Contact:</span>
-    <select data-val="true" data-val-number="The field ContactID must be a number." data-val-required="The ContactID field is required." id="ddlContactList" name="ContactID"></select>
-    <input id="CustomerContactName" name="ContactName" type="hidden" value="" />
+    <select name="contactID">
+      <c:forEach var="item" items="${customercontacts }">
+        <option value="${item.id }" selected='${item.id==customercontactsselectedID? "selected" : "" }'>${item.customerName }</option>
+      </c:forEach>
+    </select>
+    
     <span>
-        <img id="ContactEdit" title="Edit this Contact" src="/base/base/css/images/Text-Edit-icon.png" alt="Contact Edit" />
-        <img id="ContactNew" title="New Customer Contact" src="/base/base/css/images/new-file-icon.png" alt="New Contact" />
+        <img id="ContactEdit" title="Edit this Contact" src="${pageContext.request.contextPath }/base/css/images/Text-Edit-icon.png" alt="Contact Edit" />
+        <img id="ContactNew" title="New Customer Contact" src="${pageContext.request.contextPath }/base/css/images/new-file-icon.png" alt="New Contact" />
     </span>
 </div>
 
-<%-- Pop up window: customer search --%>
+<%-- Pop up window: customer search 
 <div id="winCustomerSearch">
     <div>
         <span>Customer Name</span>
@@ -61,8 +65,9 @@
         </tbody>
     </table>
 </div>
+--%>
 
-<%-- Pop up window: new customer --%>
+<%-- Pop up window: new customer 
 <div id="winCustomerNew">
     <div><span id="CustomerNew_lbCompanyName">Company Name *</span><input id="CustomerNew_CompanyName" type="text" /></div>
     <div><span id="CustomerNew_lbStreet">Street</span><input id="CustomerNew_Street" type="text" /></div>
@@ -83,8 +88,9 @@
         <input id="CustomerNew_btnCancel" type="button" value="Cancel"  />
     </div>
 </div>
+--%>
 
-<%-- Pop up window: contact new or edit --%>
+<%-- Pop up window: contact new or edit 
 <div id="winContactNewEdit">
     <div>
       <span id="ContactNewEdit_lbNamePrefix">en-CA:Prefix</span>
@@ -107,3 +113,4 @@
         <input id="ContactNewEdit_btnCancel" type="button" value="Cancel" />
     </div>
 </div>
+--%>

@@ -1,5 +1,9 @@
 SHOW TABLES;
 
+DESC Quotation;
+DESC QuotationItem;
+DESC QuotationNumber;
+
 SELECT ID, QuotationNo, QuotationProjectName, QuotationReference, QuotationNote, QuotationLocation, UnitID, CurrencyID
      , QuotationBinary, MilestoneBinary, QuotationItemsCurrentID
      , Cost, Price, `Status`, `Type`, SalesType
@@ -18,5 +22,7 @@ SELECT ID,CurrentNumber FROM QuotationNumber;
 #UPDATE QuotationNumber SET CurrentNumber=0 WHERE ID=1;
 
 SELECT COUNT(*) AS 'Found' FROM Quotation;
+
+
 
 

@@ -93,7 +93,7 @@
 
 <div class="PageTitle">QUOTATION AND APPLICATION INFORMATION</div>
 <%-- Message --%>
-<div class="PageMessage">@Model.Message</div>
+<div class="PageMessage"></div>
 
 <div class="Quotation_Content">
   <%-- Customer Info --%>
@@ -109,7 +109,7 @@
 
 <div class="Quotation_Note">
     <div class="SubTitle">Miscellaneous Note</div>
-    <textarea cols="20" id="QuotationNote" name="QuotationNote" rows="2">
+    <textarea cols="20" id="QuotationNote" name="QuotationNote" rows="2">${quotationheader.quotationNote }</textarea>
 </div>
 
 </f:layout>
