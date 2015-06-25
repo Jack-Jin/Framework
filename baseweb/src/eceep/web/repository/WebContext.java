@@ -2,7 +2,10 @@ package eceep.web.repository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.servlet.http.HttpSession;
@@ -11,11 +14,15 @@ import eceep.customer.Customer;
 import eceep.customer.impl.CustomerFactoryImpl;
 import eceep.news.News;
 import eceep.news.impl.NewsFactoryImpl;
+import eceep.quotation.EnumIndustryType;
+import eceep.quotation.EnumProductApplicationType;
+import eceep.quotation.EnumProductType;
 import eceep.quotation.Quotation;
 import eceep.quotation.impl.QuotationFactoryImpl;
 import eceep.user.User;
 import eceep.user.impl.UserFactoryImpl;
 import eceep.web.domain.JdbcConnectionStr;
+import eceep.web.enumeration.Currency;
 
 public class WebContext {
 	public static WebContext newContext(HttpSession session) {
@@ -146,4 +153,59 @@ public class WebContext {
 	public Locale getLocale() {
 		return this.locale;
 	}
+	
+	public Map<Integer, String> getUnitSytemList(){
+		Map<Integer, String> unitSystemList = new LinkedHashMap<Integer, String>();
+		unitSystemList.put(0, "SI");
+		unitSystemList.put(1, "TH");
+		unitSystemList.put(2, "US");
+		unitSystemList.put(3, "Practical");
+		
+		for(Entry<Integer, String> item :  unitSystemList.entrySet()){
+			//item.getKey()
+			//item.getValue()
+		}
+		
+		return unitSystemList;
+	}
+	
+	public Map<Integer, String> getCurrencyList(){
+		Map<Integer, String> list = new LinkedHashMap<Integer, String>();
+		
+		for(Currency item : Currency.values()){
+			list.put(item.getId(), item.getLabel());
+		}
+		
+		return list;
+	}
+
+	public Map<Integer, String> getProductTypeList(){
+		Map<Integer, String> list = new LinkedHashMap<Integer, String>();
+		
+		list.put(EnumProductType.CrossFlow.getId(), EnumProductType.CrossFlow.getLabel());
+		list.put(EnumProductType.GasketedPHE.getId(), EnumProductType.GasketedPHE.getLabel());
+		
+		return list;
+	}
+	
+	public Map<Integer, String> getProductApplicationTypeList(){
+		Map<Integer, String> list = new LinkedHashMap<Integer, String>();
+		
+		list.put(EnumProductApplicationType.SinglePhase.getId(), EnumProductApplicationType.SinglePhase.getLabel());
+		list.put(EnumProductApplicationType.SteamHeater.getId(), EnumProductApplicationType.SteamHeater.getLabel());
+		
+		return list;
+	}
+	
+	public Map<Integer, String> getIndustryList(){
+		Map<Integer, String> list = new LinkedHashMap<Integer, String>();
+		
+		list.put(EnumIndustryType.Food.getId(), EnumIndustryType.Food.getLabel());
+		list.put(EnumIndustryType.HVACCommercial.getId(), EnumIndustryType.HVACCommercial.getLabel());
+		list.put(EnumIndustryType.Industrial.getId(), EnumIndustryType.Industrial.getLabel());
+		
+		return list;
+	}
+	
+	
 }

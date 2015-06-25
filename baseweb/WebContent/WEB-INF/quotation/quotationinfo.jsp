@@ -112,4 +112,9 @@
     <textarea cols="20" id="QuotationNote" name="QuotationNote" rows="2">${quotationheader.quotationNote }</textarea>
 </div>
 
+<%-- Quotation Item List --%>
+<div class="Quotation_Products">
+  <jsp:include page="/WEB-INF/quotation/quotationinfo-itemlist.jsp"/>
+</div>
+
 </f:layout>
