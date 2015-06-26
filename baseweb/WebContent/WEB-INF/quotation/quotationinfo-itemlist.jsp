@@ -19,8 +19,9 @@
   <c:forEach var="item" items="${quotationitems }">
     <tr class='${item.id==quotationitemscurrentID? "StyleCurrentItem" : (item.sequence % 2==0? "EvenLine" : "OddLine") }'>
 	  <td>
-	    <input type="submit" name="submitButton" value="Open" class="CusButton" />
-	    <input type="submit" name="submitButton" value="Delete" class="CusButton" />
+	    <input type="submit" name="submitButton" value='${title_btn_openitem }' class="CusButton" />    
+	    <a href="${pageContext.request.contextPath }/QuotationInfo?action=DeleteItem&quotationItemID=${item.id }" class="CusButton"
+	       onclick="return confirm(&#39;Are you sure delete this item?&#39;);">${title_btn_deleteitem }</a>
 	  </td>
 	  <td>${item.itemName }</td>
 	  <td>${item.itemRevision }</td>
@@ -40,12 +41,12 @@
 	    </c:forEach>
 	  </td>
 	  <td>
-	    <c:forEach var="list" items="${productapplicationtypelist }">
-	      <c:if test="${list.key==item.productApplicationType.id }">${list.value }</c:if>
+	    <c:forEach var="list" items="${industrylist }">
+	      <c:if test="${list.key==item.industryType.id }">${list.value }</c:if>
 	    </c:forEach>
 	  </td>
 	  <td>
-	    <c:forEach var="list" items="${industrylist }">
+	    <c:forEach var="list" items="${productapplicationtypelist }">
 	      <c:if test="${list.key==item.productApplicationType.id }">${list.value }</c:if>
 	    </c:forEach>
 	  </td>
@@ -55,7 +56,9 @@
 <tfoot>
   <tr>
     <td>
-      <input type="submit" name="submitButton" value="New Item" class="CusButton" />
+      <input type="submit" name="submitButton" value='${title_btn_newitem }' class="CusButton"/>
+
+      <input type="hidden" name="action" value="New Item"/>
     </td>
     <td><input type="text" name="itemName" value="${newquotationitem.itemName }" /></td>
     <td><input type="text" name="itemRevision" value="${newquotationitem.itemRevision }" /></td>

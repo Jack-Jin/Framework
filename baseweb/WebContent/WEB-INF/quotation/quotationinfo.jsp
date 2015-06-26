@@ -93,28 +93,30 @@
 
 <div class="PageTitle">QUOTATION AND APPLICATION INFORMATION</div>
 <%-- Message --%>
-<div class="PageMessage"></div>
+<div class="PageMessage">${message }</div>
 
-<div class="Quotation_Content">
-  <%-- Customer Info --%>
-  <div class="Quotation_CustomerInfo">
-    <jsp:include page="/WEB-INF/quotation/quotationinfo-customer.jsp"/>
+<form action="" method="post">
+  <div class="Quotation_Content">
+    <%-- Customer Info --%>
+    <div class="Quotation_CustomerInfo">
+      <jsp:include page="/WEB-INF/quotation/quotationinfo-customer.jsp"/>
+    </div>
+    <%-- Quotation Info --%>
+    <div class="Quotation_ProjectInfo">
+      <jsp:include page="/WEB-INF/quotation/quotationinfo-project.jsp"/>
+    </div>
+    <div style="clear: both;"></div>
   </div>
-  <%-- Quotation Info --%>
-  <div class="Quotation_ProjectInfo">
-    <jsp:include page="/WEB-INF/quotation/quotationinfo-project.jsp"/>
-  </div>
-  <div style="clear: both;"></div>
-</div>
 
-<div class="Quotation_Note">
+  <div class="Quotation_Note">
     <div class="SubTitle">Miscellaneous Note</div>
-    <textarea cols="20" id="QuotationNote" name="QuotationNote" rows="2">${quotationheader.quotationNote }</textarea>
-</div>
+    <textarea cols="20" name="quotationNote" rows="2">${quotationheader.quotationNote }</textarea>
+  </div>
 
-<%-- Quotation Item List --%>
-<div class="Quotation_Products">
-  <jsp:include page="/WEB-INF/quotation/quotationinfo-itemlist.jsp"/>
-</div>
+  <%-- Quotation Item List --%>
+  <div class="Quotation_Products">
+    <jsp:include page="/WEB-INF/quotation/quotationinfo-itemlist.jsp"/>
+  </div>
+</form>
 
 </f:layout>

@@ -9,19 +9,11 @@ import eceep.milestone.Step;
 import eceep.quotation.domain.*;
 
 public interface Quotation {
-	QuotationHeaderDetail getQuotationHeader();
-
-	Milestone<Step> getMilestone();
-
-	List<QuotationItemDetail> getQuotationItems(); // Quotation Items
-
-	String getQuotationItemsCurrentID();
-
 	boolean initial(String jdbcDriver, String url, String userName, String password);
 
-	boolean newQuotation(boolean generateQuoteNumber, QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException;
+	boolean newQuotation(boolean generateQuoteNumber, Class<? extends QuotationHeaderDetail> clazzQuotationHeader, Milestone<Step> milestone) throws SQLException, InstantiationException, IllegalAccessException;
 	
-	boolean newQuotation(QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException;
+	boolean newQuotation(Class<? extends QuotationHeaderDetail> clazzQuotationHeader, Milestone<Step> milestone) throws SQLException, InstantiationException, IllegalAccessException;
 
 	QuotationItemDetail newQuotationItem(Class<? extends QuotationItemDetail> clazz, Product product) throws InstantiationException, IllegalAccessException;
 	
@@ -34,4 +26,15 @@ public interface Quotation {
     boolean removeQuotation(int quotationID, int byUserID) throws SQLException;
     
     void removeQuotationItem(String quotationItemID) throws SQLException;
+
+    // ---
+    QuotationHeaderDetail getQuotationHeader();
+    
+    Milestone<Step> getMilestone();
+    
+    List<QuotationItemDetail> getQuotationItems(); // Quotation Items
+    
+    String getQuotationItemsCurrentID();
+    
+	QuotationItemDetail getQuotationItem();
 }

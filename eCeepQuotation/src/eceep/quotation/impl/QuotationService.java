@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eceep.milestone.Milestone;
 import eceep.milestone.Step;
@@ -41,29 +42,10 @@ public class QuotationService implements Quotation {
 	}
 
 	@Override
-	public QuotationHeaderDetail getQuotationHeader() {
-		return this.quotationHeader;
-	}
-
-	@Override
-	public Milestone<Step> getMilestone() {
-		return this.milestone;
-	}
-
-	@Override
-	public List<QuotationItemDetail> getQuotationItems() {
-		return this.quotationItems;
-	}
-
-	@Override
-	public String getQuotationItemsCurrentID() {
-		return this.quotationItemsCurrentID;
-	}
-
-	@Override
-	public boolean newQuotation(boolean generateQuoteNumber, QuotationHeaderDetail quotationHeader,
-			Milestone<Step> milestone) throws SQLException {
-		this.quotationHeader = quotationHeader;
+	public boolean newQuotation(boolean generateQuoteNumber,
+			Class<? extends QuotationHeaderDetail> clazzQuotationHeader, Milestone<Step> milestone)
+			throws SQLException, InstantiationException, IllegalAccessException {
+		this.quotationHeader = clazzQuotationHeader.newInstance();
 
 		this.milestone = milestone;
 
@@ -76,18 +58,19 @@ public class QuotationService implements Quotation {
 	}
 
 	@Override
-	public boolean newQuotation(QuotationHeaderDetail quotationHeader, Milestone<Step> milestone) throws SQLException {
-		return newQuotation(true, quotationHeader, milestone);
+	public boolean newQuotation(Class<? extends QuotationHeaderDetail> clazzQuotationHeader, Milestone<Step> milestone)
+			throws SQLException, InstantiationException, IllegalAccessException {
+		return newQuotation(true, clazzQuotationHeader, milestone);
 	}
 
 	@Override
-	public QuotationItemDetail newQuotationItem(Class<? extends QuotationItemDetail> clazz, Product product)
+	public QuotationItemDetail newQuotationItem(Class<? extends QuotationItemDetail> clazzQuotationItem, Product product)
 			throws InstantiationException, IllegalAccessException {
 		if (this.quotationHeader == null)
 			return null;
 
 		// Create quotation item.
-		QuotationItemDetail item = clazz.newInstance();
+		QuotationItemDetail item = clazzQuotationItem.newInstance();
 		item.setSequence(this.quotationItems.size());
 
 		// Set product
@@ -159,10 +142,41 @@ public class QuotationService implements Quotation {
 		for (int i = 0; i < this.quotationItems.size(); i++) {
 			this.quotationItems.get(i).setSequence(i);
 		}
-		
-		this.quotationItemsCurrentID ="";
-		if(this.quotationItems.size()>0)
+
+		this.quotationItemsCurrentID = "";
+		if (this.quotationItems.size() > 0)
 			this.quotationItemsCurrentID = this.quotationItems.get(0).getId();
+	}
+
+	@Override
+	public QuotationHeaderDetail getQuotationHeader() {
+		return this.quotationHeader;
+	}
+
+	@Override
+	public Milestone<Step> getMilestone() {
+		return this.milestone;
+	}
+
+	@Override
+	public List<QuotationItemDetail> getQuotationItems() {
+		return this.quotationItems;
+	}
+
+	@Override
+	public String getQuotationItemsCurrentID() {
+		return this.quotationItemsCurrentID;
+	}
+
+	@Override
+	public QuotationItemDetail getQuotationItem() {
+		if (this.quotationItems == null || this.quotationItems.size() <= 0 || this.quotationItemsCurrentID.isEmpty())
+			return null;
+
+		List<QuotationItemDetail> items = this.quotationItems.stream()
+				.filter(A -> A.getId() == this.quotationItemsCurrentID).collect(Collectors.toList());
+
+		return (items != null && items.size() > 0 ? items.get(0) : null);
 	}
 
 	/* Methods */

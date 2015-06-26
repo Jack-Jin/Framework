@@ -1,13 +1,19 @@
 package eceep.web.repository;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +21,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
+
+import eceep.web.enumeration.Currency;
 
 public class WebUtils {
 	public static <T> T request2Bean(HttpServletRequest request, Class<T> beanClass) {
@@ -121,4 +129,23 @@ public class WebUtils {
 		return UUID.randomUUID().toString();
 	}
 
+	public static <E extends Enum<E>> E getEnumId(Class<E> clazz, int id) {
+		E result = null;
+
+		try {
+			for (E en : EnumSet.allOf(clazz)) {
+				Method declaredMethod = clazz.getDeclaredMethod("getId");
+				int enId = (int) declaredMethod.invoke(en);
+				if (enId == id) {
+					result = en;
+					break;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
 }

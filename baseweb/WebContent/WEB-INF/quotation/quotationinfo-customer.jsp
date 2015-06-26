@@ -13,6 +13,7 @@
 <div>
     <span>Customer Name:</span>
     <input type="text" name="customerName" value="${quotationheader.customerName }" />
+    <input type="hidden" name="customerID" value="-1" />
 </div>
 <div>
     <span>Customer Address:</span>
