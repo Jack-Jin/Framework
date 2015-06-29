@@ -4,10 +4,10 @@ import eceep.milestone.Step;
 import eceep.milestone.impl.StepDefault;
 
 public enum Steps {
-	QuotationInfo("QuotationInfo", "Quotation Info", "/QuotationInfo"), 
-	Operating("Operating", "Operating", "/Operating"), 
-	Product1("Product1", "Product1", ""), 
-	Product2("Product2", "Product2", "");
+	QuotationInfo("QuotationInfo", "Quotation Info", "/QuotationInfo", true), 
+	Step1("Step1", "Step1", "/Step1"), 
+	Step2("Step2", "Step2", "/Step2"), 
+	Step3("Step3", "Step3", "/Step3");
 
 	private Step step;
 
@@ -15,6 +15,10 @@ public enum Steps {
 		this.step = new StepDefault(name, title, uri, false);
 	}
 
+	private Steps(String name, String title, String uri, boolean active) {
+		this.step = new StepDefault(name, title, uri, active);
+	}
+	
 	public Step getStep() {
 		return this.getStep("");
 	}

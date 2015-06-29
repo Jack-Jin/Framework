@@ -169,6 +169,11 @@ public class QuotationService implements Quotation {
 	}
 
 	@Override
+	public void setQuotationItemsCurrentID(String itemID) {
+		this.quotationItemsCurrentID = itemID;
+	}
+	
+	@Override
 	public QuotationItemDetail getQuotationItem() {
 		if (this.quotationItems == null || this.quotationItems.size() <= 0 || this.quotationItemsCurrentID.isEmpty())
 			return null;

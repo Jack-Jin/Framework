@@ -36,5 +36,7 @@ public interface Quotation {
     
     String getQuotationItemsCurrentID();
     
+    void setQuotationItemsCurrentID(String itemID);
+    
 	QuotationItemDetail getQuotationItem();
 }

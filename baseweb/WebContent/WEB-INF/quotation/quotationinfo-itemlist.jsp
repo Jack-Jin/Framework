@@ -19,7 +19,7 @@
   <c:forEach var="item" items="${quotationitems }">
     <tr class='${item.id==quotationitemscurrentID? "StyleCurrentItem" : (item.sequence % 2==0? "EvenLine" : "OddLine") }'>
 	  <td>
-	    <input type="submit" name="submitButton" value='${title_btn_openitem }' class="CusButton" />    
+	    <a href="${pageContext.request.contextPath }/QuotationInfo?action=OpenItem&quotationItemID=${item.id }" class="CusButton">${title_btn_openitem }</a>
 	    <a href="${pageContext.request.contextPath }/QuotationInfo?action=DeleteItem&quotationItemID=${item.id }" class="CusButton"
 	       onclick="return confirm(&#39;Are you sure delete this item?&#39;);">${title_btn_deleteitem }</a>
 	  </td>
